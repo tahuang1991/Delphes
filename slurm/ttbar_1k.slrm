@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH -J HepMC2Delphes
+#SBATCH -p hepx
+#SBATCH --time=120:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=2000
+#SBATCH -o HepMC2Delphes_B3_1M-%A-%a.out
+#SBATCH -e HepMC2Delphes_B3_1M-%A-%a.err
+#SBATCH --ntasks-per-core=1
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+#change to dir
+Curdir=`pwd`
+parentdir="$(dirname "$Curdir")"
+echo "current dir is $Curdir, parentdir is $parentdir"
+cd $parentdir
+jobid=$SLURM_JOBID
+echo "job$jobid starts"
+#./DelphesHepMC examples/delphes_card_CMS.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_1061848.root /fdata/hepx/store/user/taohuang/Hhh/HH-bbWW-B3-1061848.hepmc
+./DelphesHepMC cards/delphes_card_CMS_NoPU_Tao.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_100_PU0_0925_leptonW_7563690.root /fdata/hepx/store/user/taohuang/Hhh/Powheg-Herwig-ttbar-0925-leptonW-7563690-100.hepmc
+echo "job$jobid is done"
+
+
+exit 0
+

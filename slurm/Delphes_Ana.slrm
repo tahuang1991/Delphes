@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH -J Delphes_ana
+#SBATCH -p hepx 
+#SBATCH --time=24:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=2000
+#SBATCH -o Delphes_Ana_B3-%A-%a.out
+#SBATCH -e Delphes_Ana_B3-%A-%a.err
+#SBATCH --ntasks-per-core=1
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+
+#change to dir
+cd /home/taohuang/Herwig++/Delphes-3.2.0
+jobid=$SLURM_JOBID
+echo "job$jobid starts"
+root -l -b -q examples/DiHiggs_htobb.C
+
+echo "job$jobid is done"
+
+
+exit 0
+
