@@ -1,0 +1,15 @@
+Do not setup CMSSW env, otherwise, it will cause the problem about root libs
+4 program to run dihiggs and ttbar sample
+*.exe -n numevents -i inputfile -o outputfile
+1.DiHiggsValidation
+to validate dihiggs sample, start from gen information, use deltaR matching to find reco object
+
+2.ttbarValidation
+to validate ttbar sample, start from gen information, use deltaR matching to find reco object
+
+3.DiHiggsAnalyzer
+to run real data after delphes, not including gen information
+
+4.ttbarAnalyzer
+run to ttbar real data after delphes, not including gen information
+

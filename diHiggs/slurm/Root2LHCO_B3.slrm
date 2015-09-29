@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH -J Root2LHCO
+#SBATCH -p hepx 
+#SBATCH --time=24:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=1500
+#SBATCH -o Root2LHCO_B3-%A-%a.out
+#SBATCH -e Root2LHCO_B3-%A-%a.err
+#SBATCH --ntasks-per-core=1
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+#change to dir
+cd /home/taohuang/Herwig++/delphes
+jobid=$SLURM_JOBID
+echo "job$jobid starts, `date`"
+./root2lhco /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_100k.root /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_100k.lhco
+
+echo "job$jobid is done , `date`"
+
+
+exit 0
+
