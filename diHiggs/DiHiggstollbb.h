@@ -117,6 +117,7 @@ class DiHiggstollbb {
   float dR_b1b2;
   float mass_l1l2;
   float mass_b1b2;
+  float dphi_llbb;
 
   float met;
   float met_phi;

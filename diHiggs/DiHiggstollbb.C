@@ -121,6 +121,7 @@ void DiHiggstollbb::init(){
   evtree->Branch("dR_l1l2",&dR_l1l2, "dR_l1l2/F");
   evtree->Branch("mass_b1b2",&mass_b1b2, "mass_b1b2/F");
   evtree->Branch("mass_l1l2",&mass_l1l2, "mass_l1l2/F");
+  evtree->Branch("dphi_llbb",&dphi_llbb, "dphi_llbb/F");
 
   evtree->Branch("met",&met,"met/F");
   evtree->Branch("met_phi",&met_phi,"met_phi/F");
@@ -206,6 +207,7 @@ void DiHiggstollbb::initBranches(){
    dR_b1b2=-1.0;
    mass_l1l2 = -1.0;
    mass_b1b2 = -1.0;
+   dphi_llbb = -10;
 
    met = 0;
    met_phi = 0;
@@ -452,6 +454,7 @@ void DiHiggstollbb::DiHiggstollbbrun()
 	dR_l1l2 = lepton1_p4.DeltaR(lepton2_p4);
 	TLorentzVector ll_p4 = lepton1_p4+lepton2_p4;
 	TLorentzVector bjets_p4 = b1jet_p4+b2jet_p4;
+	dphi_llbb = TVector2::Phi_mpi_pi(ll_p4.Phi()-bjets_p4.Phi());
 	mass_l1l2 = ll_p4.M();
         mass_b1b2 = bjets_p4.M();
         if (dR_b1l1>jetleptonDeltaR_ and dR_b1l2>jetleptonDeltaR_ and dR_b2l1>jetleptonDeltaR_ and dR_b2l2>jetleptonDeltaR_) hasdRljet =true;

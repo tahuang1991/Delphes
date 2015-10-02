@@ -119,6 +119,7 @@ class DiHiggstoWWbb {
   float b1jet_phi;
   float b1jet_pt;
   float b1jet_energy;
+  float b1jet_btag;
   float b2jet_px;
   float b2jet_py;
   float b2jet_pz;
@@ -126,6 +127,8 @@ class DiHiggstoWWbb {
   float b2jet_phi;
   float b2jet_pt;
   float b2jet_energy;
+  float b2jet_btag;
+  int energeticbjets;
   bool hasb1jet;
   bool hasb2jet;
 
@@ -200,6 +203,8 @@ class DiHiggstoWWbb {
   float Muon2_phi;
   float Muon2_pt;
   float Muon2_energy;
+  bool energeticMuon1;
+  bool energeticMuon2;
   float dR_mu1;
   float dR_mu2;
 
@@ -220,6 +225,7 @@ class DiHiggstoWWbb {
   float dR_b1b2;
   float mass_l1l2;
   float mass_b1b2;
+  float dphi_llbb;
 
   float genmet;
   float genmet_phi;

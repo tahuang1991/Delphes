@@ -110,6 +110,7 @@ void ttbartoWWbb::init(){
   evtree->Branch("b1jet_phi",&b1jet_phi, "b1jet_phi/F");
   evtree->Branch("b1jet_pt",&b1jet_pt, "b1jet_pt/F");
   evtree->Branch("b1jet_energy",&b1jet_energy, "b1jet_energy/F");
+  evtree->Branch("b1jet_btag",&b1jet_btag, "b1jet_btag/B");
   evtree->Branch("b2jet_px",&b2jet_px, "b2jet_px/F");
   evtree->Branch("b2jet_py",&b2jet_py, "b2jet_py/F");
   evtree->Branch("b2jet_pz",&b2jet_pz, "b2jet_pz/F");
@@ -117,6 +118,8 @@ void ttbartoWWbb::init(){
   evtree->Branch("b2jet_phi",&b2jet_phi, "b2jet_phi/F");
   evtree->Branch("b2jet_pt",&b2jet_pt, "b2jet_pt/F");
   evtree->Branch("b2jet_energy",&b2jet_energy, "b2jet_energy/F");
+  evtree->Branch("b2jet_btag",&b2jet_btag, "b2jet_btag/B");
+  evtree->Branch("energeticbjets",&energeticbjets, "energeticbjets/I");
   evtree->Branch("dR_b1jet", &dR_b1jet,"dR_b1jet/F");  
   evtree->Branch("dR_b2jet", &dR_b2jet,"dR_b2jet/F");  
 
@@ -215,6 +218,8 @@ void ttbartoWWbb::init(){
   evtree->Branch("Muon2_phi",&Muon2_phi, "Muon2_phi/F");
   evtree->Branch("Muon2_pt",&Muon2_pt, "Muon2_pt/F");
   evtree->Branch("Muon2_energy",&Muon2_energy, "Muon2_energy/F");
+  evtree->Branch("energeticMuon1",&energeticMuon1, "energeticMuon1/B");
+  evtree->Branch("energeticMuon2",&energeticMuon2, "energeticMuon2/B");
   evtree->Branch("dR_mu1",&dR_mu1, "dR_mu1/F");
   evtree->Branch("dR_mu2",&dR_mu2, "dR_mu2/F");
   evtree->Branch("hasMuon1",&hasMuon1, "hasMuon1/B");
@@ -230,6 +235,7 @@ void ttbartoWWbb::init(){
   evtree->Branch("dR_l1l2",&dR_l1l2, "dR_l1l2/F");
   evtree->Branch("mass_b1b2",&mass_b1b2, "mass_b1b2/F");
   evtree->Branch("mass_l1l2",&mass_l1l2, "mass_l1l2/F");
+  evtree->Branch("dphi_llbb",&dphi_llbb, "dphi_llbb/F");
 
   evtree->Branch("genmet",&genmet,"genmet/F");
   evtree->Branch("genmet_phi",&genmet_phi,"genmet_phi/F");
@@ -243,8 +249,6 @@ void ttbartoWWbb::init(){
   evtree->Branch("hasGenMET",&hasGenMET, "hasGenMET/B");
   evtree->Branch("hasMET",&hasMET, "hasMET/B");
   evtree->Branch("hasdRljet",&hasdRljet, "hasdRljet/B");
-  evtree->Branch("h2tohh_mass",&h2tohh_mass,"h2tohh_mass/F");
-  evtree->Branch("h2tohh",&h2tohh,"h2tohh/B");
   
  // AnalyseEvents(treeReader, evtree);
 }
@@ -411,6 +415,7 @@ void ttbartoWWbb::initBranches(){
    b1jet_phi=0;
    b1jet_pt=0;
    b1jet_energy=0;
+   b1jet_btag = false;
    b2jet_px=0;
    b2jet_py=0;
    b2jet_pz=0;
@@ -418,6 +423,8 @@ void ttbartoWWbb::initBranches(){
    b2jet_phi=0;
    b2jet_pt=0;
    b2jet_energy=0;
+   b2jet_btag = false;
+   energeticbjets = 0;
    hasb1jet=false;
    hasb2jet=false;
 
@@ -482,6 +489,7 @@ void ttbartoWWbb::initBranches(){
    Muon1_phi = 0;
    Muon1_pt = 0;
    Muon1_energy = 0;
+   energeticMuon1 = false;
    Muon2_px = 0;
    Muon2_py = 0;
    Muon2_pz = 0;
@@ -489,6 +497,7 @@ void ttbartoWWbb::initBranches(){
    Muon2_phi = 0;
    Muon2_pt = 0;
    Muon2_energy = 0;
+   energeticMuon2 = false;
    dR_mu1 = 2.0;
    dR_mu2 = 2.0;
 
@@ -527,6 +536,7 @@ void ttbartoWWbb::initBranches(){
    dR_b1b2=-1.0;
    mass_l1l2 = -1.0;
    mass_b1b2 = -1.0;
+   dphi_llbb = -10.0;
 
    genmet = 0;
    genmet_phi = 0;
@@ -537,7 +547,6 @@ void ttbartoWWbb::initBranches(){
    met_px = 0;
    met_py = 0;
 
-   h2tohh_mass =0;
 //additional cuts
    hasMET = false;
    hasGenMET = false;
@@ -546,7 +555,6 @@ void ttbartoWWbb::initBranches(){
    hasMuon1 = false;
    hasMuon2 = false;
    hasdRljet = false;
-   h2tohh =false;
 }
 
 
@@ -699,8 +707,10 @@ void ttbartoWWbb::ttbartoWWbbrun()
        
     if (tbartoWbbar and ttoWb){
     //move on to "final state" bquarks
-	getFinalState(genb1, branchParticle);
-	getFinalState(genb2, branchParticle);
+           t1_px = gent1->Px; t1_py = gent1->Py; t1_pz = gent1->Pz; t1_mass = gent1->Mass; t1_energy = gent1->E;
+           t2_px = gent2->Px; t2_py = gent2->Py; t2_pz = gent2->Pz; t2_mass = gent2->Mass; t2_energy = gent2->E;
+	   getFinalState(genb1, branchParticle);
+	   getFinalState(genb2, branchParticle);
            b1_px = genb1->Px;
 	   b1_py = genb1->Py;
 	   b1_pz = genb1->Pz;
@@ -825,7 +835,25 @@ void ttbartoWWbb::ttbartoWWbbrun()
      }
     else if (hasb1jet && hasb2jet){
      //cout <<" b1jet Pt " << b1jet->PT  <<"  b2jet Pt " << b2jet->PT << endl; 
+     
+	float bjet_pt1 = (b1jet_pt>b2jet_pt)?b1jet_pt:b2jet_pt;
+	float bjet_pt2 = (b1jet_pt>b2jet_pt)?b2jet_pt:b1jet_pt;	
+    	for (i =0;  i<  branchJet->GetEntries(); i++)
+    	{
+      		jet = (Jet*) branchJet->At(i);
+      		if (not(jet->BTag) or jet->PT < bjetsPt_ or abs(jet->Eta)> jetsEta_) continue;
+		if (jet->PT>bjet_pt1 ){
+			bjet_pt2= bjet_pt1;  bjet_pt1 = jet->PT; 
+		}
+		if (jet->PT<bjet_pt1 and jet->PT>bjet_pt2)
+			bjet_pt2 = jet->PT;
+        }
+	if (bjet_pt2>b1jet_pt and bjet_pt2>b2jet_pt) energeticbjets = 0;
+	if (bjet_pt2<=b1jet_pt and bjet_pt2<=b2jet_pt) energeticbjets = 2;
+	if ((bjet_pt2<=b1jet_pt and bjet_pt2>b2jet_pt) or (bjet_pt2<=b2jet_pt and bjet_pt2>b1jet_pt))
+		energeticbjets = 1;
     }
+    
    
     if (ttoWb and !(hasgenb2jet)) cout <<" has t->W b , failed to has b2 genjet"<< endl;
     if (ttoWb and !(hasb2jet)) cout <<" has t->W b , failed to has b2jet "<< endl;
@@ -939,6 +967,18 @@ void ttbartoWWbb::ttbartoWWbbrun()
     if (((muon1->PT > muonPt1_ && muon2->PT > muonPt2_) || (muon1->PT > muonPt2_ && muon2->PT > muonPt1_)) 
 	&& fabs(muon1->Eta)<muonsEta_ && fabs(muon2->Eta)< muonsEta_) hastwomuons =true;
     }
+
+    if (hastwomuons){
+	energeticMuon1 = true; energeticMuon2 = true;
+    	for(i = 0; i < branchMuon->GetEntriesFast(); ++i)
+    	{
+   		muon = (Muon*) branchMuon->At(i);
+		if (abs(muon->Eta)<muonsEta_ and muon->Charge<0 and muon->PT>Muon1_pt) energeticMuon1 = false; 
+		if (abs(muon->Eta)<muonsEta_ and muon->Charge>0 and muon->PT>Muon2_pt) energeticMuon2 = false; 
+        }
+
+    }
+
     // Loop over all electrons in event
     for(i = 0; i < branchElectron->GetEntriesFast(); ++i)
     {
@@ -968,6 +1008,7 @@ void ttbartoWWbb::ttbartoWWbbrun()
 	dR_l1l2 = Muon1_p4.DeltaR(Muon2_p4);
 	TLorentzVector ll_p4 = Muon1_p4+Muon2_p4;
 	TLorentzVector bjets_p4 = b1jet_p4+b2jet_p4;
+	dphi_llbb = TVector2::Phi_mpi_pi(ll_p4.Phi()-bjets_p4.Phi());
 	mass_l1l2 = ll_p4.M();
         mass_b1b2 = bjets_p4.M();
         if (dR_b1l1>jetleptonDeltaR_ and dR_b1l2>jetleptonDeltaR_ and dR_b2l1>jetleptonDeltaR_ and dR_b2l2>jetleptonDeltaR_) hasdRljet =true;
