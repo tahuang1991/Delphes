@@ -154,12 +154,27 @@ DiHiggstollbb::~DiHiggstollbb(){
   delete chain;
   delete evtree;
 }
+
 template<class T>
 void DiHiggstollbb::printSortableObject(T *object)
 {
     cout <<" Pt " << object->PT << " Eta "<< object->Eta <<" Phi "<< object->Phi << endl;
 }
 
+
+void DiHiggstollbb::insertInJetVector(vector<Jet*>& vec, Jet *object)
+{
+    //auto it = vec.begin();
+    for (vector<Jet*>::iterator it = vec.begin(); it != vec.end(); it++){
+//	cout <<" it pt " << (*it)->PT <<" object Pt "<< object->PT << endl;
+	if ((*it)->PT< object->PT) {
+		vec.insert(it, object);
+		return;
+	}
+     }
+    vec.push_back(object);
+
+}
 //------------------------------------------------------------------------------
 
 
@@ -259,6 +274,9 @@ void DiHiggstollbb::DiHiggstollbbrun()
   long entry;
   Jet *jet, *b1jet, *b2jet;
   std::vector<Jet*> allbjets;
+  std::vector<Jet> testvec;
+  std::vector<Muon*> allMuon1;
+  std::vector<Muon*> allMuon2;
   b1jet=0; b2jet=0;
   MissingET *Met;
   Met=0;
@@ -299,14 +317,22 @@ void DiHiggstollbb::DiHiggstollbbrun()
     for (i =0;  i<  branchJet->GetEntries(); i++)
     {
       jet = (Jet*) branchJet->At(i);
+	//Btag does not work here?????????
+      //cout <<"Jet  eta "<< jet->Eta  <<" Pt "<< jet->PT <<" btag "<< jet->BTag << std::endl;
       if (jet->PT < jetsPt_ || abs(jet->Eta)> jetsEta_) continue;
       totjets_lorentz +=jet->P4();
-      if ((not jet->BTag) || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-      allbjets.push_back(jet);
+      if ( jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+      insertInJetVector(allbjets, jet);
+      //allbjets.push_back(jet);
        
     }
     numbjets = allbjets.size();
+  //  for (vector<Jet *>::iterator it = allbjets.begin(); it != allbjets.end(); it++){
+//		printSortableObject<Jet>(*it);
+//	}
     cout <<" size of bjet vector  " << allbjets.size() << endl; 
+    unsigned int b1at = 0;
+    unsigned int b2at = 1;
     if (allbjets.size() < 2){
 	hasb1jet = false;
 	hasb2jet = false;
@@ -321,8 +347,6 @@ void DiHiggstollbb::DiHiggstollbbrun()
 	cout <<" event has more than two bjets passing acceptance cut " << endl;
 	//find two bjets that have invariant mass close to 125
 	float diff_higgsmass = 125.0;
-	unsigned int b1at = 0;
-	unsigned int b2at = 1;
 	for (unsigned k =0; k<allbjets.size()-1; k++)
 		for (unsigned int j =i+1; j<allbjets.size(); j++){
 			TLorentzVector bjets_p4 = allbjets[k]->P4()+allbjets[j]->P4();
@@ -331,14 +355,14 @@ void DiHiggstollbb::DiHiggstollbbrun()
 			b2at = j;
 			diff_higgsmass = fabs(bjets_p4.M()-125);
 		}
-	b1jet = allbjets[b1at];
-	b2jet = allbjets[b2at];
 	hasb1jet = true;
 	hasb2jet = true;
-	}
+     }
 	
       // b1jet should be different from b2jet
     if (hasb1jet && hasb2jet){
+	b1jet = allbjets[b1at];
+	b2jet = allbjets[b2at];
 	b1jet_p4 = b1jet->P4();
         b1jet_px = b1jet_p4.Px(); b1jet_py = b1jet_p4.Py(); b1jet_pz= b1jet_p4.Pz(); b1jet_energy = b1jet_p4.Energy();
 	b1jet_eta = b1jet_p4.Eta(); b1jet_phi = b1jet_p4.Phi();
@@ -365,7 +389,7 @@ void DiHiggstollbb::DiHiggstollbbrun()
       if (met > metPt_) hasMET = true;
     }
 
-    if (hasMET) cout <<" has MET " << met << endl;
+    //if (hasMET) cout <<" has MET " << met << endl;
     //apply muon cuts on muons 
     //Loop over all Muon(before Isolation) in event
     //how to check whether deltaR matching and matching genparticle has same performance??
@@ -376,20 +400,17 @@ void DiHiggstollbb::DiHiggstollbbrun()
       muon = (Muon*) branchMuon->At(i);
 //      printGenParticle(particle);
       //check charge and deltaR, genmu1: charge<0, genmu2: charge>0
-      if (muon->Charge<0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) {
- 	if ((not hasmuon1) or (hasmuon1 and muon->PT>muon1->PT))	muon1 = muon;
-	hasmuon1 = true;
- 	numlepton1++;
-      }
-      else if(muon->Charge>0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) {
- 	if ((not hasmuon2) or (hasmuon2 and muon->PT>muon2->PT))	muon2 = muon;
-        hasmuon2 = true;
- 	numlepton2++;
-      }
+      if (muon->Charge<0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) 
+	//insertInVector<Muon>(allMuon1, muon);
+	allMuon1.push_back(muon);
+      else if(muon->Charge>0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) 
+	//insertInVector<Muon>(allMuon2, muon);
+	allMuon2.push_back(muon);
       //cout <<" muon eta " << muon->Eta << " phi " << muon->Phi << " Pt "<< muon->PT << endl; 
     }
-
-   
+    
+    numlepton1 += allMuon1.size();
+    numlepton2 += allMuon1.size();
     // Loop over all electrons in event
     // do similar thing for electron when electrons are also taken as final state
     for(i = 0; i < branchElectron->GetEntriesFast(); ++i)

@@ -42,6 +42,7 @@ class DiHiggstollbb {
 
 //	void printGenParticle(GenParticle *genP);
 	template<class T> void printSortableObject(T *object);
+	void insertInJetVector(std::vector<Jet*>& vec, Jet *object);
 	void printJet(Jet *jet);
 //	void getFinalState(GenParticle* &genp, TClonesArray *branchParticle);
 

@@ -140,6 +140,7 @@ void ttbartoWWbb::init(){
   evtree->Branch("nu1_pz",&nu1_pz, "nu1_pz/F");
   evtree->Branch("nu1_eta",&nu1_eta, "nu1_eta/F");
   evtree->Branch("nu1_phi",&nu1_phi, "nu1_phi/F");
+  evtree->Branch("nu1_pt",&nu1_pt, "nu1_pt/F");
   evtree->Branch("nu1_energy",&nu1_energy, "nu1_energy/F");
   evtree->Branch("mu2_px",&mu2_px, "mu2_px/F");
   evtree->Branch("mu2_py",&mu2_py, "mu2_py/F");
@@ -153,6 +154,7 @@ void ttbartoWWbb::init(){
   evtree->Branch("nu2_pz",&nu2_pz, "nu2_pz/F");
   evtree->Branch("nu2_eta",&nu2_eta, "nu2_eta/F");
   evtree->Branch("nu2_phi",&nu2_phi, "nu2_phi/F");
+  evtree->Branch("nu2_pt",&nu2_pt, "nu2_pt/F");
   evtree->Branch("nu2_energy",&nu2_energy, "nu2_energy/F");
 
   evtree->Branch("w1_px",&w1_px,"w1_px/F");
@@ -160,11 +162,17 @@ void ttbartoWWbb::init(){
   evtree->Branch("w1_pz",&w1_pz,"w1_pz/F");
   evtree->Branch("w1_energy",&w1_energy,"w1_energy/F");
   evtree->Branch("w1_mass",&w1_mass,"w1_mass/F");
+  evtree->Branch("w1_eta",&w1_eta,"w1_eta/F");
+  evtree->Branch("w1_phi",&w1_phi,"w1_phi/F");
+  evtree->Branch("w1_pt",&w1_pt,"w1_pt/F");
   evtree->Branch("w2_px",&w2_px,"w2_px/F");
   evtree->Branch("w2_py",&w2_py,"w2_py/F");
   evtree->Branch("w2_pz",&w2_pz,"w2_pz/F");
   evtree->Branch("w2_energy",&w2_energy,"w2_energy/F");
   evtree->Branch("w2_mass",&w2_mass,"w2_mass/F");
+  evtree->Branch("w2_eta",&w2_eta,"w2_eta/F");
+  evtree->Branch("w2_phi",&w2_phi,"w2_phi/F");
+  evtree->Branch("w2_pt",&w2_pt,"w2_pt/F");
   evtree->Branch("Wtomu1nu1",&Wtomu1nu1,"Wtomu1nu1/B");
   evtree->Branch("Wtomu2nu2",&Wtomu2nu2,"Wtomu2nu2/B");
 
@@ -233,9 +241,21 @@ void ttbartoWWbb::init(){
   evtree->Branch("dR_b2l2",&dR_b2l2, "dR_b2l2/F");
   evtree->Branch("dR_b1b2",&dR_b1b2, "dR_b1b2/F");
   evtree->Branch("dR_l1l2",&dR_l1l2, "dR_l1l2/F");
+  evtree->Branch("dR_minbl",&dR_minbl, "dR_minbl/F");
+  evtree->Branch("dR_genl1l2",&dR_genl1l2, "dR_genl1l2/F");
   evtree->Branch("mass_b1b2",&mass_b1b2, "mass_b1b2/F");
+  evtree->Branch("energy_b1b2",&energy_b1b2, "energy_b1b2/F");
+  evtree->Branch("pt_b1b2",&pt_b1b2, "pt_b1b2/F");
+  evtree->Branch("phi_b1b2",&phi_b1b2, "phi_b1b2/F");
+  evtree->Branch("eta_b1b2",&eta_b1b2, "eta_b1b2/F");
   evtree->Branch("mass_l1l2",&mass_l1l2, "mass_l1l2/F");
+  evtree->Branch("energy_l1l2",&energy_l1l2, "energy_l1l2/F");
+  evtree->Branch("pt_l1l2",&pt_l1l2, "pt_l1l2/F");
+  evtree->Branch("phi_l1l2",&phi_l1l2, "phi_l1l2/F");
+  evtree->Branch("eta_l1l2",&eta_l1l2, "eta_l1l2/F");
   evtree->Branch("dphi_llbb",&dphi_llbb, "dphi_llbb/F");
+  evtree->Branch("dphi_llmet",&dphi_llmet, "dphi_llmet/F");
+  evtree->Branch("mass_trans",&mass_trans, "mass_trans/F");
 
   evtree->Branch("genmet",&genmet,"genmet/F");
   evtree->Branch("genmet_phi",&genmet_phi,"genmet_phi/F");
@@ -447,12 +467,14 @@ void ttbartoWWbb::initBranches(){
    nu1_pz =0;
    nu1_eta =0;
    nu1_phi =0;
+   nu1_pt = 0.0;
    nu1_energy =0;
    nu2_px =0;
    nu2_py =0;
    nu2_pz =0;
    nu2_eta =0;
    nu2_phi =0;
+   nu2_pt =0.0;
    nu2_energy =0;
   
    Wtomu2nu2=false;
@@ -508,11 +530,17 @@ void ttbartoWWbb::initBranches(){
    w1_py = 0.0;  
    w1_pz = 0.0;  
    w1_energy = 0.0;  
+   w1_pt = 0.0;
+   w1_eta = 0.0;
+   w1_phi = 0.0;
    w1_mass = 0.0;  
    w2_px = 0.0;  
    w2_py = 0.0;  
    w2_pz = 0.0;  
    w2_energy = 0.0;  
+   w2_pt = 0.0;
+   w2_eta = 0.0;
+   w2_phi = 0.0;
    w2_mass = 0.0;  
     
    t1_px = 0.0;
@@ -534,9 +562,21 @@ void ttbartoWWbb::initBranches(){
    dR_b2l2=-1.0;
    dR_l1l2=-1.0;
    dR_b1b2=-1.0;
+   dR_minbl = -1.0;
+   dR_genl1l2 = -1;
    mass_l1l2 = -1.0;
+   energy_l1l2 = 0.0;
+   pt_l1l2 = 0.0;
+   phi_l1l2 = 0.0;
+   eta_l1l2 = 0.0;
    mass_b1b2 = -1.0;
-   dphi_llbb = -10.0;
+   energy_b1b2 = 0.0;
+   pt_b1b2 = 0.0;
+   phi_b1b2 = 0.0;
+   eta_b1b2 = 0.0;
+   dphi_llbb = -10;
+   dphi_llmet = -10;
+   mass_trans = 0.0;
 
    genmet = 0;
    genmet_phi = 0;
@@ -607,6 +647,7 @@ void ttbartoWWbb::ttbartoWWbbrun()
   TLorentzVector momentum;
   TLorentzVector Muon1_p4, Muon2_p4, b1jet_p4, b2jet_p4;
   TLorentzVector totjets_lorentz = TLorentzVector();
+  TLorentzVector mu1_p4,mu2_p4;
   //incase compilation error
 
   int i =0;
@@ -730,6 +771,10 @@ void ttbartoWWbb::ttbartoWWbbrun()
 	
     	getFinalState(genW1, branchParticle);	
     	getFinalState(genW2, branchParticle);	
+	w1_mass = genW1->Mass; w1_px = genW1->Px; w1_py = genW1->Py; w1_pz = genW1->Pz; w1_energy = genW1->E;
+        w1_eta = genW1->Eta; w1_phi = genW1->Phi;
+	w2_mass = genW2->Mass; w2_px = genW2->Px; w2_py = genW2->Py; w2_pz = genW2->Pz; w2_energy = genW2->E;
+        w2_eta = genW2->Eta; w2_phi = genW2->Phi;
 	//cout <<" htoWW genW2 "; printGenParticle(genW2);
 
        if (genW1->D1>0 && ((GenParticle*)branchParticle->At(genW1->D1))->PID == 13){
@@ -755,6 +800,7 @@ void ttbartoWWbb::ttbartoWWbbrun()
     if (Wtomu1nu1){
     	getFinalState(genmu1, branchParticle);	
     	getFinalState(gennu1, branchParticle);	
+ 	mu1_p4 = genmu1->P4();
 	mu1_px = genmu1->Px; mu1_py = genmu1->Py; mu1_pz = genmu1->Pz; mu1_energy = genmu1->E;
 	mu1_eta = genmu1->Eta; mu1_phi = genmu1->Phi; mu1_pt = genmu1->PT;
 	nu1_px = gennu1->Px; nu1_py = gennu1->Py; nu1_pz = gennu1->Pz; nu1_energy = gennu1->E;
@@ -764,6 +810,7 @@ void ttbartoWWbb::ttbartoWWbbrun()
     if (Wtomu2nu2){
     	getFinalState(genmu2, branchParticle);	
     	getFinalState(gennu2, branchParticle);	
+ 	mu2_p4 = genmu2->P4();
 	mu2_px = genmu2->Px; mu2_py = genmu2->Py; mu2_pz = genmu2->Pz; mu2_energy = genmu2->E;
 	mu2_eta = genmu2->Eta; mu2_phi = genmu2->Phi; mu2_pt = genmu2->PT;
 	nu2_px = gennu2->Px; nu2_py = gennu2->Py; nu2_pz = gennu2->Pz; nu2_energy = gennu2->E;
@@ -911,8 +958,8 @@ void ttbartoWWbb::ttbartoWWbbrun()
         hasMuon2_beforeIso = true;
 	if (particle == genmu2) Muon2_beforeIso_hasgenMu = true;
       }
-      if (hasMuon1_beforeIso) std::cout <<" has reco Muon1 before Iso  " << std::endl;
-      if (hasMuon2_beforeIso) std::cout <<" has reco Muon2 before Iso  " << std::endl;
+      //if (hasMuon1_beforeIso) std::cout <<" has reco Muon1 before Iso  " << std::endl;
+      //if (hasMuon2_beforeIso) std::cout <<" has reco Muon2 before Iso  " << std::endl;
     }
     if (hasMuon1_beforeIso){
 	Muon1_beforeIso_px = muon1_beforeIso->P4().Px(); Muon1_beforeIso_py = muon1_beforeIso->P4().Py(); Muon1_beforeIso_pz = muon1_beforeIso->P4().Pz(); Muon1_beforeIso_energy = muon1_beforeIso->P4().E();
@@ -947,20 +994,22 @@ void ttbartoWWbb::ttbartoWWbbrun()
         hasMuon2 = true;
 	if (particle == genmu2) Muon2_hasgenMu = true;
       }
-      if (hasMuon1) std::cout <<" has reco Muon1 " << std::endl;
-      if (hasMuon2) std::cout <<" has reco Muon2 " << std::endl;
+      //if (hasMuon1) std::cout <<" has reco Muon1 " << std::endl;
+      //if (hasMuon2) std::cout <<" has reco Muon2 " << std::endl;
       //cout <<" muon eta " << muon->Eta << " phi " << muon->Phi << " Pt "<< muon->PT << endl; 
     }
 
     if (hasMuon1){
 	Muon1_p4 = muon1->P4();
 	Muon1_px = muon1->P4().Px(); Muon1_py = muon1->P4().Py(); Muon1_pz = muon1->P4().Pz(); Muon1_energy = muon1->P4().E();
-	Muon1_eta = muon1->P4().Eta(); Muon1_phi = muon1->P4().Phi(); Muon1_pt = muon1->PT;
+	Muon1_eta = muon1->Eta; Muon1_phi = muon1->Phi; Muon1_pt = muon1->PT;
+	//std::cout <<" Muon1 eta "<< muon1->Eta <<" phi "<< muon1->Phi <<" pt "<< muon1->PT << std::endl;
 	}
     if (hasMuon2){
 	Muon2_p4 = muon2->P4();
 	Muon2_px = muon2->P4().Px(); Muon2_py = muon2->P4().Py(); Muon2_pz = muon2->P4().Pz(); Muon2_energy = muon2->P4().E();
-	Muon2_eta = muon2->P4().Eta(); Muon2_phi = muon2->P4().Phi(); Muon2_pt = muon2->PT;
+	Muon2_eta = muon2->Eta; Muon2_phi = muon2->Phi; Muon2_pt = muon2->PT;
+	//std::cout <<" Muon2 eta "<< muon2->Eta <<" phi "<< muon2->Phi <<" pt "<< muon2->PT << std::endl;
 	}
    
     if (hasMuon1 && hasMuon2){
@@ -1006,11 +1055,18 @@ void ttbartoWWbb::ttbartoWWbbrun()
 	dR_b2l2 = b2jet_p4.DeltaR(Muon2_p4);
 	dR_b1b2 = b1jet_p4.DeltaR(b2jet_p4);
 	dR_l1l2 = Muon1_p4.DeltaR(Muon2_p4);
+        dR_genl1l2 = mu1_p4.DeltaR(mu2_p4); 
 	TLorentzVector ll_p4 = Muon1_p4+Muon2_p4;
 	TLorentzVector bjets_p4 = b1jet_p4+b2jet_p4;
-	dphi_llbb = TVector2::Phi_mpi_pi(ll_p4.Phi()-bjets_p4.Phi());
 	mass_l1l2 = ll_p4.M();
         mass_b1b2 = bjets_p4.M();
+        dR_minbl = min(min(dR_b1l1,dR_b1l2),min(dR_b2l1,dR_b2l2));
+	dphi_llbb = TVector2::Phi_mpi_pi(ll_p4.Phi()-bjets_p4.Phi());
+        dphi_llmet = TVector2::Phi_mpi_pi(ll_p4.Phi()-met_phi);
+	mass_l1l2 = ll_p4.M(); energy_l1l2 = ll_p4.Energy(); pt_l1l2 = ll_p4.Pt(); eta_l1l2 = ll_p4.Eta(); phi_l1l2 = ll_p4.Phi();
+	mass_b1b2 = bjets_p4.M(); energy_b1b2 = bjets_p4.Energy(); pt_b1b2 = bjets_p4.Pt(); eta_b1b2 = bjets_p4.Eta(); phi_b1b2 = bjets_p4.Phi();
+        mass_trans = sqrt(2*ll_p4.Pt()*met*(1-cos(dphi_llmet)));
+	//std::cout <<" l1l2 eta " << ll_p4.Eta() <<" phi " << ll_p4.Phi() <<" b1b2 eta "<< bjets_p4.Eta() <<" phi "<< bjets_p4.Phi() << std::endl;
         if (dR_b1l1>jetleptonDeltaR_ and dR_b1l2>jetleptonDeltaR_ and dR_b2l1>jetleptonDeltaR_ and dR_b2l2>jetleptonDeltaR_) hasdRljet =true;
        
     }

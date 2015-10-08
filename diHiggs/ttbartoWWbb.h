@@ -162,11 +162,17 @@ class ttbartoWWbb {
   float w1_pz;
   float w1_energy;
   float w1_mass;
+  float w1_eta;
+  float w1_phi;
+  float w1_pt;
   float w2_px;
   float w2_py;
   float w2_pz;
   float w2_energy;
   float w2_mass;
+  float w2_eta;
+  float w2_phi;
+  float w2_pt;
   
   float t1_px;
   float t1_py;
@@ -234,9 +240,21 @@ class ttbartoWWbb {
   float dR_b2l2;
   float dR_l1l2;
   float dR_b1b2;
+  float dR_minbl;
+  float dR_genl1l2;
   float mass_l1l2;
+  float energy_l1l2;
+  float pt_l1l2;
+  float phi_l1l2;
+  float eta_l1l2;
   float mass_b1b2;
+  float energy_b1b2;
+  float pt_b1b2;
+  float phi_b1b2;
+  float eta_b1b2;
   float dphi_llbb;
+  float dphi_llmet;
+  float mass_trans;
 
   float genmet;
   float genmet_phi;

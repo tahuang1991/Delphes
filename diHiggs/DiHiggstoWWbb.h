@@ -32,19 +32,6 @@ class DiHiggstoWWbb {
         TChain *chain;
 	ExRootTreeReader *treeReader;
 
-   public:
-	void initBranches();//create tree and branches
-	void init();//create tree and branches
-	void writeTree();
-	void DiHiggstoWWbbrun();
-
-   private:
-
-	void printGenParticle(GenParticle *genP);
-	void printJet(Jet *jet);
-	void getFinalState(GenParticle* &genp, TClonesArray *branchParticle);
-        void printAllGenParticles(TClonesArray *branchParticle);
-
    private:
 	TString inputFile;
 	TString outputFile;
@@ -65,6 +52,65 @@ class DiHiggstoWWbb {
   	double muonPt1_;
   	double muonsEta_;
   	double metPt_;
+        bool simulation_;
+	bool is_signal;
+
+   private: 
+	//private module to process different steps
+	void calculateNormfactor(int bm=3);//print normalization factor
+	void initBranches();//create tree and branches
+	void init();//create tree and branches
+        void fetchHhhchain(TClonesArray *branchParticle);
+ 	void fetchttbarchain(TClonesArray *branchParticle);
+	void getGenMET(TClonesArray *branchGenMET);
+	void matchMuon2Gen(TClonesArray *branchMuonBefore,TClonesArray *branchMuon, GenParticle *genmu1, GenParticle *genmu2, float dR);
+	void matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
+   	//check whether selection in real case coud match to true particle at gen level	
+   public:
+	void writeTree();
+	void DiHiggstoWWbbrun();
+	void fillbranches();//only reco staff
+
+   private:
+	//braches used
+    	TClonesArray *branchParticle;
+    	TClonesArray *branchMuon;
+    	TClonesArray *branchMuonBeforeIso;
+    	TClonesArray *branchJet;
+    	TClonesArray *branchGenJet;
+    	TClonesArray *branchMissingET;
+    	TClonesArray *branchGenMissingET;
+   private:
+	long allEntries;
+	std::vector<Jet*> allbjets;//most energetic one at beginning 
+	std::vector<Muon*> allMuon1;//negative charge, most energetic one at beginning  
+	std::vector<Muon*> allMuon2; 
+	MissingET *Met;
+	//with matching
+	Jet *b1jet, *b2jet, *genb1jet, *genb2jet;
+	Muon *muon1, *muon2;
+	//gen 
+	GenParticle *genh2, *genhiggs1, *genhiggs2, *genhtobb, *genhtoWW;
+	GenParticle *genb1, *genb2;
+	GenParticle *genW1, *genW2, *genmu1, *genmu2, *gennu1, *gennu2;
+	GenParticle *gent1, *gent2;
+	MissingET *genMet;
+	
+ 	Muon *muon1_beforeIso, *muon2_beforeIso;
+	
+	//Lorentz Vector
+	TLorentzVector Muon1_p4, Muon2_p4, b1jet_p4, b2jet_p4, Met_p4, totjets_lorentz;
+	//gen Lorentz vector
+  	TLorentzVector mu1_p4, mu2_p4, nu1_p4, nu2_p4, b1_p4, b2_p4;
+	
+   private:
+
+	void printGenParticle(GenParticle *genP);
+	void printJet(Jet *jet);
+	void getFinalState(GenParticle* &genp, TClonesArray *branchParticle);
+	void getQuarkFinalState(GenParticle* &genp, TClonesArray *branchParticle);
+        void printAllGenParticles(TClonesArray *branchParticle);
+
      
 
    private:
@@ -160,10 +206,40 @@ class DiHiggstoWWbb {
   float nu2_phi;
   float nu2_pt;
   float nu2_energy;
+
+  float w1_mass;
+  float w1_px;
+  float w1_py;
+  float w1_pz;
+  float w1_energy;
+  float w1_eta;
+  float w1_phi;
+  float w1_pt;
+  float w2_mass;
+  float w2_px;
+  float w2_py;
+  float w2_pz;
+  float w2_energy;
+  float w2_eta;
+  float w2_phi;
+  float w2_pt;
   
   bool Wtomu2nu2;
   bool Wtomu1nu1;
   bool htoWW;
+
+  float t1_px;
+  float t1_py;
+  float t1_pz;
+  float t1_energy;
+  float t1_mass;
+  float t2_px;
+  float t2_py;
+  float t2_pz;
+  float t2_energy;
+  float t2_mass;
+  bool tbartoWbbar;
+  bool ttoWb;
   
   float Muon1_beforeIso_px;
   float Muon1_beforeIso_py;
@@ -217,15 +293,34 @@ class DiHiggstoWWbb {
   float htoWW_energy;
   float htoWW_mass;
 
+  int numbjets;
+  int numLeptons1;
+  int numLeptons2;
+  bool hasRecob1jet;
+  bool hasRecob2jet;
+  bool hasRecoMuon1;
+  bool hasRecoMuon2;
   float dR_b1l1;
   float dR_b1l2;
   float dR_b2l1;
   float dR_b2l2;
   float dR_l1l2;
   float dR_b1b2;
+  float dR_minbl;
+  float dR_genl1l2;
   float mass_l1l2;
+  float energy_l1l2;
+  float pt_l1l2;
+  float phi_l1l2;
+  float eta_l1l2;
   float mass_b1b2;
+  float energy_b1b2;
+  float pt_b1b2;
+  float phi_b1b2;
+  float eta_b1b2;
   float dphi_llbb;
+  float dphi_llmet;
+  float mass_trans;
 
   float genmet;
   float genmet_phi;
