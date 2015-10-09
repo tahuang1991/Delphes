@@ -12,7 +12,7 @@ set ExecutionPath {
   MuonTrackingEfficiency
 
   ChargedHadronMomentumSmearing
-  ElectronEnergySmearing
+  ElectronMomentumSmearing
   MuonMomentumSmearing
 
   TrackMerger
@@ -21,6 +21,8 @@ set ExecutionPath {
 
   ECal
   HCal
+
+  ElectronFilter
 
   TowerMerger
   EFlowMerger
@@ -121,25 +123,25 @@ module MomentumSmearing ChargedHadronMomentumSmearing {
   # set ResolutionFormula {resolution formula as a function of eta and pt}
 
   # resolution formula for charged hadrons
-  set ResolutionFormula {    (abs(eta) <= 1.0)                   * (0.001 + pt*1.e-5) +
-                             (abs(eta) > 1.0 && abs(eta) <= 2.4) * (0.01 + pt*1.e-4)}
+  set ResolutionFormula {    (abs(eta) <= 1.0)                   * sqrt(0.001^2 + pt^2*1.e-5^2) +
+                             (abs(eta) > 1.0 && abs(eta) <= 2.4) * sqrt(0.01^2 + pt^2*1.e-4^2)}
 
 
 }
 
-#################################
-# Energy resolution for electrons
-#################################
+###################################
+# Momentum resolution for electrons
+###################################
 
-module EnergySmearing ElectronEnergySmearing {
+module MomentumSmearing ElectronMomentumSmearing {
   set InputArray ElectronTrackingEfficiency/electrons
   set OutputArray electrons
 
   # set ResolutionFormula {resolution formula as a function of eta and energy}
 
-  # resolution formula for electrons (we keep nominal tracking reso since ECAL can't beat this, even at high E)
-  set ResolutionFormula {    (abs(eta) <= 1.0)                   * (0.001 + pt*1.e-5) +
-                             (abs(eta) > 1.0 && abs(eta) <= 2.4) * (0.01 + pt*1.e-4)}
+   # resolution formula for charged hadrons
+  set ResolutionFormula {    (abs(eta) <= 1.0)                   * sqrt(0.001^2 + pt^2*1.e-5^2) +
+                             (abs(eta) > 1.0 && abs(eta) <= 2.4) * sqrt(0.01^2 + pt^2*1.e-4^2)}
 }
 
 ###############################
@@ -152,10 +154,9 @@ module MomentumSmearing MuonMomentumSmearing {
 
   # set ResolutionFormula {resolution formula as a function of eta and pt}
 
-  # resolution formula for muons
-  set ResolutionFormula {    (abs(eta) <= 1.0)                   * (0.001 + pt*1.e-5) +
-                             (abs(eta) > 1.0 && abs(eta) <= 2.4) * (0.01 + pt*1.e-4)}
-
+   # resolution formula for charged hadrons
+  set ResolutionFormula {    (abs(eta) <= 1.0)                   * sqrt(0.001^2 + pt^2*1.e-5^2) +
+                             (abs(eta) > 1.0 && abs(eta) <= 2.4) * sqrt(0.01^2 + pt^2*1.e-4^2)}
 
 }
 
@@ -166,15 +167,15 @@ module MomentumSmearing MuonMomentumSmearing {
 module Merger TrackMerger {
 # add InputArray InputArray
   add InputArray ChargedHadronMomentumSmearing/chargedHadrons
-  add InputArray ElectronEnergySmearing/electrons
+  add InputArray ElectronMomentumSmearing/electrons
   add InputArray MuonMomentumSmearing/muons
   set OutputArray tracks
 }
 
 
-################################
+########################
 # Track angular smearing
-################################
+########################
 
 module AngularSmearing AngularSmearing {
   set InputArray TrackMerger/tracks
@@ -189,9 +190,9 @@ module AngularSmearing AngularSmearing {
 
 }
 
-################################
+#################################
 # Track impact parameter smearing
-################################
+#################################
 
 module ImpactParameterSmearing ImpactParameterSmearing {
   set InputArray AngularSmearing/tracks
@@ -213,6 +214,7 @@ module SimpleCalorimeter ECal {
   set TrackInputArray ImpactParameterSmearing/tracks
 
   set TowerOutputArray ecalTowers
+  set EFlowTrackOutputArray eflowTracks
   set EFlowTowerOutputArray eflowPhotons
 
   set IsEcal true 
@@ -273,9 +275,10 @@ module SimpleCalorimeter ECal {
 
 module SimpleCalorimeter HCal {
   set ParticleInputArray ParticlePropagator/stableParticles
-  set TrackInputArray ImpactParameterSmearing/tracks
+  set TrackInputArray ECal/eflowTracks
 
   set TowerOutputArray hcalTowers
+  set EFlowTrackOutputArray eflowTracks
   set EFlowTowerOutputArray eflowNeutralHadrons
 
   set IsEcal false 
@@ -332,9 +335,21 @@ module SimpleCalorimeter HCal {
 
 }
 
-####################
+#################
+# Electron filter
+#################
+
+module PdgCodeFilter ElectronFilter {
+  set InputArray HCal/eflowTracks
+  set OutputArray electrons
+  set Invert true
+  add PdgCode {11}
+  add PdgCode {-11}
+}
+
+###################################################
 # Tower Merger (in case not using e-flow algorithm)
-####################
+###################################################
 
 module Merger TowerMerger {
 # add InputArray InputArray
@@ -349,7 +364,7 @@ module Merger TowerMerger {
 
 module Merger EFlowMerger {
 # add InputArray InputArray
-  add InputArray ImpactParameterSmearing/tracks
+  add InputArray HCal/eflowTracks
   add InputArray ECal/eflowPhotons
   add InputArray HCal/eflowNeutralHadrons
   set OutputArray eflow
@@ -377,9 +392,9 @@ module Merger ScalarHT {
   set EnergyOutputArray energy
 }
 
-#####################
+#################
 # Neutrino Filter
-#####################
+#################
 
 module PdgCodeFilter NeutrinoFilter {
 
@@ -470,9 +485,9 @@ module TrackCountingBTagging TrackCountingBTagging {
 }
 
 
-##########################
+#############
 # tau-tagging
-##########################
+#############
 
 
 module TauTagging TauTagging {
@@ -507,7 +522,7 @@ module TreeWriter TreeWriter {
   add Branch HCal/eflowNeutralHadrons NeutralHadron Tower
   add Branch ECal/eflowPhotons Photon Photon
 
-  add Branch ElectronEnergySmearing/electrons Electron Electron
+  add Branch ElectronFilter/electrons Electron Electron
   add Branch MuonMomentumSmearing/muons Muon Muon
   add Branch JetEnergyScale/jets Jet Jet
   add Branch MissingET/momentum MissingET MissingET
