@@ -6,3 +6,4 @@
 *.exe
 *.so
 DiHiggs*.root
+*out.root

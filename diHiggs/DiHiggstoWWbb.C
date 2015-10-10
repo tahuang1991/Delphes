@@ -324,6 +324,16 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("h2tohh_mass",&h2tohh_mass,"h2tohh_mass/F");
   evtree->Branch("h2tohh",&h2tohh,"h2tohh/B");
   
+  
+  evtree->Branch("MMC_h2mass_prob",&MMC_h2mass_prob,"MMC_h2mass_prob/F");
+  evtree->Branch("MMC_h2massweight1_prob",&MMC_h2massweight1_prob,"MMC_h2massweight1_prob/F");
+  evtree->Branch("MMC_h2massweight4_prob",&MMC_h2massweight4_prob,"MMC_h2massweight4_prob/F");
+  evtree->Branch("MMC_h2mass_RMS",&MMC_h2mass_RMS,"MMC_h2mass_RMS/F");
+  evtree->Branch("MMC_h2mass_Mean",&MMC_h2mass_Mean,"MMC_h2mass_Mean/F");
+  evtree->Branch("MMC_h2mass_Entries",&MMC_h2mass_Entries,"MMC_h2mass_Entries/F");
+  evtree->Branch("MMC_h2mass_overflow",&MMC_h2mass_overflow,"MMC_h2mass_overflow/F");
+  evtree->Branch("MMC_h2mass_underflow",&MMC_h2mass_underflow,"MMC_h2mass_overflow/F");
+    
  // AnalyseEvents(treeReader, evtree);
 }
 
@@ -1165,6 +1175,17 @@ void DiHiggstoWWbb::initBranches(){
    hasMuon2 = false;
    hasdRljet = false;
    h2tohh =false;
+
+   //MMC results
+   MMC_h2mass_prob =0.0;
+   MMC_h2massweight1_prob =0.0;
+   MMC_h2massweight4_prob = 0.0;
+   MMC_h2mass_Entries = 0.0;
+   MMC_h2mass_RMS = 0.0;
+   MMC_h2mass_Mean =0.0;
+   MMC_h2mass_underflow =0.0;
+   MMC_h2mass_overflow =0.0;
+
 }
 
 
@@ -1327,11 +1348,19 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
      
     fillbranches();
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
-    if (runMMC_ && h2tohh && hasgenb1jet && hasgenb2jet){
-	 TLorentzVector bjets_lorentz=genb1jet->P4()+genb2jet->P4();
-          
-         cout <<" m_{bjets} " << bjets_lorentz.M(); bjets_lorentz.Print();
-	 TLorentzVector met_lorentz = Met->P4();
+    if (runMMC_ and h2tohh and hasdRljet){
+	 //TLorentzVector bjets_lorentz=genb1jet->P4()+genb2jet->P4();
+         //cout <<" m_{bjets} " << bjets_lorentz.M(); bjets_lorentz.Print();
+         cout <<" start to run MMC for this event " << endl;
+	 TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
+	 if (b1jet_p4.Pt()>b1jet_p4.Pt()) {
+		bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
+	  } else { bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;}
+
+	 if (b1_p4.Pt()>b2_p4.Pt()) {
+		bgenp_pt1_lorentz = b1_p4; bgenp_pt2_lorentz = b2_p4;
+	 } else { bgenp_pt1_lorentz = b2_p4; bgenp_pt2_lorentz = b1_p4; }
+	 TLorentzVector h2tohh_genp_lorentz = genh2->P4();
 	 bool simulation_ = true;
 	 bool weightfromonshellnupt_func = false;
          bool weightfromonshellnupt_hist = true;
@@ -1339,22 +1368,37 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	 int iterations = 100000;
 	 std::string RefPDFfile("MMCRefPDF.ROOT");
 	 bool useMET = true;
+	 int bjetrescaleAlgo = 2;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
 	 int onshellMarker_;
  	 if (genW1->Mass > genW2->Mass) onshellMarker_=1;
 	 else onshellMarker_=2;
 	 // rescale bjets in MMC?????
         //MMC *thismmc = new MMC();
+	 thismmc = new MMC(&Muon1_p4, &Muon2_p4, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_p4, 
+	 &nu1_p4, &nu2_p4, &bgenp_pt1_lorentz, &bgenp_pt2_lorentz, &h2tohh_genp_lorentz, 
+	 onshellMarker_, simulation_, entry, weightfromonshellnupt_func, weightfromonshellnupt_hist, weightfromonoffshellWmass_hist,
+         iterations, RefPDFfile, useMET, bjetrescaleAlgo);
+         
+         if (thismmc->runMMC()) {
+		MMCtree =  (thismmc->getMMCTree())->CloneTree();
+		std::cout <<" MMCtree entries " << MMCtree->GetEntries() << std::endl;
+		TH1F* MMC_h2mass =(TH1F*)(thismmc->getMMCh2()).Clone("MMC_h2mass");
+		TH1F* MMC_h2mass_weight1 =(TH1F*)(thismmc->getMMCh2weight1()).Clone("MMC_h2massweight1");
+		TH1F* MMC_h2mass_weight4 =(TH1F*)(thismmc->getMMCh2weight4()).Clone("MMC_h2massweight4");
+		std::cout <<" Mass_h2mass in Analyzer " << std::endl;
+		MMC_h2mass_prob = (MMC_h2mass->GetXaxis())->GetBinCenter(MMC_h2mass->GetMaximumBin());
+		MMC_h2massweight1_prob = (MMC_h2mass_weight1->GetXaxis())->GetBinCenter(MMC_h2mass_weight1->GetMaximumBin());
+		MMC_h2massweight4_prob = (MMC_h2mass_weight4->GetXaxis())->GetBinCenter(MMC_h2mass_weight4->GetMaximumBin());
+		MMC_h2mass_RMS = MMC_h2mass->GetRMS();
+		MMC_h2mass_Entries = MMC_h2mass->GetEntries();
+		MMC_h2mass_Mean = MMC_h2mass->GetMean();
+		int nbin=(MMC_h2mass->GetXaxis())->GetNbins();
+		MMC_h2mass_overflow = MMC_h2mass->GetBinContent(nbin+1);
+		MMC_h2mass_underflow = MMC_h2mass->GetBinContent(-1);
+                std::cout <<" most prob " << MMC_h2mass_prob <<" RMS "<< MMC_h2mass_RMS << " entries " << MMC_h2mass_Entries 
+		<< " most prob weight1 "<< MMC_h2massweight1_prob <<" weight4 "<< MMC_h2massweight4_prob <<std::endl;
+          }	
 
-         MMC *thismmc = new MMC(genmu1->P4(), genmu2->P4(), bjets_lorentz, totjets_lorentz, 
-          met_lorentz, gennu1->P4(), gennu2->P4(), genb1->P4()+genb2->P4(),
-	  genh2->P4(), onshellMarker_,// only for simulation 
-          simulation_, entry, weightfromonshellnupt_func, weightfromonshellnupt_hist, weightfromonoffshellWmass_hist,
-          iterations, RefPDFfile, useMET);
-	  thismmc->runMMC();
-	  TTree *mmctree = (thismmc->getMMCTree())->CloneTree();
-          std::cout <<"MMCTree entries " << (thismmc->getMMCTree())->GetEntries() << std::endl;
-          std::cout <<"testtree entries " << mmctree->GetEntries()<<" title "<< mmctree->GetTitle() << std::endl;
-	  //esttree->SetDirectory((TDirectory*)MMCfile);
 	  //MMCfile->WriteObject(mmctree,mmctree->GetTitle());
 	delete thismmc;
 	}

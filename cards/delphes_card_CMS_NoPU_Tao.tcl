@@ -40,6 +40,8 @@ set ExecutionPath {
 
   JetEnergyScale
 
+  RecoJetFlavorAssociation
+
   BTagging
   TauTagging
 
@@ -661,21 +663,41 @@ module EnergyScale JetEnergyScale {
   set ScaleFormula {1.00}
 }
 
+
+########################
+# Jet Flavor Association
+########################
+
+module JetFlavorAssociation RecoJetFlavorAssociation {
+  
+  set PartonInputArray Delphes/partons
+  set ParticleInputArray Delphes/allParticles
+  set ParticleLHEFInputArray Delphes/allParticlesLHEF
+  set JetInputArray JetEnergyScale/jets
+  
+  set DeltaR 0.5
+  set PartonPTMin 1.0
+  set PartonEtaMax 2.5
+
+}
+
+
+
 ###########
 # b-tagging
 ###########
 
 module BTagging BTagging {
-  set PartonInputArray Delphes/partons
+#  set PartonInputArray Delphes/partons
   set JetInputArray JetEnergyScale/jets
 
   set BitNumber 0
 
-  set DeltaR 0.5
+#  set DeltaR 0.5
 
-  set PartonPTMin 1.0
+#  set PartonPTMin 1.0
 
-  set PartonEtaMax 2.5
+# set PartonEtaMax 2.5
 
   # add EfficiencyFormula {abs(PDG code)} {efficiency formula as a function of eta and pt}
   # PDG code = the highest PDG code of a quark or gluon inside DeltaR cone around jet axis

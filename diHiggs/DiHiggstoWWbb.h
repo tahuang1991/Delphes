@@ -20,6 +20,9 @@
 #include "external/ExRootAnalysis/ExRootResult.h"
 #include "external/ExRootAnalysis/ExRootUtilities.h"
 
+
+#include "MMC.h"
+
 class DiHiggstoWWbb {
    
    public:
@@ -342,6 +345,19 @@ class DiHiggstoWWbb {
   bool hasdRljet;
   bool h2tohh;
   
+   private:
+  MMC* thismmc;
+  TTree* MMCtree;
+  
+  float MMC_h2mass_prob;
+  float MMC_h2massweight1_prob;
+  float MMC_h2massweight4_prob;
+  float MMC_h2mass_Entries;
+  float MMC_h2mass_RMS;
+  float MMC_h2mass_Mean;
+  float MMC_h2mass_underflow;
+  float MMC_h2mass_overflow;
+
 
 };
 
