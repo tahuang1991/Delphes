@@ -250,8 +250,8 @@ void DiHiggstollbb::DiHiggstollbbrun()
 
 	//loop over events 1. find h->b bbar; 2 find two bjets after cuts; 3 fill Tree
  // TClonesArray *branchParticle = treeReader->UseBranch("Particle");
-  TClonesArray *branchElectron = treeReader->UseBranch("Electron");
-  TClonesArray *branchPhoton = treeReader->UseBranch("Photon");
+  //TClonesArray *branchElectron = treeReader->UseBranch("Electron");
+  ///TClonesArray *branchPhoton = treeReader->UseBranch("Photon");
   TClonesArray *branchMuon = treeReader->UseBranch("Muon");
   //TClonesArray *branchMuonBeforeIso = treeReader->UseBranch("MuonBeforeIso");
 
@@ -280,16 +280,15 @@ void DiHiggstollbb::DiHiggstollbbrun()
   b1jet=0; b2jet=0;
   MissingET *Met;
   Met=0;
-  Electron *electron, *electron1, *electron2;
-  electron1 =0; electron2 = 0;
-  Photon *photon;
-  Muon *muon, *muon1, *muon2;// *muon1_beforeIso, *muon2_beforeIso;
-  muon1 =0; muon2=0; //muon1_beforeIso =0; muon2_beforeIso =0;
+  //Electron *electron, *electron1, *electron2;
+  //electron1 =0; electron2 = 0;
+  //Photon *photon;
+  Muon *muon;// *muon1, *muon2;// *muon1_beforeIso, *muon2_beforeIso;
+  //muon1 =0; muon2=0; //muon1_beforeIso =0; muon2_beforeIso =0;
   //Track *track;
   //Tower *tower;
   
   TLorentzVector momentum;
-  TLorentzVector lepton1_p4, lepton2_p4, b1jet_p4, b2jet_p4;
   TLorentzVector totjets_lorentz = TLorentzVector();
   //incase compilation error
 
@@ -321,7 +320,7 @@ void DiHiggstollbb::DiHiggstollbbrun()
       //cout <<"Jet  eta "<< jet->Eta  <<" Pt "<< jet->PT <<" btag "<< jet->BTag << std::endl;
       if (jet->PT < jetsPt_ || abs(jet->Eta)> jetsEta_) continue;
       totjets_lorentz +=jet->P4();
-      if ( jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+      if ( not(jet->BTag) || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
       insertInJetVector(allbjets, jet);
       //allbjets.push_back(jet);
        
@@ -386,6 +385,8 @@ void DiHiggstollbb::DiHiggstollbbrun()
       met_phi = Met->Phi;
       met_px = Met->P4().Px();
       met_py = Met->P4().Py();
+      Met_p4 = TLorentzVector();
+      Met_p4.SetXYZT(met_px, met_py, 0, met); 
       if (met > metPt_) hasMET = true;
     }
 
@@ -409,10 +410,15 @@ void DiHiggstollbb::DiHiggstollbbrun()
       //cout <<" muon eta " << muon->Eta << " phi " << muon->Phi << " Pt "<< muon->PT << endl; 
     }
     
-    numlepton1 += allMuon1.size();
-    numlepton2 += allMuon1.size();
+    numlepton1 = allMuon1.size();
+    numlepton2 = allMuon1.size();
+    if (allMuon1.size()>0 and allMuon2.size()>0){
+	lepton1_p4 = (allMuon1.at(0))->P4(); haslepton1 =true;
+	lepton2_p4 = (allMuon2.at(0))->P4(); haslepton2 =true;
+	}
     // Loop over all electrons in event
     // do similar thing for electron when electrons are also taken as final state
+    /*
     for(i = 0; i < branchElectron->GetEntriesFast(); ++i)
     {
       electron = (Electron*) branchElectron->At(i);
@@ -445,7 +451,7 @@ void DiHiggstollbb::DiHiggstollbbrun()
     else if (haselectron2){
 	lepton2_p4 = electron2->P4();
 	haslepton2 = true;
-	}
+	}*/
     if (haslepton1){
 	lepton1_px = lepton1_p4.Px(); lepton1_py = lepton1_p4.Py(); lepton1_pz = lepton1_p4.Pz(); lepton1_energy = lepton1_p4.E();
 	lepton1_eta = lepton1_p4.Eta(); lepton1_phi = lepton1_p4.Phi(); lepton1_pt = lepton1_p4.Pt();
@@ -454,17 +460,6 @@ void DiHiggstollbb::DiHiggstollbbrun()
 	lepton2_px = lepton2_p4.Px(); lepton2_py = lepton2_p4.Py(); lepton2_pz = lepton2_p4.Pz(); lepton2_energy = lepton2_p4.E();
 	lepton2_eta = lepton2_p4.Eta(); lepton2_phi = lepton2_p4.Phi(); lepton2_pt = lepton2_p4.Pt();
 	}
-    // Loop over all photons in event
-    for(i = 0; i < branchPhoton->GetEntriesFast(); ++i)
-    {
-      photon = (Photon*) branchPhoton->At(i);
-
-      // skip photons with references to multiple particles
-      if(photon->Particles.GetEntriesFast() != 1) continue;
-
-      //particle = (GenParticle*) photon->Particles.At(0);
-      //cout <<" photon "; printSortableObject<Photon>(photon);
-    }
 
    if (hasb1jet and hasb2jet and haslepton1 and haslepton2){
 	dR_b1l1 = b1jet_p4.DeltaR(lepton1_p4);
@@ -492,33 +487,50 @@ void DiHiggstollbb::DiHiggstollbbrun()
 
     }*/
    // calculate the DeltaR between bjet and lepton 
-
-    if (runMMC_ and hasdRljet){
-	 TLorentzVector bjets_lorentz=b1jet->P4()+b2jet->P4();
-          
-         cout <<" m_{bjets} " << bjets_lorentz.M(); bjets_lorentz.Print();
-	 TLorentzVector met_lorentz = Met->P4();
+    if (runMMC_ and hasdRljet and hasMET){
+	 //TLorentzVector bjets_lorentz=genb1jet->P4()+genb2jet->P4();
+         //cout <<" m_{bjets} " << bjets_lorentz.M(); bjets_lorentz.Print();
+         cout <<" start to run MMC for this event " << endl;
+	 TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
+	 if (b1jet_p4.Pt()>b2jet_p4.Pt()) {
+		bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
+	  } else { bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;}
+	 TLorentzVector null_lorentz = TLorentzVector();
+	 bool simulation_ = false;
 	 bool weightfromonshellnupt_func = false;
          bool weightfromonshellnupt_hist = true;
 	 bool weightfromonoffshellWmass_hist=true; 
-	 int iterations = 100000;
+	 int iterations = 1000000;
 	 std::string RefPDFfile("MMCRefPDF.ROOT");
 	 bool useMET = true;
-         bool onshellMarker_ = -1;
+	 int bjetrescaleAlgo = 2;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
+	 int onshellMarker_ =0;
 	 // rescale bjets in MMC?????
         //MMC *thismmc = new MMC();
-        TLorentzVector null_lorentz = TLorentzVector(); 
-         MMC *thismmc = new MMC(lepton1_p4, lepton2_p4, bjets_lorentz, totjets_lorentz, 
-          met_lorentz, null_lorentz, null_lorentz, null_lorentz,
-	   null_lorentz, onshellMarker_,// only for simulation 
-          false, entry, weightfromonshellnupt_func, weightfromonshellnupt_hist, weightfromonoffshellWmass_hist,
-          iterations, RefPDFfile, useMET);
-	  thismmc->runMMC();
-	  TTree *mmctree = (thismmc->getMMCTree())->CloneTree();
-          std::cout <<"MMCTree entries " << (thismmc->getMMCTree())->GetEntries() << std::endl;
-          std::cout <<"testtree entries " << mmctree->GetEntries()<<" title "<< mmctree->GetTitle() << std::endl;
-	  //esttree->SetDirectory((TDirectory*)MMCfile);
-	  //MMCfile->WriteObject(mmctree,mmctree->GetTitle());
+	 thismmc = new MMC(&lepton1_p4, &lepton2_p4, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_p4, 
+	 &null_lorentz, &null_lorentz, &null_lorentz, &null_lorentz, &null_lorentz, 
+	 onshellMarker_, simulation_, entry, weightfromonshellnupt_func, weightfromonshellnupt_hist, weightfromonoffshellWmass_hist,
+         iterations, RefPDFfile, useMET, bjetrescaleAlgo);
+         
+         if (thismmc->runMMC()) {
+		//MMCtree =  (thismmc->getMMCTree())->CloneTree();
+		//std::cout <<" MMCtree entries " << MMCtree->GetEntries() << std::endl;
+		TH1F* MMC_h2mass =(TH1F*)(thismmc->getMMCh2()).Clone("MMC_h2mass");
+		TH1F* MMC_h2mass_weight1 =(TH1F*)(thismmc->getMMCh2weight1()).Clone("MMC_h2massweight1");
+		TH1F* MMC_h2mass_weight4 =(TH1F*)(thismmc->getMMCh2weight4()).Clone("MMC_h2massweight4");
+		std::cout <<" Mass_h2mass in Analyzer " << std::endl;
+		MMC_h2mass_prob = (MMC_h2mass->GetXaxis())->GetBinCenter(MMC_h2mass->GetMaximumBin());
+		MMC_h2massweight1_prob = (MMC_h2mass_weight1->GetXaxis())->GetBinCenter(MMC_h2mass_weight1->GetMaximumBin());
+		MMC_h2massweight4_prob = (MMC_h2mass_weight4->GetXaxis())->GetBinCenter(MMC_h2mass_weight4->GetMaximumBin());
+		MMC_h2mass_RMS = MMC_h2mass->GetRMS();
+		MMC_h2mass_Entries = MMC_h2mass->GetEntries();
+		MMC_h2mass_Mean = MMC_h2mass->GetMean();
+		int nbin=(MMC_h2mass->GetXaxis())->GetNbins();
+		MMC_h2mass_overflow = MMC_h2mass->GetBinContent(nbin+1);
+		MMC_h2mass_underflow = MMC_h2mass->GetBinContent(-1);
+                std::cout <<" most prob " << MMC_h2mass_prob <<" RMS "<< MMC_h2mass_RMS << " entries " << MMC_h2mass_Entries 
+		<< " most prob weight1 "<< MMC_h2massweight1_prob <<" weight4 "<< MMC_h2massweight4_prob <<std::endl;
+	}
 	delete thismmc;
 	}
 //fill branches

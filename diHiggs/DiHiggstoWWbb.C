@@ -32,7 +32,7 @@ class Jet;
 class Track;
 class Tower;
  
-DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, int numEvents)
+DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, int numEvents, bool signal)
 //void DiHiggs_htobb()
 {
   //gSystem->Load("libDelphes");
@@ -41,7 +41,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, int numEve
   nEvents = numEvents;
  
 //config parameters
-  runMMC_ = false;
+  runMMC_ = true;
   jetsPt_ =20;
   jetsEta_=5.0;
   bjetsPt_ =30;
@@ -55,7 +55,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, int numEve
   muonsEta_ = 2.4;
   metPt_ = 20;
   simulation_ =true;
-  is_signal = true;
+  is_signal = signal;
      
   init();//init reader...
   branchParticle = treeReader->UseBranch("Particle");
@@ -238,6 +238,22 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("Wtomu2nu2",&Wtomu2nu2,"Wtomu2nu2/B");
   evtree->Branch("htoWW",&htoWW,"htoWW/B");
 
+
+  evtree->Branch("t1_px",&t1_px,"t1_px/F");
+  evtree->Branch("t1_py",&t1_py,"t1_py/F");
+  evtree->Branch("t1_pz",&t1_pz,"t1_pz/F");
+  evtree->Branch("t1_energy",&t1_energy,"t1_energy/F");
+  evtree->Branch("t1_mass",&t1_mass,"t1_mass/F");
+  evtree->Branch("t2_px",&t2_px,"t2_px/F");
+  evtree->Branch("t2_py",&t2_py,"t2_py/F");
+  evtree->Branch("t2_pz",&t2_pz,"t2_pz/F");
+  evtree->Branch("t2_energy",&t2_energy,"t2_energy/F");
+  evtree->Branch("t2_mass",&t2_mass,"t2_mass/F");
+  evtree->Branch("ttoWb",&ttoWb,"ttoWb/B");
+  evtree->Branch("tbartoWbbar",&tbartoWbbar,"tbartoWbbar/B");
+  evtree->Branch("ttbar",&ttbar,"ttbar/B");
+
+  /*
   evtree->Branch("Muon1_beforeIso_px",&Muon1_beforeIso_px, "Muon1_beforeIso_px/F");
   evtree->Branch("Muon1_beforeIso_py",&Muon1_beforeIso_py, "Muon1_beforeIso_py/F");
   evtree->Branch("Muon1_beforeIso_pz",&Muon1_beforeIso_pz, "Muon1_beforeIso_pz/F");
@@ -260,7 +276,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("Muon2_beforeIso_hasgenMu",&Muon2_beforeIso_hasgenMu, "Muon2_beforeIso_hasgenMu/B");
   evtree->Branch("Muon1_beforeIso_passIso",&Muon1_beforeIso_passIso, "Muon1_beforeIso_passIso/B");
   evtree->Branch("Muon2_beforeIso_passIso",&Muon2_beforeIso_passIso, "Muon2_beforeIso_passIso/B");
-
+  */
   evtree->Branch("Muon1_px",&Muon1_px, "Muon1_px/F");
   evtree->Branch("Muon1_py",&Muon1_py, "Muon1_py/F");
   evtree->Branch("Muon1_pz",&Muon1_pz, "Muon1_pz/F");
@@ -1074,6 +1090,7 @@ void DiHiggstoWWbb::initBranches(){
    t2_mass = 0.0;
    ttoWb =false;
    tbartoWbbar = false;
+   ttbar = false;
 
    Muon1_beforeIso_px = 0.0;
    Muon1_beforeIso_py = 0.0;
@@ -1248,7 +1265,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
        
     }
     numbjets = allbjets.size();
-    cout <<" size of bjet vector  " << allbjets.size() << endl; 
+    //cout <<" size of bjet vector  " << allbjets.size() << endl; 
     unsigned int b1at = 0;
     unsigned int b2at = 1;
     if (allbjets.size() > 2){
@@ -1348,24 +1365,27 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
      
     fillbranches();
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
-    if (runMMC_ and h2tohh and hasdRljet){
+    ttbar  = (ttoWb and tbartoWbbar);
+    if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))){
 	 //TLorentzVector bjets_lorentz=genb1jet->P4()+genb2jet->P4();
          //cout <<" m_{bjets} " << bjets_lorentz.M(); bjets_lorentz.Print();
          cout <<" start to run MMC for this event " << endl;
 	 TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
-	 if (b1jet_p4.Pt()>b1jet_p4.Pt()) {
+	 if (b1jet_p4.Pt()>b2jet_p4.Pt()) {
 		bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
 	  } else { bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;}
 
 	 if (b1_p4.Pt()>b2_p4.Pt()) {
 		bgenp_pt1_lorentz = b1_p4; bgenp_pt2_lorentz = b2_p4;
 	 } else { bgenp_pt1_lorentz = b2_p4; bgenp_pt2_lorentz = b1_p4; }
-	 TLorentzVector h2tohh_genp_lorentz = genh2->P4();
+	 TLorentzVector h2tohh_genp_lorentz;
+	 if (is_signal) h2tohh_genp_lorentz = genh2->P4();
+	 else h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
 	 bool simulation_ = true;
 	 bool weightfromonshellnupt_func = false;
          bool weightfromonshellnupt_hist = true;
 	 bool weightfromonoffshellWmass_hist=true; 
-	 int iterations = 100000;
+	 int iterations = 1000000;
 	 std::string RefPDFfile("MMCRefPDF.ROOT");
 	 bool useMET = true;
 	 int bjetrescaleAlgo = 2;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
@@ -1380,8 +1400,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
          iterations, RefPDFfile, useMET, bjetrescaleAlgo);
          
          if (thismmc->runMMC()) {
-		MMCtree =  (thismmc->getMMCTree())->CloneTree();
-		std::cout <<" MMCtree entries " << MMCtree->GetEntries() << std::endl;
+		//MMCtree =  (thismmc->getMMCTree())->CloneTree();
+		//std::cout <<" MMCtree entries " << MMCtree->GetEntries() << std::endl;
 		TH1F* MMC_h2mass =(TH1F*)(thismmc->getMMCh2()).Clone("MMC_h2mass");
 		TH1F* MMC_h2mass_weight1 =(TH1F*)(thismmc->getMMCh2weight1()).Clone("MMC_h2massweight1");
 		TH1F* MMC_h2mass_weight4 =(TH1F*)(thismmc->getMMCh2weight4()).Clone("MMC_h2massweight4");
@@ -1400,10 +1420,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
           }	
 
 	  //MMCfile->WriteObject(mmctree,mmctree->GetTitle());
-	delete thismmc;
+	  //delete thismmc;
 	}
 //fill branches
-    if (htobb || (Wtomu1nu1 && Wtomu2nu2)) evtree->Fill();
+    if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2) evtree->Fill();
     }
  
    // MMCfile->Close();

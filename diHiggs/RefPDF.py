@@ -363,7 +363,7 @@ if __name__ == "__main__":
     #file = "/fdata/hepx/store/user/taohuang/Hhh/DiHiggs-1M-B3-1071409.root"
     #file = "/fdata/hepx/store/user/taohuang/Hhh/DiHiggs_100k_correctnu_0324_B3.root"
     #file0 = "/fdata/hepx/store/user/taohuang/Hhh/DiHiggs-1M-0402-mediateStates-B3-1387077.root"
-    file0 = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_Ana_PU0_0915_1M.root"
+    file0 = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_WWbb_1M_PU0_leptonW_6969448_B3_1010.root"
     file1 = "/fdata/hepx/store/user/taohuang/Hhh/htoWWAna/htoWWAna-1M-0413-mediateStates-B3-combined.root"
     dir1 = "htoWWAna/evtree"
     filedir = "/fdata/hepx/store/user/taohuang/DiHiggs_run2_PU0_htobbana_cuts_50k_B3_JetNoNu_0715/"
@@ -413,11 +413,11 @@ if __name__ == "__main__":
     onshellW_1_cut = "w1_mass>w2_mass"
     offshellW_1_cut = "w2_mass>w1_mass"
     onshellWmass_pdfname = "onshellWmasspdf"
-    draw1D_combined(file1,dir1,onshellWmass_pdfname,"w1_mass","w2_mass", wmass_onshell_bins,"Simulated M_{W}^{onshell}","w1_mass>w2_mass","w1_mass<w2_mass","onshellW_mass_1M_mediateStates_0325")
+    #draw1D_combined(file1,dir1,onshellWmass_pdfname,"w1_mass","w2_mass", wmass_onshell_bins,"Simulated M_{W}^{onshell}","w1_mass>w2_mass","w1_mass<w2_mass","onshellW_mass_1M_mediateStates_0325")
 
 
     onshell_nupt_pdfname = "onshellnuptpdf"
-    draw1D_combined(file0,"evtree",onshell_nupt_pdfname, "nu1_pt", "nu2_pt", onshell_nupt_bins,"Simulated p_{T#nu}^{onshellW}","w1_mass>w2_mass","w1_mass<w2_mass","onshell_nupt_1M_mediateStates_0325")
+    draw1D_combined(file0,"evtree",onshell_nupt_pdfname, "nu1_pt", "nu2_pt", onshell_nupt_bins,"Simulated p_{T#nu}^{onshellW}","w1_mass>w2_mass&& Wtomu1nu1 && Wtomu2nu2","w1_mass<w2_mass && Wtomu1nu1 && Wtomu2nu2","onshell_nupt_1M_mediateStates_0325")
     delta_phi = "(25,-3.1415,3.1415)"
     delta_eta = "(50,-5.0,5.0)"
     #deltaR1(file,dir,delta_eta,delta_phi,h2toh1h1_cut,"h2toh1h1_0223")
@@ -428,7 +428,7 @@ if __name__ == "__main__":
     onoffshellWmass_pdfname ="onoffshellWmasspdf" 
     htoWW_mass = "sqrt((mu1_energy+mu2_energy+nu1_energy+nu2_energy)**2-(mu1_px+mu2_px+nu1_px+nu2_px)**2-(mu1_py+mu2_py+nu1_py+nu2_py)**2-(mu1_pz+mu2_pz+nu1_pz+nu2_pz)**2)"
     
-    draw2D_combined(file1,dir1, onoffshellWmass_pdfname, onoffshellWmass2, onoffshellWmass1, wmass_onshell_bins,wmass_offshell_bins,"Simulated M_{W}^{onshell}","Simulated M_{W}^{offshell}","w1_mass>w2_mass","w1_mass<w2_mass","onshellVsoffshell_Wmass_1M_mediateStates_0325")
+    #draw2D_combined(file1,dir1, onoffshellWmass_pdfname, onoffshellWmass2, onoffshellWmass1, wmass_onshell_bins,wmass_offshell_bins,"Simulated M_{W}^{onshell}","Simulated M_{W}^{offshell}","w1_mass>w2_mass","w1_mass<w2_mass","onshellVsoffshell_Wmass_1M_mediateStates_0325")
 
    
     c1pdfname ="bjetrescalec1pdf" 
@@ -438,13 +438,13 @@ if __name__ == "__main__":
     c2dR4pdfname ="bjetrescalec2dR4pdf" 
     c1c2dR4pdfname ="bjetrescalec1c2dR4pdf" 
 
-    drawAll_1D(filedir,dir, c1pdfname, "(b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c1_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5")
-    drawAll_1D(filedir,dir,c1dR4pdfname, "(b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet && dR_bjet<0.4 && dR_bbarjet<0.4","htobb_dR4_ptratio_50k_c1_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5, #Delta R<0.4")
-    drawAll_1D(filedir,dir,c2pdfname, "(b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c2_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5")
-    drawAll_1D(filedir,dir, c2dR4pdfname, "(b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet && dR_bjet<0.4 && dR_bbarjet<0.4","htobb_dR4_ptratio_50k_c2_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5, #Delta R<0.4")
+    #drawAll_1D(filedir,dir, c1pdfname, "(b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c1_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5")
+    #drawAll_1D(filedir,dir,c1dR4pdfname, "(b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet && dR_bjet<0.4 && dR_bbarjet<0.4","htobb_dR4_ptratio_50k_c1_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5, #Delta R<0.4")
+    #drawAll_1D(filedir,dir,c2pdfname, "(b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c2_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5")
+    #drawAll_1D(filedir,dir, c2dR4pdfname, "(b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet && dR_bjet<0.4 && dR_bbarjet<0.4","htobb_dR4_ptratio_50k_c2_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5, #Delta R<0.4")
 
     #drawAll_2D(filedir,dir,"((b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)):((b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt))","(100,0,2)","(100,0,2.0)","c1", "c2","htobb && hasbjet && hasbbarjet && hasMET","htobb_ptratio_50k_c1c2_JetNoNu_metcut_0715","b-jets:p_{T}>30, |#eta|<2.4, #Delta R<0.1;  #slash{E}_{T}>20")
-    drawAll_2D(filedir,dir,c1c2pdfname,"((b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)):((b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt))","(100,0,2)","(100,0,2.0)","c1", "c2","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c1c2_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.4, #Delta R<0.1")
+    #drawAll_2D(filedir,dir,c1c2pdfname,"((b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)):((b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt))","(100,0,2)","(100,0,2.0)","c1", "c2","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c1c2_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.4, #Delta R<0.1")
     
     onshellnuptVsWmass1 = "sqrt(nu1_px**2+nu1_py**2):w1_mass"
     onshellnuptVsWmass2 = "sqrt(nu2_px**2+nu2_py**2):w2_mass"
@@ -460,8 +460,8 @@ if __name__ == "__main__":
     #rootfile2 = "%s"%onshellnuptVsWmass_pdfname+"out.root"
     rootfile3 = "%s"%onshellWmass_pdfname+"out.root"
     rootfile4 = "%s"%onshell_nupt_pdfname+"out.root"
-    rootfile5 = "%s"%c1pdfname+"out.root"
-    rootfile6 = "%s"%c2pdfname+"out.root"
+    rootfile5 = "%s"%c1dR4pdfname+"out.root"
+    rootfile6 = "%s"%c2dR4pdfname+"out.root"
     rootfile7 = "%s"%c1c2pdfname+"out.root"
     os.system("hadd -f MMCRefPDF.ROOT  %s"%rootfile1+" %s"%rootfile3+" %s"%rootfile4+" %s"%rootfile5+" %s"%rootfile6+" %s"%rootfile7) 
     #os.system("rm %s"%rootfile1) 

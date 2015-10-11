@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
   {
     cout << " Usage: " << appName << " missing input_file" << endl;
     cout << " input_file - input file in ROOT format ('Delphes' tree)," << endl;
-    cout <<" ./*.exe -i input_file -o outputfile -N nEvents " << endl;
+    cout <<" ./*.exe -i input_file -o outputfile -N nEvents -sample_type S(or B)" << endl;
     return 1;
   }
 
@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
   TString outputFile;
   int nEvent = -1;
   bool input_good =false;
+  char Sample = 0;
+  bool is_signal = false;
   for (int i = 1; i < argc; i++) { /* We will iterate over argv[] to get the parameters stored inside.
                                           * Note that we're starting on 1 because we don't need to know the 
                                           *                                           * path of the program, which is stored in argv[0] */
@@ -70,11 +72,19 @@ int main(int argc, char *argv[])
                   outputFile = TString(argv[i+1]);
 	     } else if (string(argv[i]) == "-n" or string(argv[i])=="-N"){
 		  nEvent = atoi(argv[i+1]);
+	     } else if (string(argv[i]) == "-sample_type" or string(argv[i])=="-Sample_type"){
+		  Sample = *argv[i+1];
 	     }  
     }
   }
+  if (Sample == 'S' or Sample =='s' or Sample==0) is_signal =true;  
+  else if (Sample == 'B' or Sample =='b') is_signal =false;
+  else {
+	cout <<"can not figure out whether it is sample or not " << endl;
+	return 0;
+	}
   if (input_good){
-  	cout <<" inputfile " << inputFile << endl;
+  	cout <<" inputfile " << inputFile <<(is_signal ? " Signal sample ": " Background (ttbar)") <<endl;
   	cout <<" outputfile " << outputFile << endl;
   	cout <<" run number of events "<< nEvent << endl;
    } else{
@@ -83,7 +93,7 @@ int main(int argc, char *argv[])
 	}
    
   //DiHiggsWWbb *diHiggsValidate = new DiHiggsValition();
-  DiHiggstoWWbb *diHiggsValidate = new DiHiggstoWWbb(inputFile, outputFile, nEvent);
+  DiHiggstoWWbb *diHiggsValidate = new DiHiggstoWWbb(inputFile, outputFile, nEvent, is_signal);
 
 //------------------------------------------------------------------------------
 // Here you call your macro's main function 

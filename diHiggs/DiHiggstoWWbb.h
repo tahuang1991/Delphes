@@ -27,7 +27,7 @@ class DiHiggstoWWbb {
    
    public:
 	DiHiggstoWWbb();
-	DiHiggstoWWbb(TString input_file, TString output_file, int numEvents);
+	DiHiggstoWWbb(TString input_file, TString output_file, int numEvents, bool signal);
 	~DiHiggstoWWbb();
 
    public:
@@ -243,6 +243,7 @@ class DiHiggstoWWbb {
   float t2_mass;
   bool tbartoWbbar;
   bool ttoWb;
+  bool ttbar;
   
   float Muon1_beforeIso_px;
   float Muon1_beforeIso_py;

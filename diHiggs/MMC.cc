@@ -7,6 +7,7 @@
 
 
 //Simulation or not
+#include <iostream>
 #include "MMC.h"
 
 //constructor
@@ -26,6 +27,8 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    mmc_bjets_lorentz = new TLorentzVector(*b1jet_lorentz+*b2jet_lorentz);
    mmcmet_vec2 = new TVector2(met_lorentz->Px(),met_lorentz->Py());
 
+   std::cout <<" mu1 lorentz "; mu1_lorentz->Print();
+   std::cout <<" b1 lorentz "; b1jet_lorentz->Print();
    simulation = simulation_;
    onshellMarker = onshellMarker_;
    if (simulation){
@@ -61,10 +64,12 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    weightfromonoffshellWmass_hist_ = weightfromonoffshellWmass_hist;
    iterations_ = iterations;
    RefPDFfile_ = RefPDFfile;
-
+   useMET_ = useMET;
    metcorrection_ = bjetrescaleAlgo;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
    bjetrescale_ = bjetrescaleAlgo;//0.no rescale; 1.simple rescale; 2.elaborate rescale, -1.ideal case
    writemmctree_ = false;
+
+   file_ref = new TFile(RefPDFfile_.c_str());
    
    //writemmctree_ = false;
    std::stringstream ss;
@@ -100,7 +105,7 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    htoBB_lorentz = new TLorentzVector(*mmc_bjets_lorentz);
    h2tohh_lorentz = new TLorentzVector();
    met_vec2 = new TVector2(mmcmet_vec2->Px(), mmcmet_vec2->Py());
-  
+   //printTrueLorentz(); 
 
 }
 
@@ -135,8 +140,9 @@ MMC::~MMC(){
    delete htoBB_lorentz;
    delete h2tohh_lorentz;
    delete met_vec2;
-   
+   delete file_ref;
   if (not writemmctree_) delete mmctree;
+    
 }
 
 
@@ -187,7 +193,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
    onshellnupt_hist->Scale(1.0/onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()));
    onoffshellWmass_hist->Scale(1.0/onoffshellWmass_hist->GetBinContent(onoffshellWmass_hist->GetMaximumBin()));
    bjetrescalec2_hist->Scale(1.0/bjetrescalec2_hist->GetBinContent(bjetrescalec2_hist->GetMaximumBin()));
-   std::cout <<" rescale priori distribution 2" << std::endl;
+   //std::cout <<" rescale priori distribution 2" << std::endl;
    
   // printTrueLorentz();
     
@@ -214,7 +220,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 		bjetsCorrection();
     		//*htoBB_lorentz = b1rescalefactor*b1lorentz+b2rescalefactor*b2lorentz; 
 	      } 
-	   std::cout <<" MMC bjetrescale b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
+	  // std::cout <<" MMC bjetrescale b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
 	   if (bjetrescale_>0)
 		*htoBB_lorentz = b1rescalefactor*(*mmc_b1jet_lorentz)+b2rescalefactor*(*mmc_b2jet_lorentz);
 
@@ -236,7 +242,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 		*met_vec2 = TVector2(nu1_lorentz_true->Px()+nu2_lorentz_true->Px(),nu1_lorentz_true->Py()+nu2_lorentz_true->Py());
 		
 	  //std::cout <<" MMC metCorrection b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
-   	   std::cout <<" MMC input met  px "<< mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
+   	   //std::cout <<" MMC input met  px "<< mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
    	  // std::cout <<" bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
            //wmass_gen = wmasspdf->GetRandom(50.0,90.0);
            //test
@@ -248,6 +254,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
            std::cout << "true eta phi of nuoffshell ("<<eta_nuoffshellW_true <<","<<phi_nuoffshellW_true<<"), pt " <<pt_nuoffshellW_true 
 		<<" mass of offshellW " << mass_offshellW_true <<  std::endl;
             */
+  	   //std::cout <<" eta_gen "<< eta_gen << " phi_gen " << phi_gen << " wmass "<<wmass_gen << std::endl;
            int solutions = 0;//count num of soluble case
            bool solution[4]={false, false, false, false}; //record whether the case is soluble or not
            for (int j = 0; j < 4; j++){
@@ -255,6 +262,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
           	 nu_onshellW_pt = nu1pt_onshellW(std::make_pair(eta_gen, phi_gen), mu_onshellW_lorentz, wmass_gen); 
           	 nu_onshellW_lorentz->SetPtEtaPhiM(nu_onshellW_pt, eta_gen, phi_gen,0);
                  //solution[j] = nulorentz_offshellW(jets_lorentz, mu_onshellW_lorentz,
+                 //std::cout << " calculate nu1_pt " << nu_onshellW_pt << " px " << nu_onshellW_lorentz->Px() <<" py "<< nu_onshellW_lorentz->Py() << std::endl;
                  if (useMET_)
                  	solution[j] = nulorentz_offshellW(met_vec2, mu_onshellW_lorentz,
 					            mu_offshellW_lorentz, nu_onshellW_lorentz,
@@ -266,8 +274,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 
 
 
-                 //std::cout << " calculate nu1_pt " << nu_onshellW_pt << " eta_gen "<< eta_gen << " phi_gen " << phi_gen << std::endl; 
-                 std::cout << j << " nu_offshellW_eta " << nu_offshellW_lorentz->Eta()<<" phi " << nu_offshellW_lorentz->Phi() << std::endl; 
+                 //std::cout << j << " nu_offshellW_eta " << nu_offshellW_lorentz->Eta()<<" phi " << nu_offshellW_lorentz->Phi() << std::endl; 
                  if (solution[j]) solutions++;
            }
     //       nu_offshellW_lorentz= NULL; 
@@ -759,9 +766,10 @@ MMC::readoutonshellWMassPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* onshellWmasspdf = (TH1F*)file->Get("onshellWmasspdf");
-   delete file;
+   //TFile* file = new TFile(RefPDFfile_.c_str());
+   TH1F* onshellWmasspdf = (TH1F*)file_ref->Get("onshellWmasspdf");
+  // std::cout <<" print onshellWMass PDF " ; onshellWmasspdf->Print();
+   //delete file;
    return onshellWmasspdf;
 
 }
@@ -773,9 +781,9 @@ MMC::readoutoffshellWMassPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* offshellWmasspdf = (TH1F*)file->Get("offshellWmasspdf");
-   delete file;
+   //TFile* file = new TFile(RefPDFfile_.c_str());
+   TH1F* offshellWmasspdf = (TH1F*)file_ref->Get("offshellWmasspdf");
+   //delete file;
    return offshellWmasspdf;
 
 }
@@ -788,9 +796,10 @@ MMC::readoutonoffshellWMassPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   TFile* file = new TFile(RefPDFfile_.c_str());
-   TH2F* onoffshellWmasspdf = (TH2F*)file->Get("onoffshellWmasspdf");
-   delete file;
+   //TFile* file = new TFile(RefPDFfile_.c_str());
+   TH2F* onoffshellWmasspdf = (TH2F*)file_ref->Get("onoffshellWmasspdf");
+   //std::cout <<" print onoffshellWMass PDF " ; onoffshellWmasspdf->Print();
+   //delete file;
    return onoffshellWmasspdf;
 
 }
@@ -803,10 +812,11 @@ MMC::readoutonshellnuptPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* onshellWmasspdf = (TH1F*)file->Get("onshellnuptpdf");
-   delete file;
-   return onshellWmasspdf;
+   //TFile* file = new TFile(RefPDFfile_.c_str());
+   TH1F* onshellnuptpdf = (TH1F*)file_ref->Get("onshellnuptpdf");
+   //std::cout <<" print onshellnupt PDF " ; onshellnuptpdf->Print();
+   //delete file;
+   return onshellnuptpdf;
 
 }
 
@@ -817,9 +827,10 @@ MMC::readoutbjetrescalec1PDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* bjetrescalec1pdf = (TH1F*)file->Get("bjetrescalec1dR4pdf");
-   delete file;
+   //TFile* file = new TFile(RefPDFfile_.c_str());
+   TH1F* bjetrescalec1pdf = (TH1F*)file_ref->Get("bjetrescalec1dR4pdf");
+  // std::cout <<" print c1 PDF " ; bjetrescalec1pdf->Print();
+   //delete file;
    return bjetrescalec1pdf;
 
 }
@@ -831,9 +842,10 @@ MMC::readoutbjetrescalec2PDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* bjetrescalec2pdf = (TH1F*)file->Get("bjetrescalec2dR4pdf");
-   delete file;
+   //TFile* file = new TFile(RefPDFfile_.c_str());
+   TH1F* bjetrescalec2pdf = (TH1F*)file_ref->Get("bjetrescalec2dR4pdf");
+  // std::cout <<" print c2 PDF " ; bjetrescalec2pdf->Print();
+   //delete file;
    return bjetrescalec2pdf;
 
 }
@@ -847,7 +859,7 @@ MMC::readoutbjetrescalec1c2PDF(){
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
    TFile* file = new TFile(RefPDFfile_.c_str());
    TH2F* bjetrescalec1c2pdf = (TH2F*)file->Get("bjetrescalec1c2pdf");
-   delete file;
+  /// delete file;
    return bjetrescalec1c2pdf;
 
 }
@@ -1012,7 +1024,6 @@ MMC::nu1pt_onshellW(EtaPhi nu1_etaphi, TLorentzVector* mu1lorentz, float wMass){
 //   TVector2 *numu_phi = new TVector(nu_etaphi.first(),mu1lorentz->eta());
    float deltaeta = nu1_etaphi.first - mu1lorentz->Eta();
    float deltaphi = nu1_etaphi.second - mu1lorentz->Phi();
-   
    nu1_pt = wMass*wMass/(2*mu1lorentz->Pt()*(cosh(deltaeta)-cos(deltaphi)));
    return nu1_pt;
 
@@ -1309,12 +1320,15 @@ MMC::printTrueLorentz(){
     std::cout <<"bjets,  M_h= " << htoBB_lorentz->M(); htoBB_lorentz->Print();
     std::cout <<"met px " << mmcmet_vec2->Px() <<" py" <<mmcmet_vec2->Py() << std::endl;
     if (simulation) {
-        std::cout <<" nu1 "; nu1_lorentz_true->Print();
-	std::cout <<" nu2 "; nu2_lorentz_true->Print();
-        std::cout <<" onshellW "; onshellW_lorentz_true->Print();  
-        std::cout <<"offshellW "; offshellW_lorentz_true->Print();  
-        std::cout <<" htoWW "; htoWW_lorentz_true->Print();
-        std::cout <<" htoBB "; htoBB_lorentz_true->Print();
+	std::cout <<"following is pure gen level infromation " << std::endl;
+        std::cout <<" nu1 px "<<nu1_lorentz_true->Px() << " py " <<nu1_lorentz_true->Py() << " pt "<< nu1_lorentz_true->Pt() 
+		<< " eta "<<nu1_lorentz_true->Eta() << " phi "<< nu1_lorentz_true->Phi() << std::endl;
+        std::cout <<" nu2 px "<<nu2_lorentz_true->Px() << " py " <<nu2_lorentz_true->Py() << " pt "<< nu2_lorentz_true->Pt() 
+		<< " eta "<<nu2_lorentz_true->Eta() << " phi "<< nu2_lorentz_true->Phi() << std::endl;
+        std::cout <<" onshellW mass "<< onshellW_lorentz_true->M(); onshellW_lorentz_true->Print();  
+        std::cout <<"offshellW mass " <<offshellW_lorentz_true->M(); offshellW_lorentz_true->Print();  
+        std::cout <<" htoWW mass "<< htoWW_lorentz_true->M(); htoWW_lorentz_true->Print();
+        std::cout <<" htoBB mass "<< htoBB_lorentz_true->M(); htoBB_lorentz_true->Print();
         std::cout <<" h2tohh, pz " <<h2tohh_lorentz_true->Pz() << " Mass " << h2tohh_lorentz_true->M() << std::endl;
     }
 }

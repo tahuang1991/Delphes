@@ -20,6 +20,8 @@
 #include "external/ExRootAnalysis/ExRootResult.h"
 #include "external/ExRootAnalysis/ExRootUtilities.h"
 
+#include "MMC.h"
+
 class DiHiggstollbb {
    
    public:
@@ -45,6 +47,8 @@ class DiHiggstollbb {
 	void insertInJetVector(std::vector<Jet*>& vec, Jet *object);
 	void printJet(Jet *jet);
 //	void getFinalState(GenParticle* &genp, TClonesArray *branchParticle);
+   private:
+	TLorentzVector lepton1_p4, lepton2_p4, b1jet_p4, b2jet_p4, Met_p4;
 
    private:
 	TString inputFile;
@@ -138,6 +142,19 @@ class DiHiggstollbb {
   bool haslepton2;
   bool hasdRljet;
   
+   private:
+  MMC* thismmc;
+  TTree* MMCtree;
+  
+  float MMC_h2mass_prob;
+  float MMC_h2massweight1_prob;
+  float MMC_h2massweight4_prob;
+  float MMC_h2mass_Entries;
+  float MMC_h2mass_RMS;
+  float MMC_h2mass_Mean;
+  float MMC_h2mass_underflow;
+  float MMC_h2mass_overflow;
+
 
 };
 
