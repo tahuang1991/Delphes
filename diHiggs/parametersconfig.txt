@@ -1,0 +1,25 @@
+#parameters value 
+nEvents		100
+sample		1
+simulation	true
+jetsPt 		20
+jetsEta		5.0
+bjetsPt 	30
+bjetsEta	2.50
+jetleptonDeltaR 0.3
+jetsDeltaR 	0.4
+leptonsDeltaR	0.4
+leptonIso	0.15
+muonPt1		20.0
+muonPt2		20.0
+muonsEta	2.4
+runMMC  	false
+iterations 	1000000
+MMCRef		MMCRefPDF.ROOT
+weightfromonshellnupt_func  false
+weightfromonshellnupt_hist  true
+weightfromonoffshellWmass_hist	true 
+useMET 		true
+bjetrescaleAlgo	2
+
+

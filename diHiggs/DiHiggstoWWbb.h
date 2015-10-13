@@ -5,6 +5,7 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <fstream>
 
 #include "TString.h"
 #include "TClonesArray.h"
@@ -27,7 +28,7 @@ class DiHiggstoWWbb {
    
    public:
 	DiHiggstoWWbb();
-	DiHiggstoWWbb(TString input_file, TString output_file, int numEvents, bool signal);
+	DiHiggstoWWbb(TString input_file, TString output_file, std::ifstream& configfile);
 	~DiHiggstoWWbb();
 
    public:
@@ -38,11 +39,13 @@ class DiHiggstoWWbb {
    private:
 	TString inputFile;
 	TString outputFile;
-	int nEvents;//events to analyse		
+	int nEvents_;//events to analyse		
+        bool simulation_;
+        int sample_;
+  	enum {Signal =1, Background =2};	
 
 	
 //config parameters
-  	bool runMMC_;
   	double jetsPt_;
   	double jetsEta_;
   	double bjetsPt_;
@@ -50,16 +53,29 @@ class DiHiggstoWWbb {
   	double jetsDeltaR_;//deltaR matching
   	double jetleptonDeltaR_;
   	double leptonsDeltaR_;//deltaR matching
-  //double leptonIso_ = 0.15;
+  	double leptonIso_;
   	double muonPt2_;
   	double muonPt1_;
   	double muonsEta_;
   	double metPt_;
-        bool simulation_;
-	bool is_signal;
+	//for MMC
+  	bool runMMC_;
+	int iterations_;
+	std::string RefPDFfile_;
+	bool weightfromonshellnupt_func_;
+        bool weightfromonshellnupt_hist_;
+	bool weightfromonoffshellWmass_hist_; 
+	bool useMET_;
+	int bjetrescaleAlgo_;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
+	
 
    private: 
 	//private module to process different steps
+	void readConfig(std::ifstream& configfile);
+	void getboolpara(std::vector<std::string>& strs, std::string paraname, bool &para, bool def);
+	void getstringpara(std::vector<std::string>& strs,std::string paraname, std::string &para, std::string def);
+	void getintpara(std::vector<std::string>& strs, std::string paraname, int &para, int def);
+	void getdoublepara(std::vector<std::string>& strs, std::string paraname, double &para, double def);
 	void calculateNormfactor(int bm=3);//print normalization factor
 	void initBranches();//create tree and branches
 	void init();//create tree and branches
@@ -347,7 +363,8 @@ class DiHiggstoWWbb {
   bool h2tohh;
   
    private:
-  MMC* thismmc;
+  //MMC* thismmc;
+  //TFile *file;
   TTree* MMCtree;
   
   float MMC_h2mass_prob;

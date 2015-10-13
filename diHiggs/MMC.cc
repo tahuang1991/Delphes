@@ -9,6 +9,7 @@
 //Simulation or not
 #include <iostream>
 #include "MMC.h"
+#include <time.h>       /* time */
 
 //constructor
 MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVector* b1jet_lorentz, TLorentzVector* b2jet_lorentz,
@@ -27,8 +28,8 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    mmc_bjets_lorentz = new TLorentzVector(*b1jet_lorentz+*b2jet_lorentz);
    mmcmet_vec2 = new TVector2(met_lorentz->Px(),met_lorentz->Py());
 
-   std::cout <<" mu1 lorentz "; mu1_lorentz->Print();
-   std::cout <<" b1 lorentz "; b1jet_lorentz->Print();
+   //std::cout <<" mu1 lorentz "; mu1_lorentz->Print();
+   //std::cout <<" b1 lorentz "; b1jet_lorentz->Print();
    simulation = simulation_;
    onshellMarker = onshellMarker_;
    if (simulation){
@@ -69,7 +70,8 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    bjetrescale_ = bjetrescaleAlgo;//0.no rescale; 1.simple rescale; 2.elaborate rescale, -1.ideal case
    writemmctree_ = false;
 
-   file_ref = new TFile(RefPDFfile_.c_str());
+   //TFile filetest(RefPDFfile_.c_str(),"READ");
+   //file_ref = filetest;
    
    //writemmctree_ = false;
    std::stringstream ss;
@@ -106,7 +108,8 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    h2tohh_lorentz = new TLorentzVector();
    met_vec2 = new TVector2(mmcmet_vec2->Px(), mmcmet_vec2->Py());
    //printTrueLorentz(); 
-
+   file = TFile::Open(RefPDFfile_.c_str(),"READ");
+   //std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
 }
 
 MMC::MMC(){
@@ -120,7 +123,7 @@ MMC::MMC(){
 //deconstructor
 MMC::~MMC(){
     
-//  std::cout << " deconstructor " << std::endl;
+  //std::cout << " deconstructor 1 " << std::endl;
   
   delete mmcmet_vec2;
   delete mmc_bjets_lorentz;
@@ -140,8 +143,10 @@ MMC::~MMC(){
    delete htoBB_lorentz;
    delete h2tohh_lorentz;
    delete met_vec2;
-   delete file_ref;
-  if (not writemmctree_) delete mmctree;
+   //delete file_ref;
+   std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
+   file->Close();
+   if (not writemmctree_) delete mmctree;
     
 }
 
@@ -173,6 +178,8 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 
    eta_mean=0;
    eta_rms=1.403;
+   std::cout <<" time null " << time(NULL) << std::endl;
+   seed_ = time(NULL);
    TRandom3 *generator = new TRandom3();
    generator->SetSeed(seed_+iev);
    //TF1* wmasspdf = new TF1("wmasspdf","exp(x*7.87e-3+1.69)+603.47*exp(-0.5*((x-80.1)/2.0)**2)",50,90);
@@ -766,10 +773,12 @@ MMC::readoutonshellWMassPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   //TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* onshellWmasspdf = (TH1F*)file_ref->Get("onshellWmasspdf");
+   //TFile* file = new TFile(RefPDFfile_.c_str(), "READ");
+  // TFile* file = TFile::Open(RefPDFfile_.c_str(), "READ");
+   TH1F* onshellWmasspdf = (TH1F*)file->Get("onshellWmasspdf");
   // std::cout <<" print onshellWMass PDF " ; onshellWmasspdf->Print();
    //delete file;
+   //file->Close();
    return onshellWmasspdf;
 
 }
@@ -781,9 +790,10 @@ MMC::readoutoffshellWMassPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   //TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* offshellWmasspdf = (TH1F*)file_ref->Get("offshellWmasspdf");
+  // TFile* file = TFile::Open(RefPDFfile_.c_str(),"READ");
+   TH1F* offshellWmasspdf = (TH1F*)file->Get("offshellWmasspdf");
    //delete file;
+   //file->Close();
    return offshellWmasspdf;
 
 }
@@ -796,10 +806,11 @@ MMC::readoutonoffshellWMassPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   //TFile* file = new TFile(RefPDFfile_.c_str());
-   TH2F* onoffshellWmasspdf = (TH2F*)file_ref->Get("onoffshellWmasspdf");
+   //TFile* file = TFile::Open(RefPDFfile_.c_str(),"READ");
+   TH2F* onoffshellWmasspdf = (TH2F*)file->Get("onoffshellWmasspdf");
    //std::cout <<" print onoffshellWMass PDF " ; onoffshellWmasspdf->Print();
    //delete file;
+   //file->Close();
    return onoffshellWmasspdf;
 
 }
@@ -812,10 +823,11 @@ MMC::readoutonshellnuptPDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   //TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* onshellnuptpdf = (TH1F*)file_ref->Get("onshellnuptpdf");
+  // TFile* file = TFile::Open(RefPDFfile_.c_str(),"READ");
+   TH1F* onshellnuptpdf = (TH1F*)file->Get("onshellnuptpdf");
    //std::cout <<" print onshellnupt PDF " ; onshellnuptpdf->Print();
    //delete file;
+   //file->Close();
    return onshellnuptpdf;
 
 }
@@ -827,10 +839,11 @@ MMC::readoutbjetrescalec1PDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   //TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* bjetrescalec1pdf = (TH1F*)file_ref->Get("bjetrescalec1dR4pdf");
+//   TFile* file = TFile::Open(RefPDFfile_.c_str(), "READ");
+   TH1F* bjetrescalec1pdf = (TH1F*)file->Get("bjetrescalec1dR4pdf");
   // std::cout <<" print c1 PDF " ; bjetrescalec1pdf->Print();
    //delete file;
+   //file->Close();
    return bjetrescalec1pdf;
 
 }
@@ -843,9 +856,10 @@ MMC::readoutbjetrescalec2PDF(){
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
    //TFile* file = new TFile(RefPDFfile_.c_str());
-   TH1F* bjetrescalec2pdf = (TH1F*)file_ref->Get("bjetrescalec2dR4pdf");
+   TH1F* bjetrescalec2pdf = (TH1F*)file->Get("bjetrescalec2dR4pdf");
   // std::cout <<" print c2 PDF " ; bjetrescalec2pdf->Print();
    //delete file;
+   //file->Close();
    return bjetrescalec2pdf;
 
 }
@@ -857,9 +871,10 @@ MMC::readoutbjetrescalec1c2PDF(){
 
 	
    //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
-   TFile* file = new TFile(RefPDFfile_.c_str());
+   //TFile* file = new TFile(RefPDFfile_.c_str());
    TH2F* bjetrescalec1c2pdf = (TH2F*)file->Get("bjetrescalec1c2pdf");
   /// delete file;
+   //file->Close();
    return bjetrescalec1c2pdf;
 
 }

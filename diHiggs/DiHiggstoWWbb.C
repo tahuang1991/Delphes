@@ -2,6 +2,8 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <fstream>
+#include <algorithm>    // std::find
 
 #include "TTree.h"
 #include "TROOT.h"
@@ -32,31 +34,15 @@ class Jet;
 class Track;
 class Tower;
  
-DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, int numEvents, bool signal)
+DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, std::ifstream& config_File)
 //void DiHiggs_htobb()
 {
   //gSystem->Load("libDelphes");
   inputFile = input_File;
   outputFile = output_File;
-  nEvents = numEvents;
  
 //config parameters
-  runMMC_ = true;
-  jetsPt_ =20;
-  jetsEta_=5.0;
-  bjetsPt_ =30;
-  bjetsEta_ = 2.5;
-  jetsDeltaR_ = 0.4;//deltaR matching
-  jetleptonDeltaR_ = 0.3;
-  leptonsDeltaR_ = 0.4;//deltaR matching
-  //double leptonIso_ = 0.15;
-  muonPt2_ = 20;
-  muonPt1_ = 20;
-  muonsEta_ = 2.4;
-  metPt_ = 20;
-  simulation_ =true;
-  is_signal = signal;
-     
+  readConfig(config_File);     
   init();//init reader...
   branchParticle = treeReader->UseBranch("Particle");
   branchMuon = treeReader->UseBranch("Muon");
@@ -78,6 +64,100 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, int numEve
   cout << "** Chain contains " << allEntries << " events" << endl;
 
   
+
+   std::cout <<" DiHiggstoWWbb gFile get options " << gFile->GetOption() << std::endl;
+}
+
+void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
+
+//------------------------------------------------------------------------------
+  std::vector<std::string> strs;
+  strs.clear();
+// Here you call your macro's main function 
+  //cout <<" inputfile " << inputFile << std::endl;
+  //test(inputFile);
+  std::string word;
+  while (ifile >> word){
+	strs.push_back(word);
+  }
+
+  if (!ifile.eof()) {
+        std::cerr << "Hey there! Something went wrong when reading the list of words!\n";
+        return;
+   }
+  
+
+  getintpara(strs, "nEvents", nEvents_, -1);
+  getintpara(strs, "sample", sample_, Signal);
+  getboolpara(strs, "simulation", simulation_, true);
+  getdoublepara(strs,"jetsPt", jetsPt_, 20.0);
+  getdoublepara(strs,"jetsEta", jetsEta_, 5.0);
+  getdoublepara(strs,"bjetsPt", bjetsPt_, 30.0);
+  getdoublepara(strs,"bjetsEta", bjetsEta_, 2.50);
+  getdoublepara(strs,"jetleptonDeltaR", jetleptonDeltaR_, .30);//isolation bewteen jet and lepton
+  getdoublepara(strs,"jetsDeltaR", jetsDeltaR_, .40);//deltaR matching
+  getdoublepara(strs,"leptonsDeltaR", leptonsDeltaR_, .40);
+  getdoublepara(strs,"leptonIso", leptonIso_, 0.15);
+  getdoublepara(strs,"muonPt1", muonPt1_, 20.0);
+  getdoublepara(strs,"muonPt2", muonPt2_, 20.0);
+  getdoublepara(strs,"muonEta", muonsEta_, 2.40);
+  getdoublepara(strs,"metPt", metPt_, 20);
+  getboolpara(strs, "runMMC", runMMC_, false);
+  getintpara(strs, "iterations", iterations_, 1000000);
+  getstringpara(strs,"RefPDFfile", RefPDFfile_, "MMCRefPDF.ROOT");
+  getintpara(strs, "bjetrescaleAlgo", bjetrescaleAlgo_, 2);
+  getboolpara(strs, "useMET", useMET_, true);
+  getboolpara(strs, "weightfromonshellnupt_func", weightfromonshellnupt_func_, false);
+  getboolpara(strs, "weightfromonshellnupt_hist", weightfromonshellnupt_hist_, true);
+  getboolpara(strs, "weightfromonoffshellWmass_hist", weightfromonoffshellWmass_hist_, true);
+  
+  std::cout <<" jetspt "<< jetsPt_ <<" jetsEta "<< jetsEta_ <<" bjetspt " << bjetsPt_ <<" bjetsEta " << bjetsEta_ << std::endl; 
+
+}
+
+void DiHiggstoWWbb::getboolpara(std::vector<std::string>& strs, std::string paraname, bool &para, bool def){
+
+  std::vector<std::string>::iterator it = strs.end();
+  it=std::find(strs.begin(), strs.end(), paraname);
+  if (it != strs.end()){
+	it++;
+	if ((*it) == "True" or (*it)== "true") para =true;
+        else para =false;
+	}
+  else para = def;
+}
+
+void DiHiggstoWWbb::getstringpara(std::vector<std::string>& strs,std::string paraname, std::string &para, std::string def)
+{
+  std::vector<std::string>::iterator it = strs.end();
+  it=std::find(strs.begin(), strs.end(), paraname);
+  if (it != strs.end()){
+	it++;
+	para = *it;
+	}
+  else para = def;
+}
+
+void DiHiggstoWWbb::getintpara(std::vector<std::string>& strs, std::string paraname, int &para, int def)
+{
+  std::vector<std::string>::iterator it = strs.end();
+  it=std::find(strs.begin(), strs.end(), paraname);
+  if (it != strs.end()){
+	it++;
+	para = atoi(it->c_str());
+	}
+  else para = def;
+}
+
+void DiHiggstoWWbb::getdoublepara(std::vector<std::string>& strs, std::string paraname, double &para, double def)
+{
+  std::vector<std::string>::iterator it = strs.end();
+  it=std::find(strs.begin(), strs.end(), paraname);
+  if (it != strs.end()){
+	it++;
+	para = atof(it->c_str());
+	}
+  else para = def;
 
 }
 
@@ -357,12 +437,13 @@ void DiHiggstoWWbb::init(){
 void DiHiggstoWWbb::writeTree(){
 
   //evtree->Print();
-  TFile *file = new TFile(outputFile,"recreate");
 
+  TFile* file = new TFile(outputFile,"recreate");
+   //std::cout <<" DiHiggstoWWbb gFile get options " << gFile->GetOption() << std::endl;
   evtree->Write();
   file->Close();
   calculateNormfactor(3);
-//delete file;
+  //delete file;
 }
 
 
@@ -371,6 +452,8 @@ DiHiggstoWWbb::~DiHiggstoWWbb(){
 
   cout << "** Exiting..." << endl;
 
+   //std::cout <<" deconstructor DiHiggstoWWbb gFile get options " << gFile->GetOption() << std::endl;
+  
   delete treeReader;
   delete chain;
   delete evtree;
@@ -580,7 +663,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
 		genW2 = (GenParticle*)branchParticle->At(gent2->D1);
 		ttoWb = true;
      }
-    if (ttoWb and tbartoWbbar) cout <<" find t and tbar and they decay into W b " << endl;
+    /*if (ttoWb and tbartoWbbar) cout <<" find t and tbar and they decay into W b " << endl;
     else {
 	cout <<" find t and tbar but they may not decay into W b" << endl;
 	cout <<"tbar "; printGenParticle(gent1);
@@ -590,7 +673,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
 	cout <<"t "; printGenParticle(gent2);
 	cout <<"t's child "; printGenParticle((GenParticle*)branchParticle->At(gent2->D1));
 	cout <<"t's child "; printGenParticle((GenParticle*)branchParticle->At(gent2->D2));
-	}
+	}*/
   
        
     if (tbartoWbbar and ttoWb){
@@ -737,8 +820,8 @@ void DiHiggstoWWbb::matchMuon2Gen(TClonesArray *branchMuonBeforeIso, TClonesArra
         hasMuon2 = true;
 	if (particle == genmu2) Muon2_hasgenMu = true;
       }
-      if (hasMuon1) std::cout <<" has reco Muon1 " << std::endl;
-      if (hasMuon2) std::cout <<" has reco Muon2 " << std::endl;
+      //if (hasMuon1) std::cout <<" has reco Muon1 " << std::endl;
+      //if (hasMuon2) std::cout <<" has reco Muon2 " << std::endl;
       //cout <<" muon eta " << muon->Eta << " phi " << muon->Phi << " Pt "<< muon->PT << endl; 
     }
 
@@ -1224,8 +1307,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   int i =0;
   // Loop over all events
   //TFile *MMCfile = new TFile("testMMC.root", "recreate"); 
-  if (nEvents < 0) nEvents = allEntries;
-  for(entry = 0; entry < nEvents; ++entry)
+  if (nEvents_ < 0) nEvents_ = allEntries;
+  for(entry = 0; entry < nEvents_; ++entry)
   //for(entry = 0; entry < 1000; ++entry)
   //for(entry = 0; entry < 10000; ++entry)
   {
@@ -1238,12 +1321,20 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	cout <<"can not read Entry through treeReader" << endl;
 	exit(0);
 	}
-    cout <<" event id " << entry << endl;
-    if (simulation_){
-    //********** Get H->hh chain ****************** 
-   	 if (is_signal)	fetchHhhchain(branchParticle); 
+    if (nEvents_ < 100) cout << "event id  "<< entry << endl;
+    else if (entry%(nEvents_/100) == 0)   cout <<" event id " << entry << endl;
+	//specail case, non-simulation case,but want to get some information at gen level;
+   	/* if (sample_ == Signal)	fetchHhhchain(branchParticle); 
 	 else fetchttbarchain(branchParticle);
 
+         dR_genl1l2 = (Wtomu1nu1 and Wtomu2nu2)?mu1_p4.DeltaR(mu2_p4): -1; */
+    if (simulation_){
+    //********** Get H->hh chain ****************** 
+   	 if (sample_ == Signal)	fetchHhhchain(branchParticle); 
+	 else fetchttbarchain(branchParticle);
+
+         dR_genl1l2 = (Wtomu1nu1 and Wtomu2nu2)?mu1_p4.DeltaR(mu2_p4): -1; 
+	 if (sample_ == Background and dR_genl1l2 > 2.5) continue;
     	 getGenMET(branchGenMissingET);
 
     	 matchBjets2Gen(branchGenJet, branchJet, genb1, genb2, jetsDeltaR_); 
@@ -1259,7 +1350,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
       //cout <<"Jet  eta "<< jet->Eta  <<" Pt "<< jet->PT <<" btag "<< jet->BTag << std::endl;
       if (jet->PT < jetsPt_ || abs(jet->Eta)> jetsEta_) continue;
       totjets_lorentz +=jet->P4();
-      if ( jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+      if (jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
       //insertInJetVector(allbjets, jet);
       allbjets.push_back(jet);
        
@@ -1348,7 +1439,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	dR_b2l2 = b2jet_p4.DeltaR(Muon2_p4);
 	dR_b1b2 = b1jet_p4.DeltaR(b2jet_p4);
 	dR_l1l2 = Muon1_p4.DeltaR(Muon2_p4);
-        dR_genl1l2 = mu1_p4.DeltaR(mu2_p4); 
 	TLorentzVector ll_p4 = Muon1_p4+Muon2_p4;
 	TLorentzVector bjets_p4 = b1jet_p4+b2jet_p4;
         dR_minbl = min(min(dR_b1l1,dR_b1l2),min(dR_b2l1,dR_b2l2));
@@ -1357,7 +1447,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	mass_l1l2 = ll_p4.M(); energy_l1l2 = ll_p4.Energy(); pt_l1l2 = ll_p4.Pt(); eta_l1l2 = ll_p4.Eta(); phi_l1l2 = ll_p4.Phi();
 	mass_b1b2 = bjets_p4.M(); energy_b1b2 = bjets_p4.Energy(); pt_b1b2 = bjets_p4.Pt(); eta_b1b2 = bjets_p4.Eta(); phi_b1b2 = bjets_p4.Phi();
         mass_trans = sqrt(2*ll_p4.Pt()*met*(1-cos(dphi_llmet)));
-	//std::cout <<" l1l2 eta " << ll_p4.Eta() <<" phi " << ll_p4.Phi() <<" b1b2 eta "<< bjets_p4.Eta() <<" phi "<< bjets_p4.Phi() << std::endl;
+//	std::cout <<" l1l2 eta " << ll_p4.Eta() <<" phi " << ll_p4.Phi() <<" b1b2 eta "<< bjets_p4.Eta() <<" phi "<< bjets_p4.Phi() << std::endl;
         
         if (dR_b1l1>jetleptonDeltaR_ and dR_b1l2>jetleptonDeltaR_ and dR_b2l1>jetleptonDeltaR_ and dR_b2l2>jetleptonDeltaR_) hasdRljet =true;
        
@@ -1366,10 +1456,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     fillbranches();
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
-    if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))){
+    if (runMMC_ and hasdRljet and hasMET and ((h2tohh and sample_==Signal) || (ttbar and sample_ ==Background))){
 	 //TLorentzVector bjets_lorentz=genb1jet->P4()+genb2jet->P4();
          //cout <<" m_{bjets} " << bjets_lorentz.M(); bjets_lorentz.Print();
-         cout <<" start to run MMC for this event " << endl;
+         cout <<" start to run MMC for this event " << entry <<endl;
 	 TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
 	 if (b1jet_p4.Pt()>b2jet_p4.Pt()) {
 		bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
@@ -1379,25 +1469,17 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 		bgenp_pt1_lorentz = b1_p4; bgenp_pt2_lorentz = b2_p4;
 	 } else { bgenp_pt1_lorentz = b2_p4; bgenp_pt2_lorentz = b1_p4; }
 	 TLorentzVector h2tohh_genp_lorentz;
-	 if (is_signal) h2tohh_genp_lorentz = genh2->P4();
+	 if (sample_==Signal) h2tohh_genp_lorentz = genh2->P4();
 	 else h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
-	 bool simulation_ = true;
-	 bool weightfromonshellnupt_func = false;
-         bool weightfromonshellnupt_hist = true;
-	 bool weightfromonoffshellWmass_hist=true; 
-	 int iterations = 1000000;
-	 std::string RefPDFfile("MMCRefPDF.ROOT");
-	 bool useMET = true;
-	 int bjetrescaleAlgo = 2;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
 	 int onshellMarker_;
  	 if (genW1->Mass > genW2->Mass) onshellMarker_=1;
 	 else onshellMarker_=2;
 	 // rescale bjets in MMC?????
         //MMC *thismmc = new MMC();
-	 thismmc = new MMC(&Muon1_p4, &Muon2_p4, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_p4, 
+	 MMC *thismmc = new MMC(&Muon1_p4, &Muon2_p4, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_p4, 
 	 &nu1_p4, &nu2_p4, &bgenp_pt1_lorentz, &bgenp_pt2_lorentz, &h2tohh_genp_lorentz, 
-	 onshellMarker_, simulation_, entry, weightfromonshellnupt_func, weightfromonshellnupt_hist, weightfromonoffshellWmass_hist,
-         iterations, RefPDFfile, useMET, bjetrescaleAlgo);
+	 onshellMarker_, simulation_, entry, weightfromonshellnupt_func_, weightfromonshellnupt_hist_, weightfromonoffshellWmass_hist_,
+         iterations_, RefPDFfile_, useMET_, bjetrescaleAlgo_);
          
          if (thismmc->runMMC()) {
 		//MMCtree =  (thismmc->getMMCTree())->CloneTree();
@@ -1420,15 +1502,17 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
           }	
 
 	  //MMCfile->WriteObject(mmctree,mmctree->GetTitle());
-	  //delete thismmc;
+	  delete thismmc;
 	}
 //fill branches
-    if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2) evtree->Fill();
+    //if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2) evtree->Fill();
+    if (h2tohh or ttbar) evtree->Fill();
     }
- 
+   //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
    // MMCfile->Close();
     //delete MMCfile;
     //evtree->Fill();
+    //evtree->Print();
 }
 
 void DiHiggstoWWbb::fillbranches(){

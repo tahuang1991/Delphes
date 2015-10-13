@@ -61,7 +61,7 @@ class MMC{
       TH1F MMC_h2Mass;
       TH1F MMC_h2Massweight1;
       TH1F MMC_h2Massweight4;
-      TFile *file_ref;
+      TFile *file;
  
    //runMMC
    public: 

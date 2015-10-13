@@ -40,11 +40,11 @@ int main(int argc, char *argv[])
 {
   const char *appName = "DiHiggsValidation";
 
-  if(argc < 5)
+  if(argc < 7)
   {
     cout << " Usage: " << appName << " missing input_file" << endl;
     cout << " input_file - input file in ROOT format ('Delphes' tree)," << endl;
-    cout <<" ./*.exe -i input_file -o outputfile -N nEvents -sample_type S(or B)" << endl;
+    cout <<" ./*.exe -i input_file -o outputfile -config configfile.txt" << endl;
     return 1;
   }
 
@@ -56,49 +56,42 @@ int main(int argc, char *argv[])
 
   TString inputFile;
   TString outputFile;
-  int nEvent = -1;
+  std::ifstream configfile;
+  std::ifstream infile;
   bool input_good =false;
-  char Sample = 0;
-  bool is_signal = false;
   for (int i = 1; i < argc; i++) { /* We will iterate over argv[] to get the parameters stored inside.
                                           * Note that we're starting on 1 because we don't need to know the 
                                           *                                           * path of the program, which is stored in argv[0] */
       if (i + 1 != argc){ // Check that we haven't finished parsing already
             if (string(argv[i]) == "-i" or string(argv[i]) == "-inputfile") {
                   inputFile = TString(argv[i+1]);
-		  std::ifstream infile(argv[i+1]);
-    		  input_good = infile.good();
+		  //infile = std::ifstream(argv[i+1], std::ios_base::in);
+		  infile.open(argv[i+1]);
              } else if (string(argv[i]) == "-o" or string(argv[i])=="-outputfile") {
                   outputFile = TString(argv[i+1]);
-	     } else if (string(argv[i]) == "-n" or string(argv[i])=="-N"){
-		  nEvent = atoi(argv[i+1]);
-	     } else if (string(argv[i]) == "-sample_type" or string(argv[i])=="-Sample_type"){
-		  Sample = *argv[i+1];
+	     } else if (string(argv[i]) == "-config" or string(argv[i])=="-Config"){
+		  configfile.open(argv[i+1], std::ios_base::in);
 	     }  
     }
   }
-  if (Sample == 'S' or Sample =='s' or Sample==0) is_signal =true;  
-  else if (Sample == 'B' or Sample =='b') is_signal =false;
-  else {
-	cout <<"can not figure out whether it is sample or not " << endl;
-	return 0;
-	}
+  input_good = (infile.good() and configfile.good());
   if (input_good){
-  	cout <<" inputfile " << inputFile <<(is_signal ? " Signal sample ": " Background (ttbar)") <<endl;
+  	cout <<" inputfile " << inputFile <<endl;
   	cout <<" outputfile " << outputFile << endl;
-  	cout <<" run number of events "<< nEvent << endl;
+  	cout <<"configfile  "<< configfile << endl;
    } else{
 	cout <<" failed to find input file or outputfile " << endl;
 	return 0;
 	}
-   
+  infile.close(); 
   //DiHiggsWWbb *diHiggsValidate = new DiHiggsValition();
-  DiHiggstoWWbb *diHiggsValidate = new DiHiggstoWWbb(inputFile, outputFile, nEvent, is_signal);
+  DiHiggstoWWbb *diHiggsValidate = new DiHiggstoWWbb(inputFile, outputFile, configfile);
 
 //------------------------------------------------------------------------------
 // Here you call your macro's main function 
   diHiggsValidate->DiHiggstoWWbbrun();
   diHiggsValidate->writeTree();
+  delete diHiggsValidate;
 //------------------------------------------------------------------------------
 
 }

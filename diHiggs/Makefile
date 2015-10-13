@@ -32,7 +32,7 @@ CXX=g++
 CXXFLAGS=-pedantic -ansi -Wall -Wno-long-long -Wno-format -Werror=uninitialized -Werror=delete-non-virtual-dtor -O2
 CXXFLAGS+=`root-config --cflags`
 #src file
-Example_SRC = testMake.cpp test.h test.C
+Example_SRC = testMake.cpp 
 Example_EXE = testMake.exe
 
 #DiHiggsAnalyzer
@@ -40,6 +40,8 @@ DiHiggsAna_SRC = DiHiggsAnalyzer.cpp DiHiggstollbb.h DiHiggstollbb.C MMC.h MMC.c
 DiHiggsAna_EXE = DiHiggsAna.exe
 DiHiggsVal_SRC = DiHiggsValidation.cpp DiHiggstoWWbb.h DiHiggstoWWbb.C MMC.h MMC.cc
 DiHiggsVal_EXE = DiHiggsValidation.exe
+#DiHiggsVal_EXE = ttbarValidation.exe
+
 ttbarAna_SRC = ttbarAnalyzer.cpp ttbartollbb.h ttbartollbb.C MMC.h MMC.cc
 ttbarAna_EXE = ttbarAna.exe
 ttbarVal_SRC = ttbarValidation.cpp ttbartoWWbb.h ttbartoWWbb.C MMC.h MMC.cc
@@ -50,15 +52,15 @@ ttbarVal_EXE = ttbarValidation.exe
 #	@echo $(INCLUDE)
 	#echo $(LIB)
 #default : DiHiggs
-all: Example DiHiggsAna DiHiggsVal ttbarVal
+all: DiHiggsVal
 Example:
 	$(CXX) $(CXXFLAGS) -g $(Example_SRC) $(LDFLAGS) $(INCLUDE) $(LIB) -o $(Example_EXE)	
 DiHiggsAna:
 	$(CXX) $(CXXFLAGS) -g $(DiHiggsAna_SRC) $(LDFLAGS) $(INCLUDE) $(LIB) -o $(DiHiggsAna_EXE)	
 DiHiggsVal:
 	$(CXX) $(CXXFLAGS) -g $(DiHiggsVal_SRC) $(LDFLAGS) $(INCLUDE) $(LIB) -o $(DiHiggsVal_EXE)	
-ttbarVal:
-	$(CXX) $(CXXFLAGS) -g $(ttbarVal_SRC) $(LDFLAGS) $(INCLUDE) $(LIB) -o $(ttbarVal_EXE)	
+#ttbarVal:
+#	$(CXX) $(CXXFLAGS) -g $(ttbarVal_SRC) $(LDFLAGS) $(INCLUDE) $(LIB) -o $(ttbarVal_EXE)	
 	
 #project : DiHiggsWWBBAna.cc 
 #	$(CXX) $(CXXFLAGS) -c $<
