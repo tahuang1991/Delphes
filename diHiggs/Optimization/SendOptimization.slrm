@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH -J HepMC2Delphes
+#SBATCH -p hepx 
+#SBATCH --time=24:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=1500
+#SBATCH -o HepMC2Delphes_B3-%A-%a.out
+#SBATCH -e HepMC2Delphes_B3-%A-%a.err
+#SBATCH --ntasks-per-core=1
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+#change to dir
+cd /home/lpernie/Hhh/delphes/diHiggs/Optimization
+jobid=$SLURM_JOBID
+echo "job$jobid starts"
+root -b -q .x GridOpt_MakeTXT.C+
+
+echo "job$jobid is done"
+
+
+exit 0
+
