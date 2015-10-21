@@ -184,7 +184,7 @@ class DiHiggstoWWbb {
   float b1jet_phi;
   float b1jet_pt;
   float b1jet_energy;
-  float b1jet_btag;
+  unsigned int b1jet_btag;
   float b2jet_px;
   float b2jet_py;
   float b2jet_pz;
@@ -192,7 +192,7 @@ class DiHiggstoWWbb {
   float b2jet_phi;
   float b2jet_pt;
   float b2jet_energy;
-  float b2jet_btag;
+  unsigned int b2jet_btag;
   int energeticbjets;
   bool hasb1jet;
   bool hasb2jet;

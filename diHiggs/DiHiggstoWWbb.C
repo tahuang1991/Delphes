@@ -61,7 +61,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, std::ifstr
 
   allEntries = treeReader->GetEntries();
 
-  cout << "** Chain contains " << allEntries << " events" << endl;
+  cout << "** Chain contains " << allEntries << " events" << (sample_==Signal? " Signal Sample ": " Background Sample(ttbar)") <<endl;
 
   
 
@@ -245,7 +245,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("b1jet_phi",&b1jet_phi, "b1jet_phi/F");
   evtree->Branch("b1jet_pt",&b1jet_pt, "b1jet_pt/F");
   evtree->Branch("b1jet_energy",&b1jet_energy, "b1jet_energy/F");
-  evtree->Branch("b1jet_btag",&b1jet_btag, "b1jet_btag/B");
+  evtree->Branch("b1jet_btag",&b1jet_btag, "b1jet_btag/i");
   evtree->Branch("b2jet_px",&b2jet_px, "b2jet_px/F");
   evtree->Branch("b2jet_py",&b2jet_py, "b2jet_py/F");
   evtree->Branch("b2jet_pz",&b2jet_pz, "b2jet_pz/F");
@@ -253,7 +253,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("b2jet_phi",&b2jet_phi, "b2jet_phi/F");
   evtree->Branch("b2jet_pt",&b2jet_pt, "b2jet_pt/F");
   evtree->Branch("b2jet_energy",&b2jet_energy, "b2jet_energy/F");
-  evtree->Branch("b2jet_btag",&b2jet_btag, "b2jet_btag/B");
+  evtree->Branch("b2jet_btag",&b2jet_btag, "b2jet_btag/i");
   evtree->Branch("energeticbjets",&energeticbjets, "energeticbjets/I");
   evtree->Branch("dR_b1jet", &dR_b1jet,"dR_b1jet/F");  
   evtree->Branch("dR_b2jet", &dR_b2jet,"dR_b2jet/F");  
@@ -849,6 +849,7 @@ void DiHiggstoWWbb::matchMuon2Gen(TClonesArray *branchMuonBeforeIso, TClonesArra
 
 void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *branchJet, GenParticle* genb1, GenParticle* genb2, float dR_){
    //loop all Gen jets 
+    //cout <<" matchBjets2Gen , genjet size " << branchGenJet->GetEntries() <<"  jet size " << branchJet->GetEntries() << endl;
     Jet *genjet, *jet;
     genjet =0; jet=0;
     for (int i =0;  i<  branchGenJet->GetEntries(); i++)
@@ -876,6 +877,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	//cout <<"genb2jet pt "<< genb2jet_pt << endl;
        }
     }
+    //if (hasgenb1jet and hasgenb2jet) cout <<" find two gen bjets, matched to b quark" << endl;
 
    //loop all reco jets 
     for (int i =0;  i<  branchJet->GetEntries(); i++)
@@ -889,7 +891,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
       	b1jet = jet;
 	dR_b1jet = jet_p4.DeltaR(genb1->P4());
 	b1jet_p4 = jet_p4;
-	//cout <<"b1jet pt "<< b1jet_pt << endl;
+	//cout <<"b1jet pt "<< b1jet->PT << endl;
 	hasb1jet = true;
         
        }
@@ -898,9 +900,10 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
         dR_b2jet = jet_p4.DeltaR(genb2->P4());
 	b2jet_p4 = jet_p4;
 	hasb2jet = true;
-	//cout <<"b2jet pt "<< b2jet_pt << endl;
+	//cout <<"b2jet pt "<< b2jet->PT << endl;
        }
     }
+    //if (hasb1jet and hasb2jet) cout <<" find two bjets, matched to b quark" << endl;
       // b1jet should be different from b2jet
     if (hasb1jet && hasb2jet && b1jet == b2jet){
 	hasb1jet = false;
@@ -1083,8 +1086,8 @@ void DiHiggstoWWbb::initBranches(){
    genb2jet_phi=0;
    genb2jet_pt=0;
    genb2jet_energy=0;
-   dR_genb1jet=0;
-   dR_genb2jet=0;
+   dR_genb1jet=2;
+   dR_genb2jet=2;
    hasgenb1jet=false;
    hasgenb2jet=false;
   
@@ -1097,7 +1100,7 @@ void DiHiggstoWWbb::initBranches(){
    b1jet_phi=0;
    b1jet_pt=0;
    b1jet_energy=0;
-   b1jet_btag = false;
+   b1jet_btag = 0;
    b2jet_px=0;
    b2jet_py=0;
    b2jet_pz=0;
@@ -1105,7 +1108,7 @@ void DiHiggstoWWbb::initBranches(){
    b2jet_phi=0;
    b2jet_pt=0;
    b2jet_energy=0;
-   b2jet_btag = false;
+   b2jet_btag = 0;
    energeticbjets = 0;
    hasb1jet=false;
    hasb2jet=false;
@@ -1305,6 +1308,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   //incase compilation error
 
   int i =0;
+  int numbtags = 0;
   // Loop over all events
   //TFile *MMCfile = new TFile("testMMC.root", "recreate"); 
   if (nEvents_ < 0) nEvents_ = allEntries;
@@ -1322,12 +1326,17 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	exit(0);
 	}
     if (nEvents_ < 100) cout << "event id  "<< entry << endl;
-    else if (entry%(nEvents_/100) == 0)   cout <<" event id " << entry << endl;
-	//specail case, non-simulation case,but want to get some information at gen level;
+    else if (entry%(nEvents_/100) == 0)   cout <<" event id " << entry << " num btags "<< numbtags << endl;
+	//specail case, non-simulation case,but want to get some information at gen level, ttbar only
    	/* if (sample_ == Signal)	fetchHhhchain(branchParticle); 
 	 else fetchttbarchain(branchParticle);
 
-         dR_genl1l2 = (Wtomu1nu1 and Wtomu2nu2)?mu1_p4.DeltaR(mu2_p4): -1; */
+         dR_genl1l2 = (Wtomu1nu1 and Wtomu2nu2)?mu1_p4.DeltaR(mu2_p4): -1; 
+    	 getGenMET(branchGenMissingET);
+
+    	 matchBjets2Gen(branchGenJet, branchJet, genb1, genb2, jetsDeltaR_); 
+	*/
+
     if (simulation_){
     //********** Get H->hh chain ****************** 
    	 if (sample_ == Signal)	fetchHhhchain(branchParticle); 
@@ -1350,12 +1359,14 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
       //cout <<"Jet  eta "<< jet->Eta  <<" Pt "<< jet->PT <<" btag "<< jet->BTag << std::endl;
       if (jet->PT < jetsPt_ || abs(jet->Eta)> jetsEta_) continue;
       totjets_lorentz +=jet->P4();
-      if (jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+      if (((jet->BTag)&2)<1 || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+
       //insertInJetVector(allbjets, jet);
       allbjets.push_back(jet);
        
     }
     numbjets = allbjets.size();
+    if (allbjets.size()>=2) numbtags++;
     //cout <<" size of bjet vector  " << allbjets.size() << endl; 
     unsigned int b1at = 0;
     unsigned int b2at = 1;
@@ -1380,8 +1391,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }else if ( !simulation_ and allbjets.size() >= 2){
 	hasb1jet = true; hasRecob1jet = true;
  	hasb2jet = true; hasRecob1jet = true;
-	b1jet = allbjets.at(b1at);
-	b2jet = allbjets.at(b2at);
+	//b1jet = allbjets.at(b1at);
+	//b2jet = allbjets.at(b2at);
+	b1jet = allbjets.at(0);
+	b2jet = allbjets.at(1);
  	b1jet_p4 = b1jet->P4();
 	b2jet_p4 = b2jet->P4();	
 		
@@ -1454,8 +1467,12 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
      
     fillbranches();
+    //if (Wtomu1nu1 and not(Wtomu2nu2)) cout <<" has W to mu1 nu1 but no W to mu2 nu2 "<< endl;
+    //if (Wtomu2nu2 and not(Wtomu1nu1)) cout <<" has W to mu2 nu2 but no W to mu1 nu1 "<< endl;
+    //if (Wtomu1nu1 and Wtomu2nu2) cout <<" has W to mu1 nu2 and W to mu2 nu2, gen_dRll " << dR_genl1l2 <<endl;
+    
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
-    ttbar  = (ttoWb and tbartoWbbar);
+    ttbar  = (ttoWb and tbartoWbbar and Wtomu1nu1 and Wtomu2nu2);
     if (runMMC_ and hasdRljet and hasMET and ((h2tohh and sample_==Signal) || (ttbar and sample_ ==Background))){
 	 //TLorentzVector bjets_lorentz=genb1jet->P4()+genb2jet->P4();
          //cout <<" m_{bjets} " << bjets_lorentz.M(); bjets_lorentz.Print();
@@ -1506,7 +1523,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	}
 //fill branches
     //if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2) evtree->Fill();
-    if (h2tohh or ttbar) evtree->Fill();
+    if (h2tohh or ttbar or (hasb1jet and hasb2jet and hasMuon1 and hasMuon2)) evtree->Fill();
     }
    //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
    // MMCfile->Close();
@@ -1527,6 +1544,25 @@ void DiHiggstoWWbb::fillbranches(){
         b2jet_px = b2jet_p4.Px(); b2jet_py = b2jet_p4.Py(); b2jet_pz= b2jet_p4.Pz(); b2jet_energy = b2jet_p4.Energy();
 	b2jet_eta = b2jet_p4.Eta(); b2jet_phi = b2jet_p4.Phi(); b2jet_pt = b2jet_p4.Pt();
    }
+   
+    if (hasMuon1){
+	Muon1_p4 = muon1->P4();
+	Muon1_px = muon1->P4().Px(); Muon1_py = muon1->P4().Py(); Muon1_pz = muon1->P4().Pz(); Muon1_energy = muon1->P4().E();
+	Muon1_eta = muon1->Eta; Muon1_phi = muon1->Phi; Muon1_pt = muon1->PT;
+	//std::cout <<" Muon1 eta "<< muon1->Eta <<" phi "<< muon1->Phi <<" pt "<< muon1->PT << std::endl;
+	}
+    if (hasMuon2){
+	Muon2_p4 = muon2->P4();
+	Muon2_px = muon2->P4().Px(); Muon2_py = muon2->P4().Py(); Muon2_pz = muon2->P4().Pz(); Muon2_energy = muon2->P4().E();
+	Muon2_eta = muon2->Eta; Muon2_phi = muon2->Phi; Muon2_pt = muon2->PT;
+//	std::cout <<" Muon2 eta "<< muon2->Eta <<" phi "<< muon2->Phi <<" pt "<< muon2->PT << std::endl;
+	}
+   
+    if (hasMuon1 && hasMuon2){
+    if (((muon1->PT > muonPt1_ && muon2->PT > muonPt2_) || (muon1->PT > muonPt2_ && muon2->PT > muonPt1_)) 
+	&& fabs(muon1->Eta)<muonsEta_ && fabs(muon2->Eta)< muonsEta_) hastwomuons =true;
+    }
+
 
 }
 
