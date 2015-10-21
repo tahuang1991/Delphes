@@ -1359,7 +1359,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
       //cout <<"Jet  eta "<< jet->Eta  <<" Pt "<< jet->PT <<" btag "<< jet->BTag << std::endl;
       if (jet->PT < jetsPt_ || abs(jet->Eta)> jetsEta_) continue;
       totjets_lorentz +=jet->P4();
-      if (((jet->BTag)&2)<1 || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+      if (jet->BTag<1 || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+      //in general, jet->BTag: bit1 is loosebtag, bit2 is mediumbtag, bit3 is tightbtag
 
       //insertInJetVector(allbjets, jet);
       allbjets.push_back(jet);
