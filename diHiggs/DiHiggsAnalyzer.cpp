@@ -17,7 +17,6 @@
 #include "TLorentzVector.h"
 
 #include "classes/DelphesClasses.h"
-//#include "DelphesClasses.h"
 
 #include "external/ExRootAnalysis/ExRootTreeReader.h"
 #include "external/ExRootAnalysis/ExRootTreeWriter.h"
@@ -25,21 +24,13 @@
 #include "external/ExRootAnalysis/ExRootResult.h"
 #include "external/ExRootAnalysis/ExRootUtilities.h"
 
-using namespace std;
-
-//------------------------------------------------------------------------------
-
-// Here you can put your analysis macro
-
 #include "DiHiggstollbb.h"
 
-//void test(TString inputFile);
-//------------------------------------------------------------------------------
+using namespace std;
 
 int main(int argc, char *argv[])
 {
   const char *appName = "DiHiggsAnalyzer";
-
   if(argc < 5)
   {
     cout << " Usage: " << appName << " missing input_file" << endl;
@@ -59,37 +50,37 @@ int main(int argc, char *argv[])
   int nEvent = -1;
   bool input_good =false;
   for (int i = 1; i < argc; i++) { /* We will iterate over argv[] to get the parameters stored inside.
-                                          * Note that we're starting on 1 because we don't need to know the 
-                                          *                                           * path of the program, which is stored in argv[0] */
-      if (i + 1 != argc){ // Check that we haven't finished parsing already
-            if (string(argv[i]) == "-i" or string(argv[i]) == "-inputfile") {
-                  inputFile = TString(argv[i+1]);
-		  std::ifstream infile(argv[i+1]);
-    		  input_good = infile.good();
-             } else if (string(argv[i]) == "-o" or string(argv[i])=="-outputfile") {
-                  outputFile = TString(argv[i+1]);
-	     } else if (string(argv[i]) == "-n" or string(argv[i])=="-N"){
-		  nEvent = atoi(argv[i+1]);
-	     }  
+						* Note that we're starting on 1 because we don't need to know the 
+						*                                           * path of the program, which is stored in argv[0] */
+    if (i + 1 != argc){ // Check that we haven't finished parsing already
+	if (string(argv[i]) == "-i" or string(argv[i]) == "-inputfile") {
+	  inputFile = TString(argv[i+1]);
+	  std::ifstream infile(argv[i+1]);
+	  input_good = infile.good();
+	} else if (string(argv[i]) == "-o" or string(argv[i])=="-outputfile") {
+	  outputFile = TString(argv[i+1]);
+	} else if (string(argv[i]) == "-n" or string(argv[i])=="-N"){
+	  nEvent = atoi(argv[i+1]);
+	}  
     }
   }
   if (input_good){
-  	cout <<" inputfile " << inputFile << endl;
-  	cout <<" outputfile " << outputFile << endl;
-  	cout <<" run number of events "<< nEvent << endl;
-   } else{
-	cout <<" failed to find input file or outputfile " << endl;
-	return 0;
-	}
-   
+    cout <<" inputfile " << inputFile << endl;
+    cout <<" outputfile " << outputFile << endl;
+    cout <<" run number of events "<< nEvent << endl;
+  } else{
+    cout <<" failed to find input file or outputfile " << endl;
+    return 0;
+  }
+
   //DiHiggsWWbb *diHiggsValidate = new DiHiggsValition();
   DiHiggstollbb *diHiggsAna = new DiHiggstollbb(inputFile, outputFile, nEvent);
 
-//------------------------------------------------------------------------------
-// Here you call your macro's main function 
+  //------------------------------------------------------------------------------
+  // Here you call your macro's main function 
   diHiggsAna->DiHiggstollbbrun();
   diHiggsAna->writeTree();
-//------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
 
 }
 
