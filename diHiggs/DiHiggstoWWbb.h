@@ -38,6 +38,7 @@ class DiHiggstoWWbb {
     TString inputFile;
     TString outputFile;
     int nEvents_;      //Number of events to analyze
+    int nStarts_;
     bool simulation_;  //True if you have also GEN info
     int sample_;       //Signal or Background (see next enum)
     enum {Signal = 1, Background = 2};
@@ -105,6 +106,7 @@ class DiHiggstoWWbb {
     Muon *muon1_beforeIso, *muon2_beforeIso;
     //Lorentz Vector
     TLorentzVector Muon1_p4, Muon2_p4, b1jet_p4, b2jet_p4, Met_p4, totjets_lorentz;
+    TLorentzVector genb1jet_p4, genb2jet_p4; 
     //Gen Lorentz vector
     TLorentzVector mu1_p4, mu2_p4, nu1_p4, nu2_p4, b1_p4, b2_p4;
     void printGenParticle(GenParticle *genP);
@@ -162,7 +164,7 @@ class DiHiggstoWWbb {
     float b1jet_phi;
     float b1jet_pt;
     float b1jet_energy;
-    float b1jet_btag;
+    unsigned int b1jet_btag;
     float b2jet_px;
     float b2jet_py;
     float b2jet_pz;
@@ -170,7 +172,7 @@ class DiHiggstoWWbb {
     float b2jet_phi;
     float b2jet_pt;
     float b2jet_energy;
-    float b2jet_btag;
+    unsigned int b2jet_btag;
     int energeticbjets;
     bool hasb1jet;
     bool hasb2jet;

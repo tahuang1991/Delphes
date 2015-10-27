@@ -64,6 +64,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
     return;
   }
   getintpara(strs, "nEvents", nEvents_, -1);
+  getintpara(strs, "nStarts", nStarts_, 0);
   getintpara(strs, "sample", sample_, Signal);
   getboolpara(strs, "simulation", simulation_, true);
   getdoublepara(strs,"jetsPt", jetsPt_, 20.0);
@@ -212,7 +213,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("b1jet_phi",&b1jet_phi, "b1jet_phi/F");
   evtree->Branch("b1jet_pt",&b1jet_pt, "b1jet_pt/F");
   evtree->Branch("b1jet_energy",&b1jet_energy, "b1jet_energy/F");
-  evtree->Branch("b1jet_btag",&b1jet_btag, "b1jet_btag/B");
+  evtree->Branch("b1jet_btag",&b1jet_btag, "b1jet_btag/i");//unsigned int
   evtree->Branch("b2jet_px",&b2jet_px, "b2jet_px/F");
   evtree->Branch("b2jet_py",&b2jet_py, "b2jet_py/F");
   evtree->Branch("b2jet_pz",&b2jet_pz, "b2jet_pz/F");
@@ -220,7 +221,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("b2jet_phi",&b2jet_phi, "b2jet_phi/F");
   evtree->Branch("b2jet_pt",&b2jet_pt, "b2jet_pt/F");
   evtree->Branch("b2jet_energy",&b2jet_energy, "b2jet_energy/F");
-  evtree->Branch("b2jet_btag",&b2jet_btag, "b2jet_btag/B");
+  evtree->Branch("b2jet_btag",&b2jet_btag, "b2jet_btag/i");
   evtree->Branch("energeticbjets",&energeticbjets, "energeticbjets/I");
   evtree->Branch("dR_b1jet", &dR_b1jet,"dR_b1jet/F");  
   evtree->Branch("dR_b2jet", &dR_b2jet,"dR_b2jet/F");  
@@ -789,6 +790,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
     if (genjet->PT < bjetsPt_ || abs(genjet->Eta)> bjetsEta_) continue;
     TLorentzVector genjet_p4 = genjet->P4();
     if (genb1 !=0  && genjet_p4.DeltaR(genb1->P4()) < dR_genb1jet && genjet_p4.DeltaR(genb1->P4())< dR_) {
+	genb1jet_p4 = genjet_p4;
 	dR_genb1jet = genjet_p4.DeltaR(genb1->P4());
 	genb1jet_px = genjet_p4.Px(); genb1jet_py = genjet_p4.Py(); genb1jet_pz=genjet_p4.Pz(); genb1jet_energy = genjet_p4.Energy();
 	genb1jet_eta = genjet_p4.Eta(); genb1jet_phi = genjet_p4.Phi();
@@ -798,6 +800,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	//cout <<"genb1jet pt "<< genb1jet_pt << endl;
     }
     if (genb2 !=0  && genjet_p4.DeltaR(genb2->P4()) < dR_genb2jet && genjet_p4.DeltaR(genb2->P4()) < jetsDeltaR_){
+	genb2jet_p4 = genjet_p4;
 	dR_genb2jet = genjet_p4.DeltaR(genb2->P4());
 	genb2jet_px = genjet_p4.Px(); genb2jet_py = genjet_p4.Py(); genb2jet_pz=genjet_p4.Pz(); genb2jet_energy = genjet_p4.Energy();
 	genb2jet_eta = genjet_p4.Eta(); genb2jet_phi = genjet_p4.Phi();
@@ -982,8 +985,8 @@ void DiHiggstoWWbb::initBranches(){
   genb2jet_phi=0;
   genb2jet_pt=0;
   genb2jet_energy=0;
-  dR_genb1jet=0;
-  dR_genb2jet=0;
+  dR_genb1jet=2.0;
+  dR_genb2jet=2.0;
   hasgenb1jet=false;
   hasgenb2jet=false;
 
@@ -996,7 +999,7 @@ void DiHiggstoWWbb::initBranches(){
   b1jet_phi=0;
   b1jet_pt=0;
   b1jet_energy=0;
-  b1jet_btag = false;
+  b1jet_btag = 0;
   b2jet_px=0;
   b2jet_py=0;
   b2jet_pz=0;
@@ -1004,7 +1007,7 @@ void DiHiggstoWWbb::initBranches(){
   b2jet_phi=0;
   b2jet_pt=0;
   b2jet_energy=0;
-  b2jet_btag = false;
+  b2jet_btag = 0;
   energeticbjets = 0;
   hasb1jet=false;
   hasb2jet=false;
@@ -1197,8 +1200,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   int i =0;
   //TFile *MMCfile = new TFile("testMMC.root", "recreate"); 
   /****** Loop over all events *****/
-  if (nEvents_ < 0) nEvents_ = allEntries;
-  for(entry = 0; entry < nEvents_; ++entry){
+  int totalevents=0;
+  if (nEvents_ < 0) totalevents = allEntries;
+  else totalevents = nStarts_+nEvents_;
+  for(entry = nStarts_; entry < totalevents; ++entry){
 
     initBranches();
     // Load selected branches with data from specified event
@@ -1208,7 +1213,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	exit(0);
     }
     if (nEvents_ < 100) cout << "event id  "<< entry << endl;
-    else if (entry%(nEvents_/100) == 0)   cout <<" event id " << entry << endl;
+    else if ((entry-nStarts_)%(nEvents_/100) == 0)   cout <<" event id " << entry << endl;
 
     // If simulation, take GEN info
     if (simulation_){
@@ -1325,9 +1330,13 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if (runMMC_ and hasdRljet and hasMET and ((h2tohh and sample_==Signal) || (ttbar and sample_ ==Background))){
 	cout <<" start to run MMC for this event " << entry <<endl;
 	TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
-	if (b1jet_p4.Pt()>b2jet_p4.Pt()) {
-	  bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
-	} else { bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;}
+	//if (b1jet_p4.Pt()>b2jet_p4.Pt()) {
+	if (genb1jet_p4.Pt()>genb2jet_p4.Pt()) {
+	  //bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
+	  bjet_pt1_lorentz = genb1jet_p4; bjet_pt2_lorentz = genb2jet_p4;
+	} else { 
+		//bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;
+		bjet_pt1_lorentz = genb2jet_p4; bjet_pt2_lorentz = genb1jet_p4;}
 
 	if (b1_p4.Pt()>b2_p4.Pt()) {
 	  bgenp_pt1_lorentz = b1_p4; bgenp_pt2_lorentz = b2_p4;
@@ -1368,7 +1377,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
     //fill branches
     //if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2) evtree->Fill();
-    if (h2tohh or ttbar) evtree->Fill();
+    if (h2tohh or ttbar or (hasb1jet and hasb2jet and hasMuon1 and hasMuon2)) evtree->Fill();
   }
   //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
   //MMCfile->Close();
