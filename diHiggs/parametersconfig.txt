@@ -1,6 +1,6 @@
 #parameters value 
-nEvents		1000
-nStarts		0
+nEvents		10000
+nStarts		100
 sample		1
 simulation	true
 jetsPt 		20
@@ -15,6 +15,9 @@ muonPt1		20.0
 muonPt2		20.0
 muonsEta	2.4
 runMMC  	false
+useRecoBJet	false
+useRecoMuon	false
+useRecoMET	false
 iterations 	1000000
 MMCRef		MMCRefPDF.ROOT
 weightfromonshellnupt_func  false

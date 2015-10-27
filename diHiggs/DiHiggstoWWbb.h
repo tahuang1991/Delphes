@@ -58,6 +58,9 @@ class DiHiggstoWWbb {
     double metPt_;
     //Parameters for MMC
     bool runMMC_;
+    bool useRecoMET_;
+    bool useRecoMuon_;
+    bool useRecoBJet_;
     int iterations_;
     std::string RefPDFfile_;
     bool weightfromonshellnupt_func_;
@@ -106,9 +109,11 @@ class DiHiggstoWWbb {
     Muon *muon1_beforeIso, *muon2_beforeIso;
     //Lorentz Vector
     TLorentzVector Muon1_p4, Muon2_p4, b1jet_p4, b2jet_p4, Met_p4, totjets_lorentz;
-    TLorentzVector genb1jet_p4, genb2jet_p4; 
     //Gen Lorentz vector
+    TLorentzVector genb1jet_p4, genb2jet_p4; 
     TLorentzVector mu1_p4, mu2_p4, nu1_p4, nu2_p4, b1_p4, b2_p4;
+    TLorentzVector genmet_p4;
+     
     void printGenParticle(GenParticle *genP);
     void printJet(Jet *jet);
     void getFinalState(GenParticle* &genp, TClonesArray *branchParticle);
@@ -341,6 +346,7 @@ class DiHiggstoWWbb {
     bool hasMuon2;
     bool hasdRljet;
     bool h2tohh;
+    bool preselections;//check whether event pass preselection or not
 
     //MMC
     TTree* MMCtree;
