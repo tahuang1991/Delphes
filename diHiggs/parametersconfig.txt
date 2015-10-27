@@ -25,5 +25,3 @@ weightfromonshellnupt_hist  true
 weightfromonoffshellWmass_hist	true 
 useMET 		true
 bjetrescaleAlgo	2
-
-

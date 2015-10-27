@@ -805,8 +805,6 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
   for (int i =0;  i<  branchJet->GetEntries(); i++)
   {
     jet = (Jet*) branchJet->At(i);
-    if (jet->PT < jetsPt_ || abs(jet->Eta)> jetsEta_) continue;
-    totjets_lorentz +=jet->P4();
     if (jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
     TLorentzVector jet_p4 = jet->P4();
     if (genb1 !=0 && jet_p4.DeltaR(genb1->P4()) < dR_b1jet && jet_p4.DeltaR(genb1->P4()) < dR_) {
