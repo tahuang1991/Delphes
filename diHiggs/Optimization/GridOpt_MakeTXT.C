@@ -34,7 +34,8 @@ struct BRs {
   float h_bb; float h_WW; float W_lnu; float W_munu; float t_WB;
 } MyBR;
 
-void GridOpt_MakeTXT( TString folder = "OUT_GridOpt_1/", TString Sig_name = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_WWbb_1M_PU0_leptonW_6969448_B3_1010_validatecuts.root", TString Bac_name = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/TTbar_WWbb_1M_PU0_leptonW_7570700_1010_validatecuts.root" ){
+//void GridOpt_MakeTXT( TString folder = "OUT_GridOpt_1/", TString Sig_name = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_WWbb_1M_PU0_leptonW_6969448_B3_1010_validatecuts.root", TString Bac_name = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/TTbar_WWbb_1M_PU0_leptonW_7570700_1010_validatecuts.root" )
+void GridOpt_MakeTXT( TString folder = "OUT_GridOpt_1/", TString Sig_name = "delphes_B3_1M_PU0_Btag.root", TString Bac_name = "delphes_ttbar_1M_PU0.root" ){
 
   TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
   //Cross sections and BR
@@ -45,7 +46,8 @@ void GridOpt_MakeTXT( TString folder = "OUT_GridOpt_1/", TString Sig_name = "/fd
   float Br_Hhh      = ( MyBR.h_bb + MyBR.h_WW * MyBR.W_lnu * MyBR.W_lnu ) * ( MyBR.h_bb + MyBR.h_WW * MyBR.W_lnu * MyBR.W_lnu ); //H->hh ; hh->bbbb  hh->WWbb, hh->WWWW ;  W -> lnu;
   float Ntot_tt     = 1000000;
   float Xsec_tt     = 953;          //sigma(pp->tt) [pb]
-  float Br_tt       = MyBR.t_WB * MyBR.t_WB * MyBR.W_lnu * MyBR.W_lnu;
+  //float Br_tt       = MyBR.t_WB * MyBR.t_WB * MyBR.W_lnu * MyBR.W_lnu;
+  float Br_tt       = MyBR.t_WB * MyBR.t_WB * MyBR.W_munu * MyBR.W_munu;
   float Weight_Hhh  = (Xsec_Hhh * Br_Hhh * LumiInt) / Ntot_Hhh;
   float Weight_tt   = (Xsec_tt * Br_tt * LumiInt) / Ntot_tt;
   //Opening Inputs

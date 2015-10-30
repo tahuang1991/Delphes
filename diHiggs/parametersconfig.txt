@@ -1,6 +1,6 @@
 #parameters value 
-nEvents		10000
-nStarts		100
+nEvents		-1
+nStarts		0
 sample		1
 simulation	true
 jetsPt 		20
@@ -11,8 +11,8 @@ jetleptonDeltaR 0.3
 jetsDeltaR 	0.4
 leptonsDeltaR	0.4
 leptonIso	0.15
-muonPt1		20.0
-muonPt2		20.0
+muonPt1		10.0
+muonPt2		10.0
 muonsEta	2.4
 runMMC  	false
 useRecoBJet	false

@@ -305,6 +305,7 @@ class DiHiggstoWWbb {
     bool hasRecob2jet;
     bool hasRecoMuon1;
     bool hasRecoMuon2;
+    float dR_bl;
     float dR_b1l1;
     float dR_b1l2;
     float dR_b2l1;
@@ -335,6 +336,10 @@ class DiHiggstoWWbb {
     float met_phi;
     float met_px;
     float met_py;
+    float genmet_diBaxis_p;
+    float genmet_diBaxis_t;
+    float met_diBaxis_p;
+    float met_diBaxis_t;
 
     float h2tohh_mass;
     //additional cuts
