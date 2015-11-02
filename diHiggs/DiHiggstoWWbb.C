@@ -1409,8 +1409,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	delete thismmc;
     }
     //fill branches
-    if ((hasb1jet or hasb2jet) and h2tohh) evtree->Fill();
-    //if (h2tohh or ttbar or (hasb1jet and hasb2jet and hasMuon1 and hasMuon2)) evtree->Fill();
+    //if ((hasb1jet or hasb2jet) and h2tohh) evtree->Fill();
+    if (h2tohh or ttbar or (hasb1jet and hasb2jet)) evtree->Fill();
   }
   //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
   //MMCfile->Close();
