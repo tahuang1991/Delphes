@@ -791,7 +791,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	genb1jet = genjet;
 	//cout <<"genb1jet pt "<< genb1jet_pt << endl;
     }
-    if (genb2 !=0  && genjet_p4.DeltaR(genb2->P4()) < dR_genb2jet && genjet_p4.DeltaR(genb2->P4()) < jetsDeltaR_){
+    if (genb2 !=0  && genjet_p4.DeltaR(genb2->P4()) < dR_genb2jet && genjet_p4.DeltaR(genb2->P4()) < dR_){
 	genb2jet_p4 = genjet_p4;
 	dR_genb2jet = genjet_p4.DeltaR(genb2->P4());
 	genb2jet_px = genjet_p4.Px(); genb2jet_py = genjet_p4.Py(); genb2jet_pz=genjet_p4.Pz(); genb2jet_energy = genjet_p4.Energy();
@@ -1333,18 +1333,22 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     //only in simulation case, these two could be true
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
-    if (runMMC_ and hasdRljet and hasMET and ((h2tohh and sample_==Signal) || (ttbar and sample_ ==Background))){
+    if (runMMC_ and preselections and (not(simulation_) || (h2tohh and sample_==Signal) || (ttbar and sample_ ==Background))){
 	cout <<" start to run MMC for this event " << entry <<endl;
 	TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
 	if (useRecoBJet_ and b1jet_p4.Pt()>b2jet_p4.Pt()) {
+	  cout <<" use Reco bjet " << endl;
 	  bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
 	} else if(useRecoBJet_){ 
+	  cout <<" use Reco bjet " << endl;
 		bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;
 	}
 
 	if (simulation_ and not(useRecoBJet_) and genb1jet_p4.Pt()>genb2jet_p4.Pt()) {
+	  cout <<" use Gen bjet " << endl;
 	    bjet_pt1_lorentz = genb1jet_p4; bjet_pt2_lorentz = genb2jet_p4; }
 	else if (simulation_ and not(useRecoBJet_) and genb1jet_p4.Pt()<genb2jet_p4.Pt()) {
+	  cout <<" use Gen bjet " << endl;
 		bjet_pt1_lorentz = genb2jet_p4; bjet_pt2_lorentz = genb1jet_p4;
 	}
 
@@ -1355,12 +1359,15 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 
         TLorentzVector lepton1_lorentz, lepton2_lorentz;
 	if (useRecoMuon_ ){
+	  cout <<" use Reco Muon " << endl;
 		lepton1_lorentz = Muon1_p4; lepton2_lorentz = Muon2_p4;
 	}else if (not(useRecoMuon_) and simulation_){
+	  cout <<" use Gen Muon " << endl;
 		lepton1_lorentz = mu1_p4; lepton2_lorentz = mu2_p4;
 	}
 
 	TLorentzVector Met_lorentz;
+	cout <<" use "<<(useRecoMET_?" Reco ":" Gen ") << "MET" << endl;
 	if (useRecoMET_)	Met_lorentz = Met_p4;
 	else if (not(useRecoMET_) and simulation_) Met_lorentz = genmet_p4;
 
@@ -1402,8 +1409,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	delete thismmc;
     }
     //fill branches
-    //if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2) evtree->Fill();
-    if (h2tohh or ttbar or (hasb1jet and hasb2jet and hasMuon1 and hasMuon2)) evtree->Fill();
+    if ((hasb1jet or hasb2jet) and h2tohh) evtree->Fill();
+    //if (h2tohh or ttbar or (hasb1jet and hasb2jet and hasMuon1 and hasMuon2)) evtree->Fill();
   }
   //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
   //MMCfile->Close();
