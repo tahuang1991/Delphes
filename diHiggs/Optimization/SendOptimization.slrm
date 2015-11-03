@@ -11,13 +11,10 @@
 source ~/.bashrc
 . /etc/profile.d/modules.sh
 #change to dir
-cd /home/lpernie/Hhh/delphes/diHiggs
+cd /home/lpernie/Hhh/delphes/diHiggs/Optimization
 jobid=$SLURM_JOBID
 echo "job$jobid starts"
-#./DelphesHepMC examples/delphes_card_CMS.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_1061848.root /fdata/hepx/store/user/taohuang/Hhh/HH-bbWW-B3-1061848.hepmc
-#./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1015_Btag_leptonW_6969448.root -o delphes_B3_1M_PU0_Btag.root -config parametersconfig.txt
-./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_1M_PU0_Wtobmu_1020_8088741.root -o delphes_ttbar_1M_PU0.root -config parametersconfig.txt
-
+root -b -q .x GridOpt_MakeTXT.C+
 echo "job$jobid is done"
 
 

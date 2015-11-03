@@ -28,8 +28,7 @@ void Make2Plot(TTree * TS, TTree * TB, TString Var, TString Sel, TString Tag, TS
 float GetMax(TH1F *h);
 int GetHigherH(TH1F *h1, TH1F *h2);
 
-//void Plotter_DiHiggs( TString folder="Plots_FileOptim", TString File_S="delphes_B3_1M_PU0_Btag.root", TString File_B="delphes_ttbar_1M_PU0.root" ){
-void Plotter_DiHiggs( TString folder="Plots_FileOptim", TString File_S="b3.root", TString File_B="ttTao.root" ){
+void Plotter_DiHiggs( TString folder="Plots_FileOptim", TString File_S="delphes_B3_1M_PU0_Btag.root", TString File_B="delphes_ttbar_1M_PU0.root" ){
   gROOT->Reset(); 
   // Topology
   int Topology =- 1;
@@ -111,14 +110,8 @@ void Plotter_DiHiggs( TString folder="Plots_FileOptim", TString File_S="b3.root"
   selectionTag = InitVec( Preselection + " && genmet_diBaxis_t>-900 && met_diBaxis_t>-900 && " + Met, "MetDiBt_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
   ListPlots["genmet_diBaxis_t-met_diBaxis_t"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
   // DR(l1,b1)
-  selectionTag = InitVec( Preselection + " && " + DR_l1b1 + " > 0 && " + BjetAndMu, "DR_Mu1B1", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-  ListPlots[DR_l1b1] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  selectionTag = InitVec( Preselection + " && dR_bl>0", "DR_MuB", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  selectionTag = InitVec( Preselection, "DR_MuB", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
   ListPlots["(dR_bl)"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  selectionTag = InitVec( Preselection + " && hasdRljet && dR_bl>0", "DR_MuB_hasdRljet", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-  ListPlots["dR_bl "] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  selectionTag = InitVec( "dR_bl>0", "DR_MuB_nopres", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-  ListPlots[" dR_bl "] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
 
   // Loop over the Map
   typedef map< TString,vector< vector<TString> > >::iterator it_map;
