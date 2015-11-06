@@ -163,12 +163,12 @@ void DiHiggstoWWbb::calculateNormfactor(int bm){
   cout <<"Integrate L(pb^{-1}) "<< L <<" total H->bbmumu "<<L*cs_H2bbmumu <<" total tt->bbmumu "<< L*cs_tt2bbmumu << endl;
 }
 
-void DiHiggstoWWbb::init(){ 
+void DiHiggstoWWbb::init(){
   chain = new TChain("Delphes");
   chain->Add(inputFile);
-
   treeReader = new ExRootTreeReader(chain);
   evtree = new TTree("evtree","event tree");
+  evtree->Branch("event_n",&event_n, "event_n/I");
   evtree->Branch("b1_px",&b1_px, "b1_px/F");
   evtree->Branch("b1_py",&b1_py, "b1_py/F");
   evtree->Branch("b1_pz",&b1_pz, "b1_pz/F");
@@ -262,6 +262,11 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("nu2_phi",&nu2_phi, "nu2_phi/F");
   evtree->Branch("nu2_pt",&nu2_pt, "nu2_pt/F");
   evtree->Branch("nu2_energy",&nu2_energy, "nu2_energy/F");
+  evtree->Branch("nu1and2_pt",&nu1and2_pt, "nu1and2_pt/F");
+  evtree->Branch("nu1and2_px",&nu1and2_px, "nu1and2_px/F");
+  evtree->Branch("nu1and2_py",&nu1and2_py, "nu1and2_py/F");
+  evtree->Branch("nu1and2_diBaxis_p",&nu1and2_diBaxis_p, "nu1and2_diBaxis_p/F");
+  evtree->Branch("nu1and2_diBaxis_t",&nu1and2_diBaxis_t, "nu1and2_diBaxis_t/F");
 
   evtree->Branch("w1_mass",&w1_mass, "w1_mass/F");
   evtree->Branch("w1_px",&w1_px, "w1_px/F");
@@ -388,6 +393,8 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("genmet_diBaxis_t",&genmet_diBaxis_t,"genmet_diBaxis_t/F");
   evtree->Branch("met_diBaxis_p",&met_diBaxis_p,"met_diBaxis_p/F");
   evtree->Branch("met_diBaxis_t",&met_diBaxis_t,"met_diBaxis_t/F");
+  evtree->Branch("met_diBaxis_c1_p",&met_diBaxis_c1_p,"met_diBaxis_c1_p/F");
+  evtree->Branch("met_diBaxis_c1_t",&met_diBaxis_c1_t,"met_diBaxis_c1_t/F");
 
   evtree->Branch("hasGenMET",&hasGenMET, "hasGenMET/B");
   evtree->Branch("hasMET",&hasMET, "hasMET/B");
@@ -395,7 +402,6 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("h2tohh_mass",&h2tohh_mass,"h2tohh_mass/F");
   evtree->Branch("h2tohh",&h2tohh,"h2tohh/B");
   evtree->Branch("preselections",&preselections, "preselections/B");
-
 
   evtree->Branch("MMC_h2mass_prob",&MMC_h2mass_prob,"MMC_h2mass_prob/F");
   evtree->Branch("MMC_h2massweight1_prob",&MMC_h2massweight1_prob,"MMC_h2massweight1_prob/F");
@@ -405,6 +411,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("MMC_h2mass_Entries",&MMC_h2mass_Entries,"MMC_h2mass_Entries/F");
   evtree->Branch("MMC_h2mass_overflow",&MMC_h2mass_overflow,"MMC_h2mass_overflow/F");
   evtree->Branch("MMC_h2mass_underflow",&MMC_h2mass_underflow,"MMC_h2mass_overflow/F");
+  GetPDFc1();
 }
 
 void DiHiggstoWWbb::writeTree(){
@@ -544,8 +551,8 @@ void DiHiggstoWWbb::fetchHhhchain(TClonesArray *branchParticle){
     //cout << "mu1 from W "; printGenParticle(genmu1);
   }
   if (Wtomu2nu2){
-    getFinalState(genmu2, branchParticle);	
-    getFinalState(gennu2, branchParticle);	
+    getFinalState(genmu2, branchParticle);
+    getFinalState(gennu2, branchParticle);
     mu2_p4 = genmu2->P4();
     mu2_px = genmu2->Px; mu2_py = genmu2->Py; mu2_pz = genmu2->Pz; mu2_energy = genmu2->E;
     mu2_eta = genmu2->Eta; mu2_phi = genmu2->Phi; mu2_pt = genmu2->PT;
@@ -807,6 +814,11 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	//cout <<"genb2jet pt "<< genb2jet_pt << endl;
     }
   }
+  // genb1jet should be different from genb2jet
+  if (hasgenb1jet && hasgenb2jet && genb1jet == genb2jet){
+    hasgenb1jet = false;
+    hasgenb2jet = false;
+  }
 
   //loop all reco jets 
   for (int i =0;  i<  branchJet->GetEntries(); i++)
@@ -1035,6 +1047,11 @@ void DiHiggstoWWbb::initBranches(){
   nu2_phi =0;
   nu2_pt = 0.0;
   nu2_energy =0;
+  nu1and2_pt =-999;
+  nu1and2_px =-999;
+  nu1and2_py =-999;
+  nu1and2_diBaxis_p =-999;
+  nu1and2_diBaxis_t =-999;
 
   w1_mass =0.0;
   w1_px =0.0;
@@ -1154,18 +1171,20 @@ void DiHiggstoWWbb::initBranches(){
   dphi_llmet = -10;
   mass_trans = 0.0;
 
-  genmet = 0;
-  genmet_phi = 0;
-  genmet_px = 0;
-  genmet_py = 0;
-  met = 0;
-  met_phi = 0;
-  met_px = 0;
-  met_py = 0;
+  genmet = -999.;
+  genmet_phi = -999.;
+  genmet_px = -999.;
+  genmet_py = -999.;
+  met = -999.;
+  met_phi = -999.;
+  met_px = -999.;
+  met_py = -999.;
   genmet_diBaxis_p = -999.;
   genmet_diBaxis_t = -999.;
   met_diBaxis_p = -999.;
   met_diBaxis_t = -999;
+  met_diBaxis_c1_p = -999;
+  met_diBaxis_c1_t = -999;
 
   h2tohh_mass =0;
   //additional cuts
@@ -1220,8 +1239,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	cout <<"can not read Entry through treeReader" << endl;
 	exit(0);
     }
-    if (nEvents_ < 100) cout << "event id  "<< entry << endl;
-    else if ((entry-nStarts_+1)%(nEvents_/100) == 0)   cout <<" event id " << entry <<" number of bjets pairs " << totnumbjets <<endl;
+    event_n = entry;
+    //if (nEvents_ < 100) cout << "event id  "<< entry << endl;
+    //else if ((entry-nStarts_+1)%(nEvents_/100) == 0)   cout <<" event id " << entry <<" number of bjets pairs " << totnumbjets <<endl;
+    if((entry-nStarts_)%1000==0) cout<<"On Ev. "<<entry<<" / "<<totalevents<<endl;
 
     // If simulation, take GEN info
     if (simulation_){
@@ -1239,6 +1260,15 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  float dphi_genmet_dibijet = TVector2::Phi_mpi_pi(genDiBjet_Transv.Phi()-genMet_Transv.Phi());
 	  genmet_diBaxis_p = genMet_Transv.Mag()*cos(dphi_genmet_dibijet);
 	  genmet_diBaxis_t = genMet_Transv.Mag()*sin(dphi_genmet_dibijet);
+	  if (Wtomu1nu1 and Wtomu2nu2){
+	    TVector3 nu1and2_V3( (gennu1->P4() + gennu2->P4()).Px(), (gennu1->P4() + gennu2->P4()).Py(), 0.);
+	    nu1and2_pt = nu1and2_V3.Pt();
+	    nu1and2_px = nu1and2_V3.Px();
+	    nu1and2_py = nu1and2_V3.Py();
+	    float dphi_nu1and2_dibijet = TVector2::Phi_mpi_pi(genDiBjet_Transv.Phi()-nu1and2_V3.Phi());
+	    nu1and2_diBaxis_p  =  nu1and2_V3.Mag()*cos(dphi_nu1and2_dibijet);
+	    nu1and2_diBaxis_t  =  nu1and2_V3.Mag()*sin(dphi_nu1and2_dibijet);
+	  }
 	}
     }
 
@@ -1298,6 +1328,17 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  float dphi_met_dibijet = TVector2::Phi_mpi_pi(genDiBjet_Transv.Phi()-Met_Transv.Phi());
 	  met_diBaxis_p = Met_Transv.Mag()*cos(dphi_met_dibijet);
 	  met_diBaxis_t = Met_Transv.Mag()*sin(dphi_met_dibijet);
+	  //Slide rescale
+	  b1rescalefactor = 1.;
+	  b2rescalefactor = 1.;
+	  SlideRescale();
+	  TLorentzVector genb1jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb1jet_p4 : genb2jet_p4;
+	  TLorentzVector genb2jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb2jet_p4 : genb1jet_p4;
+	  float metpx_correction = Met_Transv.Px()-(b1rescalefactor-1)*genb1jet_p4_sorted.Px()-(b2rescalefactor-1)*genb2jet_p4_sorted.Px();
+	  float metpy_correction = Met_Transv.Py()-(b1rescalefactor-1)*genb1jet_p4_sorted.Py()-(b2rescalefactor-1)*genb2jet_p4_sorted.Py();
+	  TVector3 met_vec2(metpx_correction, metpy_correction, 0.);
+	  met_diBaxis_c1_p = met_vec2.Mag()*cos(dphi_met_dibijet);
+	  met_diBaxis_c1_t = met_vec2.Mag()*sin(dphi_met_dibijet);
 	}
     }
 
@@ -1312,8 +1353,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     numLeptons1 = allMuon1.size();
     numLeptons2 = allMuon2.size();
 
-if (simulation_ and hasMuon1 and hasMuon2 and allMuon1.size()>0 and allMuon2.size()>0){
-if (muon1 == allMuon1.at(0)) hasRecoMuon1 = true;
+    if (simulation_ and hasMuon1 and hasMuon2 and allMuon1.size()>0 and allMuon2.size()>0){
+	if (muon1 == allMuon1.at(0)) hasRecoMuon1 = true;
 	if (muon2 == allMuon2.at(0)) hasRecoMuon2 = true;
     }
     else if ( !simulation_ and allMuon1.size()>0 and allMuon2.size()>0){
@@ -1365,15 +1406,15 @@ if (muon1 == allMuon1.at(0)) hasRecoMuon1 = true;
 	  bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
 	} else if(useRecoBJet_){ 
 	  cout <<" use Reco bjet " << endl;
-		bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;
+	  bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;
 	}
 
 	if (simulation_ and not(useRecoBJet_) and genb1jet_p4.Pt()>genb2jet_p4.Pt()) {
 	  cout <<" use Gen bjet " << endl;
-	    bjet_pt1_lorentz = genb1jet_p4; bjet_pt2_lorentz = genb2jet_p4; }
+	  bjet_pt1_lorentz = genb1jet_p4; bjet_pt2_lorentz = genb2jet_p4; }
 	else if (simulation_ and not(useRecoBJet_) and genb1jet_p4.Pt()<genb2jet_p4.Pt()) {
 	  cout <<" use Gen bjet " << endl;
-		bjet_pt1_lorentz = genb2jet_p4; bjet_pt2_lorentz = genb1jet_p4;
+	  bjet_pt1_lorentz = genb2jet_p4; bjet_pt2_lorentz = genb1jet_p4;
 	}
 
 	if (b1_p4.Pt()>b2_p4.Pt()) {
@@ -1384,10 +1425,10 @@ if (muon1 == allMuon1.at(0)) hasRecoMuon1 = true;
 	TLorentzVector lepton1_lorentz, lepton2_lorentz;
 	if (useRecoMuon_ ){
 	  cout <<" use Reco Muon " << endl;
-		lepton1_lorentz = Muon1_p4; lepton2_lorentz = Muon2_p4;
+	  lepton1_lorentz = Muon1_p4; lepton2_lorentz = Muon2_p4;
 	}else if (not(useRecoMuon_) and simulation_){
 	  cout <<" use Gen Muon " << endl;
-		lepton1_lorentz = mu1_p4; lepton2_lorentz = mu2_p4;
+	  lepton1_lorentz = mu1_p4; lepton2_lorentz = mu2_p4;
 	}
 
 	TLorentzVector Met_lorentz;
@@ -1472,6 +1513,55 @@ void DiHiggstoWWbb::fillbranches(){
 	  && fabs(muon1->Eta)<muonsEta_ && fabs(muon2->Eta)< muonsEta_) hastwomuons =true;
   }
 
+}
+
+void DiHiggstoWWbb::GetPDFc1(){
+  v_bjetrescalec1pdf.clear();
+  TFile *f_tmp = TFile::Open(RefPDFfile_.c_str());
+  if (f_tmp->IsZombie()) cout << "Error opening file" << endl;
+  TH1F *bjetrescalec1pdf = (TH1F*)f_tmp->Get("bjetrescalec1dR4pdf");
+  for(int i=0;i<bjetrescalec1pdf->GetNbinsX(); i++){
+    v_bjetrescalec1pdf.push_back( bjetrescalec1pdf->GetBinContent(i+1) );
+  }
+  v_bjetrescalec1pdf.push_back( bjetrescalec1pdf->GetXaxis()->GetBinCenter(1)-bjetrescalec1pdf->GetBinWidth(1)/2. );
+  v_bjetrescalec1pdf.push_back( bjetrescalec1pdf->GetXaxis()->GetBinCenter(bjetrescalec1pdf->GetNbinsX())+bjetrescalec1pdf->GetBinWidth(1)/2. );
+  f_tmp->Close();
+}
+
+void DiHiggstoWWbb::SlideRescale(){
+  TH1F *histo = new TH1F("histo", "", v_bjetrescalec1pdf.size(), v_bjetrescalec1pdf[v_bjetrescalec1pdf.size()-2], v_bjetrescalec1pdf[v_bjetrescalec1pdf.size()-1]);
+  for(unsigned int i=0;i<v_bjetrescalec1pdf.size()-2; i++){
+    histo->SetBinContent(i+1,v_bjetrescalec1pdf[i]);
+  }
+  float rescalec1 = histo->GetRandom();
+  TLorentzVector b1lorentz, b2lorentz;
+  TLorentzVector genb1jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb1jet_p4 : genb2jet_p4;
+  TLorentzVector genb2jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb2jet_p4 : genb1jet_p4;
+  if (genb1jet_p4_sorted.Pt() > genb2jet_p4_sorted.Pt()){
+    b1lorentz = genb1jet_p4_sorted;
+    b2lorentz = genb2jet_p4_sorted;
+  }
+  else {
+    b1lorentz = genb2jet_p4_sorted;
+    b2lorentz = genb1jet_p4_sorted;
+  }
+  //x1*c2*c2+x2*c2+x3=0, slove for c2
+  float x1 = b2lorentz.M2();
+  float x2 = 2*rescalec1*(b1lorentz*b2lorentz);
+  float x3 = rescalec1*rescalec1*b1lorentz.M2()-125*125;
+  if (x2<0) std::cout <<"error bjets lorentzvector dot productor less than 0: " << x2 << std::endl;
+  float rescalec2 = (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1);
+
+  if (genb1jet_p4_sorted.Pt() > genb2jet_p4_sorted.Pt()){
+    b1rescalefactor = rescalec1;
+    b2rescalefactor = rescalec2;
+  }else{
+    std::cout <<"wired b1jet is not jet with larger pt "<<genb1jet_p4_sorted.Pt()<<" "<<genb2jet_p4_sorted.Pt()<< std::endl;
+    b2rescalefactor = rescalec1;
+    b1rescalefactor = rescalec2;
+  }
+  delete histo;
+//  f_tmp->Close();
 }
 
 /*

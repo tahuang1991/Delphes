@@ -101,14 +101,25 @@ void Plotter_DiHiggs( TString folder="Plots_FileOptim", TString File_S="delphes_
   selectionTag = InitVec(Max_Muon_PtReco + ">0","Muon_PtReco_Max","50.","0.","100.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
   ListPlots[Max_Muon_PtReco] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
   // Met Reso
-  selectionTag = InitVec( Preselection + " && " + Met, "MetX_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  selectionTag = InitVec( "genmet_px>-900 && met_px>-900", "MetX_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
   ListPlots["genmet_px-met_px"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  selectionTag = InitVec( Preselection + " && " + Met, "MetY_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  selectionTag = InitVec( "genmet_py>-900 && met_py>-900", "MetY_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
   ListPlots["genmet_py-met_py"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  selectionTag = InitVec( Preselection + " && genmet_diBaxis_p>-900 && met_diBaxis_p>-900 && " + Met, "MetDiBp_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  selectionTag = InitVec( "genmet_diBaxis_p>-900 && met_diBaxis_p>-900", "MetDiBp_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
   ListPlots["genmet_diBaxis_p-met_diBaxis_p"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  selectionTag = InitVec( Preselection + " && genmet_diBaxis_t>-900 && met_diBaxis_t>-900 && " + Met, "MetDiBt_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  selectionTag = InitVec( "genmet_diBaxis_t>-900 && met_diBaxis_t>-900", "MetDiBt_Reso", "100.", "-60.", "60.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
   ListPlots["genmet_diBaxis_t-met_diBaxis_t"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+    //compared to v form W
+  selectionTag = InitVec( "nu1and2_px>-900 && met_px>-900", "MetX_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_px-met_px"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( "nu1and2_py>-900 && met_py>-900", "MetY_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_py-met_py"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( "nu1and2_diBaxis_p>-900 && met_diBaxis_p>-900", "MetDiBp_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_diBaxis_p-met_diBaxis_p"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( "nu1and2_diBaxis_t>-900 && met_diBaxis_t>-900", "MetDiBt_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_diBaxis_t-met_diBaxis_t"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+    //compared to v form W (RECO met with rescale)
+
   // DR(l1,b1)
   selectionTag = InitVec( Preselection, "DR_MuB", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
   ListPlots["(dR_bl)"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();

@@ -30,7 +30,7 @@
 
 using namespace std;
 
-void GridOpt_OptFromTXT( TString folder = "OUT_GridOptALLCUT/", TString txt_name = "S_B.txt" ){
+void GridOpt_OptFromTXT( TString folder = "OUT_GridOpt/", TString txt_name = "S_B.txt" ){
 
   TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
   //Opening Inputs
@@ -111,6 +111,7 @@ void GridOpt_OptFromTXT( TString folder = "OUT_GridOptALLCUT/", TString txt_name
       Max_SqrtSpB = f_SqrtSB;
     }
     binN++;
+    if(f_SqrtSB<0.0000001) cout<<"a "<<f_ind<<endl;
   }
   cout<<endl;
   gStyle->SetOptStat(0); myc1->cd();
