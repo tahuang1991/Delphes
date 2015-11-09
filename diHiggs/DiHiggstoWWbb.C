@@ -16,11 +16,31 @@
 #include "TLegend.h"
 #include "TPaveText.h"
 #include "TLorentzVector.h"
+#include "TMVA/MsgLogger.h"
+#include "TMVA/MethodBase.h"
+#include "TMVA/RootFinder.h"
+#include "TMVA/PDF.h"
+#include "TMVA/VariableIdentityTransform.h"
+#include "TMVA/VariablePCATransform.h"
+#include "TMVA/VariableGaussTransform.h"
+#include "TMVA/VariableNormalizeTransform.h"
+#include "TMVA/TSpline1.h"
+#include "TMVA/Ranking.h"
+#include "TMVA/ResultsClassification.h"
+#include "TMVA/ResultsMulticlass.h"
+#include "TMVA/Factory.h"
+#include "TMVA/Reader.h"
+#include "TMVA/Tools.h"
+#include "TMVA/Config.h"
+#include "TMVA/ClassifierFactory.h"
+#include "TMVA/MethodCuts.h"
+#include "TMVA/MethodCategory.h"
 #include "classes/DelphesClasses.h"
 #include "DiHiggstoWWbb.h"
 #include "MMC.h"
 
 using namespace std;
+using namespace TMVA;
 
 class ExRootTreeReader;
 class ExRootResult;
@@ -91,6 +111,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   getboolpara(strs, "weightfromonshellnupt_hist", weightfromonshellnupt_hist_, true);
   getboolpara(strs, "weightfromonoffshellWmass_hist", weightfromonoffshellWmass_hist_, true);
   std::cout <<" jetspt "<< jetsPt_ <<" jetsEta "<< jetsEta_ <<" bjetspt " << bjetsPt_ <<" bjetsEta " << bjetsEta_ << std::endl; 
+  histNnT = new TH1F( "MVA_BDT"," MVA_BDT", 100, -0.8, 0.8 );
 }
 
 void DiHiggstoWWbb::getboolpara(std::vector<std::string>& strs, std::string paraname, bool &para, bool def){
@@ -393,6 +414,8 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("genmet_diBaxis_t",&genmet_diBaxis_t,"genmet_diBaxis_t/F");
   evtree->Branch("met_diBaxis_p",&met_diBaxis_p,"met_diBaxis_p/F");
   evtree->Branch("met_diBaxis_t",&met_diBaxis_t,"met_diBaxis_t/F");
+  evtree->Branch("met_c1_px",&met_c1_px,"met_c1_px/F");
+  evtree->Branch("met_c1_py",&met_c1_py,"met_c1_py/F");
   evtree->Branch("met_diBaxis_c1_p",&met_diBaxis_c1_p,"met_diBaxis_c1_p/F");
   evtree->Branch("met_diBaxis_c1_t",&met_diBaxis_c1_t,"met_diBaxis_c1_t/F");
 
@@ -1183,6 +1206,8 @@ void DiHiggstoWWbb::initBranches(){
   genmet_diBaxis_t = -999.;
   met_diBaxis_p = -999.;
   met_diBaxis_t = -999;
+  met_c1_px = -999;
+  met_c1_py = -999;
   met_diBaxis_c1_p = -999;
   met_diBaxis_c1_t = -999;
 
@@ -1242,7 +1267,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     event_n = entry;
     //if (nEvents_ < 100) cout << "event id  "<< entry << endl;
     //else if ((entry-nStarts_+1)%(nEvents_/100) == 0)   cout <<" event id " << entry <<" number of bjets pairs " << totnumbjets <<endl;
-    if((entry-nStarts_)%1000==0) cout<<"On Ev. "<<entry<<" / "<<totalevents<<endl;
+    if((entry-nStarts_)%10000==0) cout<<"Analazyning event: "<<entry<<" / "<<totalevents<<endl;
 
     // If simulation, take GEN info
     if (simulation_){
@@ -1322,21 +1347,25 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	Met_p4.SetXYZT(met_px, met_py, 0, met); 
 	if (met > metPt_) hasMET = true;
 	//MET on Di-BJet Axis
-	if( hasgenb1jet and hasgenb2jet ){
+	if( hasgenb1jet and hasgenb2jet and hasb1jet and hasb2jet ){
 	  TVector3 genDiBjet_Transv( (genb1jet_p4 + genb2jet_p4).Px(), (genb1jet_p4 + genb2jet_p4).Py(), 0.);
+	  TVector3 genMet_Transv( genmet_px, genmet_py, 0.);
 	  TVector3 Met_Transv( met_px, met_py, 0.);
-	  float dphi_met_dibijet = TVector2::Phi_mpi_pi(genDiBjet_Transv.Phi()-Met_Transv.Phi());
+	  float dphi_met_dibijet = TVector2::Phi_mpi_pi(genDiBjet_Transv.Phi()-genMet_Transv.Phi());
+	  //float dphi_met_dibijet = TVector2::Phi_mpi_pi(genDiBjet_Transv.Phi()-Met_Transv.Phi());
 	  met_diBaxis_p = Met_Transv.Mag()*cos(dphi_met_dibijet);
 	  met_diBaxis_t = Met_Transv.Mag()*sin(dphi_met_dibijet);
 	  //Slide rescale
 	  b1rescalefactor = 1.;
 	  b2rescalefactor = 1.;
 	  SlideRescale();
-	  TLorentzVector genb1jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb1jet_p4 : genb2jet_p4;
-	  TLorentzVector genb2jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb2jet_p4 : genb1jet_p4;
-	  float metpx_correction = Met_Transv.Px()-(b1rescalefactor-1)*genb1jet_p4_sorted.Px()-(b2rescalefactor-1)*genb2jet_p4_sorted.Px();
-	  float metpy_correction = Met_Transv.Py()-(b1rescalefactor-1)*genb1jet_p4_sorted.Py()-(b2rescalefactor-1)*genb2jet_p4_sorted.Py();
+	  TLorentzVector b1jet_p4_sorted = (b1jet_p4.Pt() > b2jet_p4.Pt()) ? b1jet_p4 : b2jet_p4;
+	  TLorentzVector b2jet_p4_sorted = (b1jet_p4.Pt() > b2jet_p4.Pt()) ? b2jet_p4 : b1jet_p4;
+	  float metpx_correction = Met_Transv.Px()-(b1rescalefactor-1)*b1jet_p4_sorted.Px()-(b2rescalefactor-1)*b2jet_p4_sorted.Px();
+	  float metpy_correction = Met_Transv.Py()-(b1rescalefactor-1)*b1jet_p4_sorted.Py()-(b2rescalefactor-1)*b2jet_p4_sorted.Py();
 	  TVector3 met_vec2(metpx_correction, metpy_correction, 0.);
+	  met_c1_px = metpx_correction;
+	  met_c1_py = metpy_correction;
 	  met_diBaxis_c1_p = met_vec2.Mag()*cos(dphi_met_dibijet);
 	  met_diBaxis_c1_t = met_vec2.Mag()*sin(dphi_met_dibijet);
 	}
@@ -1384,8 +1413,20 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	mass_b1b2 = bjets_p4.M(); energy_b1b2 = bjets_p4.Energy(); pt_b1b2 = bjets_p4.Pt(); eta_b1b2 = bjets_p4.Eta(); phi_b1b2 = bjets_p4.Phi();
 	mass_trans = sqrt(2*ll_p4.Pt()*met*(1-cos(dphi_llmet)));
 	if (dR_b1l1 > jetleptonDeltaR_ and dR_b1l2 > jetleptonDeltaR_ and dR_b2l1 > jetleptonDeltaR_ and dR_b2l2 > jetleptonDeltaR_) hasdRljet =true;
+	//TMva
+	TMVA::Tools::Instance();
+	TMVA::Reader *reader = new TMVA::Reader( "V:Color:Silent" );
+	float *var0=&(dR_l1l2), *var1=&(dR_b1b2), *var2=&(dR_bl), *var3=&(mass_l1l2), *var4=&(mass_b1b2);
+	reader->AddVariable("dR_l1l2",var0);
+	reader->AddVariable("dR_b1b2",var1);
+	reader->AddVariable("dR_bl",var2);
+	reader->AddVariable("mass_l1l2",var3);
+	reader->AddVariable("mass_b1b2",var4);
+	reader->BookMVA("BDT method", "MVAs/weights/TMVAClassification_BDT.weights.xml");  
+	Float_t BDT_response = reader->EvaluateMVA("BDT method");
+	histNnT->Fill( BDT_response );
+	cout<<"MVA::=> "<<BDT_response<<endl;
     }
-
     fillbranches();
 
     //-------- Here is possible to compute new variables --------
@@ -1535,15 +1576,15 @@ void DiHiggstoWWbb::SlideRescale(){
   }
   float rescalec1 = histo->GetRandom();
   TLorentzVector b1lorentz, b2lorentz;
-  TLorentzVector genb1jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb1jet_p4 : genb2jet_p4;
-  TLorentzVector genb2jet_p4_sorted = (genb1jet_p4.Pt() > genb2jet_p4.Pt()) ? genb2jet_p4 : genb1jet_p4;
-  if (genb1jet_p4_sorted.Pt() > genb2jet_p4_sorted.Pt()){
-    b1lorentz = genb1jet_p4_sorted;
-    b2lorentz = genb2jet_p4_sorted;
+  TLorentzVector b1jet_p4_sorted = (b1jet_p4.Pt() > b2jet_p4.Pt()) ? b1jet_p4 : b2jet_p4;
+  TLorentzVector b2jet_p4_sorted = (b1jet_p4.Pt() > b2jet_p4.Pt()) ? b2jet_p4 : b1jet_p4;
+  if (b1jet_p4_sorted.Pt() > b2jet_p4_sorted.Pt()){
+    b1lorentz = b1jet_p4_sorted;
+    b2lorentz = b2jet_p4_sorted;
   }
   else {
-    b1lorentz = genb2jet_p4_sorted;
-    b2lorentz = genb1jet_p4_sorted;
+    b1lorentz = b2jet_p4_sorted;
+    b2lorentz = b1jet_p4_sorted;
   }
   //x1*c2*c2+x2*c2+x3=0, slove for c2
   float x1 = b2lorentz.M2();
@@ -1552,16 +1593,15 @@ void DiHiggstoWWbb::SlideRescale(){
   if (x2<0) std::cout <<"error bjets lorentzvector dot productor less than 0: " << x2 << std::endl;
   float rescalec2 = (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1);
 
-  if (genb1jet_p4_sorted.Pt() > genb2jet_p4_sorted.Pt()){
+  if (b1jet_p4_sorted.Pt() > b2jet_p4_sorted.Pt()){
     b1rescalefactor = rescalec1;
     b2rescalefactor = rescalec2;
   }else{
-    std::cout <<"wired b1jet is not jet with larger pt "<<genb1jet_p4_sorted.Pt()<<" "<<genb2jet_p4_sorted.Pt()<< std::endl;
+    std::cout <<"wired b1jet is not jet with larger pt "<<b1jet_p4_sorted.Pt()<<" "<<b2jet_p4_sorted.Pt()<< std::endl;
     b2rescalefactor = rescalec1;
     b1rescalefactor = rescalec2;
   }
   delete histo;
-//  f_tmp->Close();
 }
 
 /*

@@ -48,7 +48,7 @@ DEFAULT_TREESIG        = "evtree"
 DEFAULT_TREEBKG        = "evtree"
 #DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,BoostedFisher,HMatrix,FDA_GA,FDA_SA,FDA_MC,FDA_MT,FDA_GAMT,FDA_MCMT,MLP,MLPBFGS,MLPBNN,CFMlpANN,TMlpANN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
 #DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,Fisher,FisherG,BoostedFisher,BDT,BDTD,BDTG,BDTBt"
-DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,KNN,LD,Fisher,BoostedFisher,BDT,BDTD,BDTG,BDTBt,CFMlpANN,TMlpANN,RuleFit"
+DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,KNN,LD,Fisher,BoostedFisher,BDT,BDTD,BDTBt,CFMlpANN,TMlpANN"
 
 # Print usage help
 def usage():
@@ -206,8 +206,23 @@ def main():
     ##background.AddFriend( "eleIDdir/isoT1 = eleIDdir/T1", friendfnameBkg )
 
     # Global event weights (see below for setting event-wise weights)
-    signalWeight     = 0.085082
-    backgroundWeight = 3.230581
+    signalWeight     = 1. #0.085082
+    backgroundWeight = 1. #3.230581
+
+#I don't think there's a general answer to this. The safest 'default'
+#is to use the envent weight such that you have equal amounts of signal
+#and background
+#for the training, otherwise for example:  if you look for a rare
+#signal and you use the weight to scale the number of events according
+#to the expected ratio of signal and background
+#according to the luminosity... the classifier sees hardly any signal
+#events and "thinks" .. Oh I just classify everything background and do
+#a good job!
+#
+#One can try to 'optimize' the training a bit more in  either 'high
+#purity' or 'high efficiency' by choosing different weights, but as I
+#said, there's no fixed rule. You'd have
+#to 'try' and see if you get better restults by playing with the weights.
 
     # ====== register trees ====================================================
     #

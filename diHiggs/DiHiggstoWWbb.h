@@ -61,6 +61,7 @@ class DiHiggstoWWbb {
     std::vector<float> v_bjetrescalec1pdf;
     float b2rescalefactor;
     TH1F *bjetrescalec1pdf;
+    TH1F *histNnT;
     //Parameters for MMC
     bool runMMC_;
     bool useRecoMET_;
@@ -352,6 +353,8 @@ class DiHiggstoWWbb {
     float genmet_diBaxis_t;
     float met_diBaxis_p;
     float met_diBaxis_t;
+    float met_c1_px;
+    float met_c1_py;
     float met_diBaxis_c1_p;
     float met_diBaxis_c1_t;
 

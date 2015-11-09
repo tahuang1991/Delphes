@@ -28,7 +28,7 @@ void Make2Plot(TTree * TS, TTree * TB, TString Var, TString Sel, TString Tag, TS
 float GetMax(TH1F *h);
 int GetHigherH(TH1F *h1, TH1F *h2);
 
-void Plotter_DiHiggs( TString folder="Plots_FileOptim", TString File_S="delphes_B3_1M_PU0_Btag.root", TString File_B="delphes_ttbar_1M_PU0.root" ){
+void Plotter_DiHiggs( TString folder="Plots_FileOptim_bis", TString File_S="delphes_B3_1M_PU0_Btag_bis.root", TString File_B="delphes_ttbar_1M_PU0.root" ){
   gROOT->Reset(); 
   // Topology
   int Topology =- 1;
@@ -119,6 +119,14 @@ void Plotter_DiHiggs( TString folder="Plots_FileOptim", TString File_S="delphes_
   selectionTag = InitVec( "nu1and2_diBaxis_t>-900 && met_diBaxis_t>-900", "MetDiBt_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
   ListPlots["nu1and2_diBaxis_t-met_diBaxis_t"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
     //compared to v form W (RECO met with rescale)
+  selectionTag = InitVec( "nu1and2_px>-900 && met_c1_px>-900", "MetX_c1_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_px-met_c1_px"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( "nu1and2_py>-900 && met_c1_py>-900", "MetY_c1_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_py-met_c1_py"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( "nu1and2_diBaxis_p>-900 && met_diBaxis_c1_p>-900", "MetDiBp_c1_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_diBaxis_p-met_diBaxis_c1_p"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( "nu1and2_diBaxis_t>-900 && met_diBaxis_c1_t>-900", "MetDiBt_c1_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
+  ListPlots["nu1and2_diBaxis_t-met_diBaxis_c1_t"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
 
   // DR(l1,b1)
   selectionTag = InitVec( Preselection, "DR_MuB", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
