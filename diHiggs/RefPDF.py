@@ -437,7 +437,11 @@ if __name__ == "__main__":
     c1dR4pdfname ="bjetrescalec1dR4pdf" 
     c2dR4pdfname ="bjetrescalec2dR4pdf" 
     c1c2dR4pdfname ="bjetrescalec1c2dR4pdf" 
+    recoc1pdfname ="recobjetrescalec1pdf" 
+    recoc2pdfname ="recobjetrescalec2pdf" 
 
+    filedir = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_split_mediumbtagEffv2/"
+    drawAll_1D(filedir, "evtree", recoc1pdfname, "(b1_pt/b1jet_pt)*(b1jet_pt>=b2jet_pt)+(b2_pt/b2jet_pt)*(b1jet_pt<b2jet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}, leading bjet","h2tohh && hasb1jet && hasb2jet && dR_b1jet<0.4 && dR_b2jet<0.4","htobb_recoptratio_1M_c1_1101","b-jets:p_{T}>30, |#eta|<2.5")
     #drawAll_1D(filedir,dir, c1pdfname, "(b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c1_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5")
     #drawAll_1D(filedir,dir,c1dR4pdfname, "(b1_pt/bjet_pt)*(bjet_pt>=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt<bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet && dR_bjet<0.4 && dR_bbarjet<0.4","htobb_dR4_ptratio_50k_c1_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5, #Delta R<0.4")
     #drawAll_1D(filedir,dir,c2pdfname, "(b1_pt/bjet_pt)*(bjet_pt<=bbarjet_pt)+(b2_pt/bbarjet_pt)*(bjet_pt>bbarjet_pt)","(300,0.0,6.0)","#frac{p_{T}(b)}{p_{T}(bjet)}","htobb && hasbjet && hasbbarjet","htobb_ptratio_50k_c2_JetNoNu_0715","b-jets:p_{T}>30, |#eta|<2.5")
@@ -463,7 +467,7 @@ if __name__ == "__main__":
     rootfile5 = "%s"%c1dR4pdfname+"out.root"
     rootfile6 = "%s"%c2dR4pdfname+"out.root"
     rootfile7 = "%s"%c1c2pdfname+"out.root"
-    os.system("hadd -f MMCRefPDF.ROOT  %s"%rootfile1+" %s"%rootfile3+" %s"%rootfile4+" %s"%rootfile5+" %s"%rootfile6+" %s"%rootfile7) 
+    #os.system("hadd -f MMCRefPDF.ROOT  %s"%rootfile1+" %s"%rootfile3+" %s"%rootfile4+" %s"%rootfile5+" %s"%rootfile6+" %s"%rootfile7) 
     #os.system("rm %s"%rootfile1) 
     #os.system("rm %s"%rootfile2) 
     #os.system("rm %s"%rootfile3) 

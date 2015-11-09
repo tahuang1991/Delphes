@@ -1,6 +1,7 @@
 import random
 import ROOT
 import os
+from array import *
 
 ROOT.gROOT.SetBatch(1)
 #gStyle from TStyle
@@ -737,6 +738,7 @@ def drawAll_2D(dir, treename, todraw,x_bins,y_bins, x_title, y_title,cut,pic_nam
     ymaxBin = float(y_bins[1:-1].split(',')[2])
     
     b1 = ROOT.TH2F("b1","b1",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    ROOT.SetOwnership(b1, False)
     b1.SetTitle("h2#rightarrow bbWW, B3"+" "*12 + "CMS Simulation Preliminary")
     b1.GetYaxis().SetTitle("%s"%y_title)
     b1.GetXaxis().SetTitle("%s"%x_title)
@@ -751,7 +753,7 @@ def drawAll_2D(dir, treename, todraw,x_bins,y_bins, x_title, y_title,cut,pic_nam
 	chain.Add(x)
     chain.Draw(todraw+">>b1",cut,"colz")
     b1.Draw("colz")
-    ROOT.gPad.SetLogz()
+    #ROOT.gPad.SetLogz()
 
     
     tex = ROOT.TLatex(0.15,0.45,text)
@@ -759,9 +761,145 @@ def drawAll_2D(dir, treename, todraw,x_bins,y_bins, x_title, y_title,cut,pic_nam
     tex.SetTextFont(42)
     tex.SetNDC()
     tex.Draw("same")
-    
+     
     c1.SaveAs("Dihiggs_%s"%pic_name+"_All_B3.pdf")
     c1.SaveAs("Dihiggs_%s"%pic_name+"_All_B3.png")
+    return b1 
+
+#_____________________________________________________________________________
+def drawAllEff_2D(dir, treename, todraw,x_bins,y_bins, x_title, y_title,dencut, numcut,pic_name, text):
+
+
+    xBins = int(x_bins[1:-1].split(',')[0])
+    xminBin = float(x_bins[1:-1].split(',')[1])
+    xmaxBin = float(x_bins[1:-1].split(',')[2])
+    yBins = int(y_bins[1:-1].split(',')[0])
+    yminBin = float(y_bins[1:-1].split(',')[1])
+    ymaxBin = float(y_bins[1:-1].split(',')[2])
+    
+    h1 = ROOT.TH2F("h1","h1",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    h2 = ROOT.TH2F("h2","h2",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    h3 = ROOT.TH2F("h3","h3",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    h4 = ROOT.TH2F("h4","h4",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+
+    if not os.path.isdir(dir):
+          print "ERROR: This is not a valid directory: ", dir
+    ls = os.listdir(dir)
+    tot = len(ls)
+    
+    chain = ROOT.TChain(treename)
+    for x in ls:
+	x = dir[:]+x
+	chain.Add(x)
+    chain.Draw("b1jet_pt:abs(b1jet_eta)>>h1","h2tohh &&hasb1jet && b1jet_btag>0")
+    chain.Draw("b1jet_pt:abs(b1jet_eta)>>h2","h2tohh &&hasb1jet")
+    chain.Draw("b2jet_pt:abs(b2jet_eta)>>h3","h2tohh &&hasb2jet && b2jet_btag>0")
+    chain.Draw("b2jet_pt:abs(b2jet_eta)>>h4","h2tohh &&hasb2jet")
+    
+    h1.Add(h3)
+    h2.Add(h4) 
+
+
+    c1 = ROOT.TCanvas()
+    c1.SetGridx()
+    c1.SetGridy()
+    c1.SetTickx()
+    c1.SetTicky()
+    Teff1 = ROOT.TEfficiency(h1, h2)
+    bg = ROOT.TH2F("bg","bg",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    bg.SetTitle("h2#rightarrow bbWW, B3"+" "*26 + " 14TeV, PU0")
+    bg.GetYaxis().SetTitle("%s"%y_title)
+    bg.GetXaxis().SetTitle("%s"%x_title)
+    bg.GetZaxis().SetRangeUser(0,1.0)
+    bg.SetMaximum(1)
+    bg.SetMinimum(0)
+    bg.Draw()
+
+    Teff1.Draw("samecolz") 
+    ROOT.gStyle.SetOptStat(0)
+    tex = ROOT.TLatex(0.15,0.45,text)
+    tex.SetTextSize(0.04)
+    tex.SetTextFont(42)
+    tex.SetNDC()
+    tex.Draw("same")
+    
+    c1.SaveAs("Dihiggs_Eff_%s"%pic_name+"_All_B3.pdf")
+    c1.SaveAs("Dihiggs_Eff_%s"%pic_name+"_All_B3.png")
+
+
+#_____________________________________________________________________________
+def drawAllEffTTbar_2D(dir, treename, todraw,x_bins,y_bins, x_title, y_title,dencut, numcut,pic_name, text):
+
+
+    xBins = int(x_bins[1:-1].split(',')[0])
+    xminBin = float(x_bins[1:-1].split(',')[1])
+    xmaxBin = float(x_bins[1:-1].split(',')[2])
+    yBins = int(y_bins[1:-1].split(',')[0])
+    yminBin = float(y_bins[1:-1].split(',')[1])
+    ymaxBin = float(y_bins[1:-1].split(',')[2])
+
+    
+    h1 = ROOT.TH2F("h1","h1",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    h2 = ROOT.TH2F("h2","h2",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    h3 = ROOT.TH2F("h3","h3",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    h4 = ROOT.TH2F("h4","h4",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+
+    if not os.path.isdir(dir):
+          print "ERROR: This is not a valid directory: ", dir
+    ls = os.listdir(dir)
+    tot = len(ls)
+    
+    chain = ROOT.TChain(treename)
+    for x in ls:
+	x = dir[:]+x
+	chain.Add(x)
+    chain.Draw("b1jet_pt:abs(b1jet_eta)>>h1","ttbar &&hasb1jet && b1jet_btag")
+    chain.Draw("b1jet_pt:abs(b1jet_eta)>>h2","ttbar &&hasb1jet")
+    chain.Draw("b2jet_pt:abs(b2jet_eta)>>h3","ttbar &&hasb2jet && b2jet_btag")
+    chain.Draw("b2jet_pt:abs(b2jet_eta)>>h4","ttbar &&hasb2jet")
+    
+    tfile = ROOT.TFile("TTbar_testv2.root","RECREATE")
+    h1.Add(h3)
+    h2.Add(h4) 
+    
+    effbins = array("d",[0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0])
+    c1 = ROOT.TCanvas()
+    c1.SetGridx()
+    c1.SetGridy()
+    c1.SetTickx()
+    c1.SetTicky()
+    h1.Divide(h2)
+    Teff1 = ROOT.TEfficiency(h1, h2)
+   
+    bg = ROOT.TH2F("bg","bg",xBins,xminBin,xmaxBin, yBins,yminBin,ymaxBin)
+    bg.SetTitle("tt#rightarrow bbWW"+" "*28 + " 14TeV, PU0")
+    bg.GetYaxis().SetTitle("%s"%y_title)
+    bg.GetXaxis().SetTitle("%s"%x_title)
+    #bg.GetZaxis().SetRangeUser(0,1.0)
+    #bg.SetMaximum(1)
+    #bg.SetMinimum(0)
+    #Teff1.SetContour(len(effbins), effbins)
+    bg.Draw()
+
+    #h1.SetMaximum(1)
+    #h1.SetMinimum(0)
+    h1.Draw("samecolz") 
+    #Teff1.Draw("samecolz") 
+    ROOT.gStyle.SetOptStat(0)
+    tex = ROOT.TLatex(0.15,0.45,text)
+    tex.SetTextSize(0.04)
+    tex.SetTextFont(42)
+    tex.SetNDC()
+    tex.Draw("same")
+    bg.Write()
+    Teff1.Write()
+    h1.Write()
+    
+    tfile.Close()
+    
+    c1.SaveAs("TTbar_Eff_%s"%pic_name+"_All_B3.pdf")
+    c1.SaveAs("TTbar_Eff_%s"%pic_name+"_All_B3.png")
+    
 
 #______________________________________________________________________________
 def buildTChain(dir,treename, rootfilename):
@@ -795,6 +933,8 @@ if __name__ == "__main__":
     file2 = "DiHiggs_WWbb_1M_PU0_leptonW_6969448_B3_0928.root"
     dir1 = "evtree"
     dir2 = "evtree"
+    filedir = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_split_mediumbtagEffv3/"
+    
     
     htoWW_mass = "sqrt((mu1_energy+mu2_energy+nu1_energy+nu2_energy)**2-(mu1_px+mu2_px+nu1_px+nu2_px)**2-(mu1_py+mu2_py+nu1_py+nu2_py)**2-(mu1_pz+mu2_pz+nu1_pz+nu2_pz)**2)"
     
@@ -871,7 +1011,7 @@ if __name__ == "__main__":
     #draw1D_combined(file1,file2, dir1,dir2,"mass_b1b2","(80,0,400)","M_{bjets}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_Mbjets_reco")
     #draw1D_combined(file1,file2, dir1,dir2,"dR_b1b2","(45,0,4.5)","#DeltaR_{bjets}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_dRbjets_reco")
     #draw1D_combined(file1,file2, dir1,dir2,"met","(80,0,200)","#slash{E}_{T}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_met_reco")
-    draw1D_combined(file1,file2, dir1,dir2,"abs(dphi_llbb)","(70,0,3.5)","#Delta#phi_{(ll,jj)}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_dphillbb_reco")
+    #draw1D_combined(file1,file2, dir1,dir2,"abs(dphi_llbb)","(70,0,3.5)","#Delta#phi_{(ll,jj)}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_dphillbb_reco")
     #draw1D_combined(file1,file2, dir1,dir2,"abs(dphi_llmet)","(70,0,3.5)","#Delta#phi_{(ll,#slash{E}_{T})}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_dphillmet_reco")
     #draw1D_combined(file1,file2, dir1,dir2,"abs(dR_minbl)","(45,0,4.5)","min#DeltaR_{bjetl}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_dRblmin_reco")
     #draw1D_combined(file1,file2, dir1,dir2,"abs(pt_b1b2)","(50,0,200)","p_{T}^{ll}",ttbaselinecut,Hhhbaselinecut,"t#bar{t}","Hhh","delphes_ptll_reco")
@@ -880,7 +1020,14 @@ if __name__ == "__main__":
     
     #validateHhh(file2,dir2,"delphes_1005")
     #validatettbar(file1,dir1,"delphes_1005")
-
+    #drawAll_2D(filedir,"evtree", "b1jet_pt:abs(b1jet_eta)","(30,0,2.5)","(30,30.0,210.0)","#eta","p_{T}","h2tohh && hasb1jet","mediumbtagEff","") 
+    dencut = "h2tohh && hasb1jet"
+    numcut = dencut+"&&b1jet_btag>0"
+    drawAllEff_2D(filedir,"evtree", "b1jet_pt:abs(b1jet_eta)","(25,0,2.5)","(20,30.0,160.0)","#eta","p_{T}",dencut, numcut,"mediumbtagEff","") 
+    #drawAll_1D(filedir,"evtree","(dR_b1l1*(Muon1_pt>Muon2_pt && b1jet_pt>b2jet_pt)+dR_b1l2*(Muon2_pt>Muon1_pt && b1jet_pt>b2jet_pt)+dR_b2l1*(Muon1_pt>Muon2_pt && b2jet_pt>b1jet_pt) + dR_b2l2*(Muon2_pt>Muon1_pt && b2jet_pt>b1jet_pt))","(100,0,5)","#Delta R_{l,bjet}","hasdRljet && hasMET && h2tohh","dRljet_energetic_1030", "")
+    filedir_ttbar = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_split_mediumbtagEff_ttbarv2/"
+    #drawAll_1D(filedir_ttbar,"evtree","(dR_b1l1*(Muon1_pt>Muon2_pt && b1jet_pt>b2jet_pt)+dR_b1l2*(Muon2_pt>Muon1_pt && b1jet_pt>b2jet_pt)+dR_b2l1*(Muon1_pt>Muon2_pt && b2jet_pt>b1jet_pt) + dR_b2l2*(Muon2_pt>Muon1_pt && b2jet_pt>b1jet_pt))","(100,0,5)","#Delta R_{l,bjet}","hasdRljet && hasMET && ttbar","TTbar_dRljet_energetic_1030", "")
+    drawAllEffTTbar_2D(filedir_ttbar,"evtree", "b1jet_pt:abs(b1jet_eta)","(25,0,2.5)","(20,30.0,160.0)","#eta","p_{T}",dencut, numcut,"mediumbtagEff","") 
     #draw1D_combined(file,dir,nu1_pt,nu2_pt, onshell_nupt_bins,"Simulated p_{T#nu}^{onshellW}",onshellW_1_cut,offshellW_1_cut,"onshell_nupt_1M_mediateStates_0325")
     delta_phi = "(25,-3.1415,3.1415)"
     delta_eta = "(50,-5.0,5.0)"

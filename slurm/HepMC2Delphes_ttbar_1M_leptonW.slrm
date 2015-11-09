@@ -19,7 +19,8 @@ cd $parentdir
 jobid=$SLURM_JOBID
 echo "job$jobid starts"
 #./DelphesHepMC examples/delphes_card_CMS.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_1061848.root /fdata/hepx/store/user/taohuang/Hhh/HH-bbWW-B3-1061848.hepmc
-./DelphesHepMC cards/delphes_card_CMS_NoPU_Tao.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_1M_PU0_0926_leptonW_7570700.root /fdata/hepx/store/user/taohuang/Hhh/Powheg-Herwig-ttbar-0926-leptonW-7570700-1000000.hepmc
+#./DelphesHepMC cards/delphes_card_CMS_NoPU_Tao.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_1M_PU0_Wtobmu_1020_8088741.root /fdata/hepx/store/user/taohuang/Hhh/Powheg-Herwig-ttbar-1019-EE5-Wtobmu-8088741-1000000.hepmc
+./DelphesHepMC cards/delphes_card_CMS_NoPU_Tao.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_10k_PU0_btag_8153377.root /fdata/hepx/store/user/taohuang/Hhh/Powheg-Herwig-ttbar-1020-EE5-Wtobmu-8154377-10000.hepmc
 echo "job$jobid is done"
 
 

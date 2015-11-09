@@ -1,6 +1,8 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <fstream>
+#include <algorithm>    // std::find
 
 #include "TROOT.h"
 #include "TSystem.h"
@@ -31,7 +33,7 @@ using namespace std;
 // Here you can put your analysis macro
 
 #include "test.h"
-
+//#include "readfile.h"
 //void test(TString inputFile);
 //------------------------------------------------------------------------------
 
@@ -51,13 +53,52 @@ int main(int argc, char *argv[])
   //char *appargv[] = {appName};
   //TApplication app(appName, &appargc, appargv);
 
-  TString inputFile(argv[1]);
+  //TString inputFile(argv[1]);
 
 //------------------------------------------------------------------------------
-
+  std::ifstream ifile(argv[1],std::ios_base::in);
+  std::vector<std::string> strs;
+  strs.clear();
 // Here you call your macro's main function 
-  cout <<" inputfile " << inputFile << std::endl;
-  test(inputFile);
+  //cout <<" inputfile " << inputFile << std::endl;
+  //test(inputFile);
+  int iterations_ = 0;
+  bool runMMC_ = false;
+  std::string MMCRef_; 
+  std::string word;
+  while (ifile >> word){
+	strs.push_back(word);
+  }
+
+  if (!ifile.eof()) {
+        std::cerr << "Hey there! Something went wrong when reading the list of words!\n";
+        return 1;
+   }
+  
+  std::cout  <<" iterations " << iterations_ <<" runMMC " <<(runMMC_ ? " true ": " false ") << std::endl;
+  for (unsigned int i=0; i<strs.size(); i++){
+	std::cout <<" i " << i << strs.at(i) << std::endl;
+   }	
+  std::vector<std::string>::iterator it = strs.end();
+  it=std::find(strs.begin(), strs.end(), "iterations");
+  if (it != strs.end()){
+	it++;
+	iterations_ = atoi(it->c_str());
+	}
+  it=std::find(strs.begin(), strs.end(), "runMMC");
+  if (it != strs.end()){
+	it++;
+	if ((*it) == "True" or (*it)== "true") runMMC_ =true;
+	else runMMC_ =false;
+	}
+  it=std::find(strs.begin(), strs.end(), "MMCRef");
+  if (it != strs.end()){
+	it++;
+	MMCRef_ = *it;
+	}
+
+  std::cout  <<" iterations " << iterations_ <<" runMMC " <<(runMMC_ ? " true ": " false ") << " MMCRef " << MMCRef_ <<std::endl;
+  //readfile(strs, infile);
 
 //------------------------------------------------------------------------------
 

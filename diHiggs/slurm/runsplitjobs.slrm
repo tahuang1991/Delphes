@@ -18,7 +18,7 @@ jobid=$SLURM_JOBID
 echo "job$jobid starts, `date`"
 
 ./splitjobs.sh
-./splitjobs_ttbar.sh
+#./splitjobs_ttbar.sh
 
 echo "job$jobid is done, `date`"
 

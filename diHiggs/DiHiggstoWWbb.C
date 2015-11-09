@@ -64,7 +64,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, std::ifstr
   //TClonesArray *branchEFlowPhoton = treeReader->UseBranch("EFlowPhoton");
   //TClonesArray *branchEFlowNeutralHadron = treeReader->UseBranch("EFlowNeutralHadron");
   branchJet           = treeReader->UseBranch("Jet");
-  branchGenJet        = treeReader->UseBranch("GenJet");
+  branchGenJet        = treeReader->UseBranch("GenJetNoNu");
   branchMissingET     = treeReader->UseBranch("MissingET");
   branchGenMissingET  = treeReader->UseBranch("GenMissingET");
   allEntries = treeReader->GetEntries();
@@ -106,6 +106,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   getintpara(strs, "iterations", iterations_, 1000000);
   getstringpara(strs,"RefPDFfile", RefPDFfile_, "MMCRefPDF.ROOT");
   getintpara(strs, "bjetrescaleAlgo", bjetrescaleAlgo_, 2);
+  getintpara(strs, "metcorrection", metcorrection_, 2);
   getboolpara(strs, "useMET", useMET_, true);
   getboolpara(strs, "weightfromonshellnupt_func", weightfromonshellnupt_func_, false);
   getboolpara(strs, "weightfromonshellnupt_hist", weightfromonshellnupt_hist_, true);
@@ -425,6 +426,8 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("h2tohh_mass",&h2tohh_mass,"h2tohh_mass/F");
   evtree->Branch("h2tohh",&h2tohh,"h2tohh/B");
   evtree->Branch("preselections",&preselections, "preselections/B");
+  evtree->Branch("preselections_gen",&preselections_gen, "preselections_gen/B");
+  evtree->Branch("runMMCok",&runMMCok, "runMMCok/B");
 
   evtree->Branch("MMC_h2mass_prob",&MMC_h2mass_prob,"MMC_h2mass_prob/F");
   evtree->Branch("MMC_h2massweight1_prob",&MMC_h2massweight1_prob,"MMC_h2massweight1_prob/F");
@@ -1222,6 +1225,8 @@ void DiHiggstoWWbb::initBranches(){
   hasdRljet = false;
   h2tohh =false;
   preselections=false;
+  preselections_gen=false;
+  runMMCok=false;
 
   //MMC results
   MMC_h2mass_prob =0.0;
@@ -1436,10 +1441,12 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 
     //-------- MMC --------
     preselections = (hasb1jet and hasb2jet and hasMET and hastwomuons and hasdRljet);
+    preselections_gen = (hasgenb1jet and hasgenb2jet and hasGenMET and hastwomuons);
     //only in simulation case, these two could be true
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
-    if (runMMC_ and preselections and (not(simulation_) || (h2tohh and sample_==Signal) || (ttbar and sample_ ==Background))){
+    bool MMCready =  (((h2tohh and sample_==Signal) || (ttbar and sample_ ==Background)) and hasgenb1jet and hasgenb2jet);
+    if (runMMC_ and preselections_gen and (not(simulation_) || MMCready)){
 	cout <<" start to run MMC for this event " << entry <<endl;
 	TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
 	if (useRecoBJet_ and b1jet_p4.Pt()>b2jet_p4.Pt()) {
@@ -1491,9 +1498,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	MMC *thismmc = new MMC(&lepton1_lorentz, &lepton2_lorentz, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_lorentz, 
 	    &nu1_p4, &nu2_p4, &bgenp_pt1_lorentz, &bgenp_pt2_lorentz, &h2tohh_genp_lorentz, 
 	    onshellMarker_, simulation_, entry, weightfromonshellnupt_func_, weightfromonshellnupt_hist_, weightfromonoffshellWmass_hist_,
-	    iterations_, RefPDFfile_, useMET_, bjetrescaleAlgo_);
-
-	if (thismmc->runMMC()) {
+	    iterations_, RefPDFfile_, useMET_, bjetrescaleAlgo_, metcorrection_);
+	runMMCok = thismmc->runMMC();
+	if (runMMCok) {
 	  //MMCtree =  (thismmc->getMMCTree())->CloneTree();
 	  TH1F* MMC_h2mass =(TH1F*)(thismmc->getMMCh2()).Clone("MMC_h2mass");
 	  TH1F* MMC_h2mass_weight1 =(TH1F*)(thismmc->getMMCh2weight1()).Clone("MMC_h2massweight1");
@@ -1516,7 +1523,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
     //fill branches
     //if ((hasb1jet or hasb2jet) and h2tohh) evtree->Fill();
-    if (h2tohh or ttbar or (hasb1jet and hasb2jet)) evtree->Fill();
+    if (runMMC_ and (runMMCok or preselections_gen)) evtree->Fill();
+    if (not(runMMC_) and (h2tohh or ttbar)) evtree->Fill();
   }
   //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
   //MMCfile->Close();

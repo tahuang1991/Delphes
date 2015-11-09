@@ -2,9 +2,9 @@
 
 Curdir=`pwd`
 parentdir="$(dirname "$Curdir")"
-outputdir=/fdata/hepx/store/user/taohuang/Hhh/Delphes_split_mediumbtagEffv3/
+outputdir=/fdata/hepx/store/user/taohuang/Hhh/Delphes_split_mediumbtag_JetNoNu/
 outputsuffix=.root
-outputprefix=DiHiggs_WWbb_10k_B3_btagtest_1020
+outputprefix=DiHiggs_WWbb_1M_B3_btagtest_1020_JetNoNu
 #inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes330_B3_10k_PU0_1020_btagv3_6969448.root
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1015_Btag_leptonW_6969448.root
 parafile=/home/taohuang/delphes/diHiggs/parametersconfig.txt
@@ -30,9 +30,20 @@ do
 		echo " not running batch job "${arrayid[i]}
 	fi
     done
-    sleep 30
+    sleep 300
 
 done
+
+}
+
+function clearoutput(){
+arrayid=("$@")
+echo "inptu array "${arrayid[@]}," len "${#arrayid[@]}
+    for ((i=0; i<${#arrayid[@]}; i++));
+    do
+	echo "$i element  "${arrayid[i]}
+	ls | rm "batchjobs_"*${arrayid[i]}*.err "batchjobs_"*${arrayid[i]}*.out
+    done
 
 }
 
@@ -79,6 +90,7 @@ do
 		echo "all jobs id "${arrayjobid[@]}
 		checkjoboutput ${arrayjobid[i]}
 		checkjobsstatus "${arrayjobid[@]}"
+		clearoutput "${arrayjobid[@]}"
 		
 	fi
 

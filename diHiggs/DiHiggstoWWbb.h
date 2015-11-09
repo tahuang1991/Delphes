@@ -74,6 +74,7 @@ class DiHiggstoWWbb {
     bool weightfromonoffshellWmass_hist_; 
     bool useMET_;
     int bjetrescaleAlgo_; //0.no corrections; 1. simpel rescale, 2. elaborate rescale, -1. ideal case
+    int metcorrection_; //0.no corrections; 1. simpel rescale, 2. elaborate rescale, -1. ideal case
     //private module to process different steps
     void readConfig(std::ifstream& configfile);
     void getboolpara(std::vector<std::string>& strs, std::string paraname, bool &para, bool def);
@@ -369,6 +370,8 @@ class DiHiggstoWWbb {
     bool hasdRljet;
     bool h2tohh;
     bool preselections;//check whether event pass preselection or not
+    bool preselections_gen;//check whether event pass preselection or not
+    bool runMMCok;
 
     //MMC
     TTree* MMCtree;

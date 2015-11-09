@@ -11,13 +11,15 @@
 source ~/.bashrc
 . /etc/profile.d/modules.sh
 #change to dir
-#parentdir="$(dirname "$dir")"
-#echo "parentdir ", $parentdir
-#cd $parentdir 
-cd /home/taohuang/work/Delphes/
+Curdir=`pwd`
+parentdir="$(dirname "$Curdir")"
+echo "parentdir ", $parentdir
+cd $parentdir 
+#cd /home/taohuang/work/Delphes/
 jobid=$SLURM_JOBID
 echo "job$jobid starts, `date`"
-./DelphesHepMC examples/delphes_card_CMS.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes320_B3_100k_PU0_0911.root /fdata/hepx/store/user/taohuang/Hhh/HH-bbWW-B3_100k.hepmc
+#./DelphesHepMC cards/delphes_card_CMS_NoPU_Tao.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes330_B3_10k_PU0_1010_6969448.root /fdata/hepx/store/user/taohuang/Hhh/HH-bbWW-B3-0916-leptonW-6969448-10k.hepmc
+./DelphesHepMC cards/delphes_card_CMS_NoPU_Tao.tcl /fdata/hepx/store/user/taohuang/Hhh/delphes330_B3_10k_PU0_1020_btagv2_6969448.root /fdata/hepx/store/user/taohuang/Hhh/HH-bbWW-B3-0916-leptonW-6969448-10k.hepmc
 
 echo "job$jobid is done, `date`"
 

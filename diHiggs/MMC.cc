@@ -13,103 +13,103 @@
 
 //constructor
 MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVector* b1jet_lorentz, TLorentzVector* b2jet_lorentz,
-    TLorentzVector* totjets_lorentz, TLorentzVector* met_lorentz, TLorentzVector* nu1_lorentz, TLorentzVector* nu2_lorentz, 
-    TLorentzVector* b_genp_lorentz,TLorentzVector* bbar_genp_lorentz, TLorentzVector* h2_lorentz, int onshellMarker_,// simulation only
-    bool simulation_, int ievent, bool weightfromonshellnupt_func, bool weightfromonshellnupt_hist, bool weightfromonoffshellWmass_hist,
-    int iterations, std::string RefPDFfile, bool useMET, int bjetrescaleAlgo, int verbose_
-    )
+	TLorentzVector* totjets_lorentz,TLorentzVector* met_lorentz, TLorentzVector* nu1_lorentz, TLorentzVector* nu2_lorentz,
+	TLorentzVector* b_genp_lorentz,TLorentzVector* bbar_genp_lorentz, TLorentzVector* h2_lorentz, int onshellMarker_,// simulation only
+         bool simulation_, int ievent, bool weightfromonshellnupt_func, bool weightfromonshellnupt_hist, bool weightfromonoffshellWmass_hist,
+        int iterations, std::string RefPDFfile, bool useMET, int bjetrescaleAlgo, int metcorrection, int verbose_
+	)
 {
 
-  mmc_mu1_lorentz = mu1_lorentz;
-  mmc_mu2_lorentz = mu2_lorentz;
-  mmc_b1jet_lorentz = b1jet_lorentz;
-  mmc_b2jet_lorentz = b2jet_lorentz;
-  mmc_totjets_lorentz = totjets_lorentz;
-  mmc_bjets_lorentz = new TLorentzVector(*b1jet_lorentz+*b2jet_lorentz);
-  mmcmet_vec2 = new TVector2(met_lorentz->Px(),met_lorentz->Py());
+   mmc_mu1_lorentz = mu1_lorentz;
+   mmc_mu2_lorentz = mu2_lorentz;
+   mmc_b1jet_lorentz = b1jet_lorentz;
+   mmc_b2jet_lorentz = b2jet_lorentz;
+   mmc_totjets_lorentz = totjets_lorentz;
+   mmc_bjets_lorentz = new TLorentzVector(*b1jet_lorentz+*b2jet_lorentz);
+   mmcmet_vec2 = new TVector2(met_lorentz->Px(),met_lorentz->Py());
 
-  //std::cout <<" mu1 lorentz "; mu1_lorentz->Print();
-  //std::cout <<" b1 lorentz "; b1jet_lorentz->Print();
-  simulation = simulation_;
-  onshellMarker = onshellMarker_;
-  if (simulation){
+   //std::cout <<" mu1 lorentz "; mu1_lorentz->Print();
+   //std::cout <<" b1 lorentz "; b1jet_lorentz->Print();
+   simulation = simulation_;
+   onshellMarker = onshellMarker_;
+   if (simulation){
+	
+	nu1_lorentz_true = nu1_lorentz;
+   	nu2_lorentz_true = nu2_lorentz;
+        
+        
+        if (onshellMarker == 1){
+        	onshellW_lorentz_true = new TLorentzVector(*nu1_lorentz_true + *mmc_mu1_lorentz);
+        	offshellW_lorentz_true = new TLorentzVector(*nu2_lorentz_true + *mmc_mu2_lorentz);
+        }
+        else if (onshellMarker ==2 ){
+        	offshellW_lorentz_true = new TLorentzVector(*nu1_lorentz_true + *mmc_mu1_lorentz);
+        	onshellW_lorentz_true = new TLorentzVector(*nu2_lorentz_true + *mmc_mu2_lorentz);
+	} 
+        else std::cout <<" onshellMarker input error"  << std::endl;
 
-    nu1_lorentz_true = nu1_lorentz;
-    nu2_lorentz_true = nu2_lorentz;
+        htoWW_lorentz_true = new TLorentzVector(*offshellW_lorentz_true + *onshellW_lorentz_true);
+        h2tohh_lorentz_true = new TLorentzVector(*h2_lorentz); 
+	b1_lorentz = b_genp_lorentz;
+        b2_lorentz = bbar_genp_lorentz;
+   	htoBB_lorentz_true = new TLorentzVector(*b_genp_lorentz+*bbar_genp_lorentz);
+	ideal_met_lorentz.SetXYZM(nu1_lorentz_true->Px()+nu2_lorentz_true->Px(),nu1_lorentz_true->Py()+nu2_lorentz_true->Py(),0,0);
+   }
+   
 
+   verbose = verbose_; 
+   iev = ievent;
 
-    if (onshellMarker == 1){
-	onshellW_lorentz_true = new TLorentzVector(*nu1_lorentz_true + *mmc_mu1_lorentz);
-	offshellW_lorentz_true = new TLorentzVector(*nu2_lorentz_true + *mmc_mu2_lorentz);
-    }
-    else if (onshellMarker ==2 ){
-	offshellW_lorentz_true = new TLorentzVector(*nu1_lorentz_true + *mmc_mu1_lorentz);
-	onshellW_lorentz_true = new TLorentzVector(*nu2_lorentz_true + *mmc_mu2_lorentz);
-    } 
-    else std::cout <<" onshellMarker input error"  << std::endl;
+   weightfromonshellnupt_func_ = weightfromonshellnupt_func;
+   weightfromonshellnupt_hist_ = weightfromonshellnupt_hist;
+   weightfromonoffshellWmass_hist_ = weightfromonoffshellWmass_hist;
+   iterations_ = iterations;
+   RefPDFfile_ = RefPDFfile;
+   useMET_ = useMET;
+   metcorrection_ = metcorrection;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
+   bjetrescale_ = bjetrescaleAlgo;//0.no rescale; 1.simple rescale; 2.elaborate rescale, -1.ideal case
+   writemmctree_ = false;
 
-    htoWW_lorentz_true = new TLorentzVector(*offshellW_lorentz_true + *onshellW_lorentz_true);
-    h2tohh_lorentz_true = new TLorentzVector(*h2_lorentz); 
-    b1_lorentz = b_genp_lorentz;
-    b2_lorentz = bbar_genp_lorentz;
-    htoBB_lorentz_true = new TLorentzVector(*b_genp_lorentz+*bbar_genp_lorentz);
-    ideal_met_lorentz.SetXYZM(nu1_lorentz_true->Px()+nu2_lorentz_true->Px(),nu1_lorentz_true->Py()+nu2_lorentz_true->Py(),0,0);
-  }
+   //TFile filetest(RefPDFfile_.c_str(),"READ");
+   //file_ref = filetest;
+   
+   //writemmctree_ = false;
+   std::stringstream ss;
+   ss << "mmctree_" << iev;
+   const std::string name(ss.str());
+   //if (writemmctree_) mmctree = fs->make<TTree>(name.c_str(), name.c_str());
+   if (not writemmctree_) mmctree = new TTree(name.c_str(), name.c_str());
 
-
-  verbose = verbose_; 
-  iev = ievent;
-
-  weightfromonshellnupt_func_ = weightfromonshellnupt_func;
-  weightfromonshellnupt_hist_ = weightfromonshellnupt_hist;
-  weightfromonoffshellWmass_hist_ = weightfromonoffshellWmass_hist;
-  iterations_ = iterations;
-  RefPDFfile_ = RefPDFfile;
-  useMET_ = useMET;
-  metcorrection_ = bjetrescaleAlgo;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
-  bjetrescale_ = bjetrescaleAlgo;//0.no rescale; 1.simple rescale; 2.elaborate rescale, -1.ideal case
-  writemmctree_ = false;
-
-  //TFile filetest(RefPDFfile_.c_str(),"READ");
-  //file_ref = filetest;
-
-  //writemmctree_ = false;
-  std::stringstream ss;
-  ss << "mmctree_" << iev;
-  const std::string name(ss.str());
-  //if (writemmctree_) mmctree = fs->make<TTree>(name.c_str(), name.c_str());
-  if (not writemmctree_) mmctree = new TTree(name.c_str(), name.c_str());
-
-  std::stringstream histss;
-  std::stringstream histweight1ss;
-  std::stringstream histweight4ss;
-  histss << "MMC_h2Mass_" << iev;
-  histweight1ss << "MMC_h2Mass_weight1_" << iev;
-  histweight4ss << "MMC_h2Mass_weight4_" << iev;
-  const std::string histname(histss.str());
-  const std::string histweight1name(histweight1ss.str());
-  const std::string histweight4name(histweight4ss.str());
-  MMC_h2Mass = TH1F(histname.c_str(),histname.c_str(), 900, 100, 1000);
-  MMC_h2Massweight1 = TH1F(histweight1name.c_str(),histweight1name.c_str(), 900, 100, 1000);
-  MMC_h2Massweight4 = TH1F(histweight4name.c_str(),histweight4name.c_str(), 900, 100, 1000);
-  initTree(mmctree);
-
-  b1rescalefactor = 1;
-  b2rescalefactor = 1;
-  rescalec1 = 1;
-  rescalec2 = 1;
-
-  nu_onshellW_lorentz = new TLorentzVector();
-  nu_offshellW_lorentz = new TLorentzVector();
-  offshellW_lorentz = new TLorentzVector();
-  onshellW_lorentz = new TLorentzVector();
-  htoWW_lorentz = new TLorentzVector();
-  htoBB_lorentz = new TLorentzVector(*mmc_bjets_lorentz);
-  h2tohh_lorentz = new TLorentzVector();
-  met_vec2 = new TVector2(mmcmet_vec2->Px(), mmcmet_vec2->Py());
-  //printTrueLorentz(); 
-  file = TFile::Open(RefPDFfile_.c_str(),"READ");
-  //std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
+   std::stringstream histss;
+   std::stringstream histweight1ss;
+   std::stringstream histweight4ss;
+   histss << "MMC_h2Mass_" << iev;
+   histweight1ss << "MMC_h2Mass_weight1_" << iev;
+   histweight4ss << "MMC_h2Mass_weight4_" << iev;
+   const std::string histname(histss.str());
+   const std::string histweight1name(histweight1ss.str());
+   const std::string histweight4name(histweight4ss.str());
+   MMC_h2Mass = TH1F(histname.c_str(),histname.c_str(), 900, 100, 1000);
+   MMC_h2Massweight1 = TH1F(histweight1name.c_str(),histweight1name.c_str(), 900, 100, 1000);
+   MMC_h2Massweight4 = TH1F(histweight4name.c_str(),histweight4name.c_str(), 900, 100, 1000);
+   initTree(mmctree);
+   
+   b1rescalefactor = 1;
+   b2rescalefactor = 1;
+   rescalec1 = 1;
+   rescalec2 = 1;
+   
+   nu_onshellW_lorentz = new TLorentzVector();
+   nu_offshellW_lorentz = new TLorentzVector();
+   offshellW_lorentz = new TLorentzVector();
+   onshellW_lorentz = new TLorentzVector();
+   htoWW_lorentz = new TLorentzVector();
+   htoBB_lorentz = new TLorentzVector(*mmc_bjets_lorentz);
+   h2tohh_lorentz = new TLorentzVector();
+   met_vec2 = new TVector2(mmcmet_vec2->Px(), mmcmet_vec2->Py());
+   //printTrueLorentz(); 
+   file = TFile::Open(RefPDFfile_.c_str(),"READ");
+   //std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
 }
 
 MMC::MMC(){
@@ -167,9 +167,6 @@ MMC::~MMC(){
 bool 
 MMC::runMMC(){//should not include any gen level information here in final version
 
-  //   TTree *mmctree = new TTree(); 
-  eta_mean = 0;
-  eta_rms = 0;
   // genetated (eta,phi) pair
   eta_gen = 0;
   phi_gen = 0;
@@ -184,24 +181,27 @@ MMC::runMMC(){//should not include any gen level information here in final versi
   generator->SetSeed(seed_+iev);
   //TF1* wmasspdf = new TF1("wmasspdf","exp(x*7.87e-3+1.69)+603.47*exp(-0.5*((x-80.1)/2.0)**2)",50,90);
 
-  // later should take into consideration both possible cases
-  // int onshell_control = 0;
-  std::cout <<" start runMMC() in MMC class "  << std::endl; 
-  float nu_onshellW_pt =0;
-  wmass_gen = 80.3;// initial value
-  float step,random01;
-  TH1F* wmasshist = readoutonshellWMassPDF(); 
-  TH2F* onoffshellWmass_hist = readoutonoffshellWMassPDF(); 
-  TH1F* onshellnupt_hist = readoutonshellnuptPDF(); 
-  TH1F* bjetrescalec1_hist = readoutbjetrescalec1PDF(); 
-  TH1F* bjetrescalec2_hist = readoutbjetrescalec2PDF(); 
-  //std::cout <<" rescale priori distribution 1" << std::endl;
-  //std::cout <<" onshellnupt max content " <<onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()) << std::endl;
-  onshellnupt_hist->Scale(1.0/onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()));
-  onoffshellWmass_hist->Scale(1.0/onoffshellWmass_hist->GetBinContent(onoffshellWmass_hist->GetMaximumBin()));
-  bjetrescalec2_hist->Scale(1.0/bjetrescalec2_hist->GetBinContent(bjetrescalec2_hist->GetMaximumBin()));
-  //std::cout <<" rescale priori distribution 2" << std::endl;
 
+   std::cout <<" start runMMC() in MMC class "  << std::endl; 
+   float nu_onshellW_pt =0;
+   wmass_gen = 80.3;// initial value
+   float step,random01;
+   TH1F* wmasshist = readoutonshellWMassPDF(); 
+   TH2F* onoffshellWmass_hist = readoutonoffshellWMassPDF(); 
+   TH1F* onshellnupt_hist = readoutonshellnuptPDF(); 
+   TH1F* bjetrescalec1_hist = readoutbjetrescalec1PDF(); 
+   TH1F* bjetrescalec2_hist = readoutbjetrescalec2PDF(); 
+   //std::cout <<" rescale priori distribution 1" << std::endl;
+   //std::cout <<" onshellnupt max content " <<onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()) << std::endl;
+   onshellnupt_hist->Scale(1.0/onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()));
+   onoffshellWmass_hist->Scale(1.0/onoffshellWmass_hist->GetBinContent(onoffshellWmass_hist->GetMaximumBin()));
+   bjetrescalec2_hist->Scale(1.0/bjetrescalec2_hist->GetBinContent(bjetrescalec2_hist->GetMaximumBin()));
+   //replace above by normalization
+   //onshellnupt_hist->Scale(1.0/onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()));
+   //onoffshellWmass_hist->Scale(1.0/onoffshellWmass_hist->GetBinContent(onoffshellWmass_hist->GetMaximumBin()));
+   //bjetrescalec2_hist->Scale(1.0/bjetrescalec2_hist->GetBinContent(bjetrescalec2_hist->GetMaximumBin()));
+   //std::cout <<" rescale priori distribution 2" << std::endl;
+   
   // printTrueLorentz();
 
   for (int i = 0; i < iterations_ ; i++){
