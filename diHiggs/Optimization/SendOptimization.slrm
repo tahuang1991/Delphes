@@ -15,7 +15,6 @@ cd /home/lpernie/Hhh/delphes/diHiggs/Optimization
 jobid=$SLURM_JOBID
 echo "job$jobid starts"
 root -b -q .x GridOpt_MakeTXT.C+
-
 echo "job$jobid is done"
 
 

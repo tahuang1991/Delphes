@@ -8,6 +8,7 @@
 #include "TClonesArray.h"
 #include "TTree.h"
 #include "TChain.h"
+#include "TH1F.h"
 
 #include "classes/DelphesClasses.h"
 
@@ -56,6 +57,11 @@ class DiHiggstoWWbb {
     double muonPt1_;
     double muonsEta_;
     double metPt_;
+    float b1rescalefactor;
+    std::vector<float> v_bjetrescalec1pdf;
+    float b2rescalefactor;
+    TH1F *bjetrescalec1pdf;
+    TH1F *histNnT;
     //Parameters for MMC
     bool runMMC_;
     bool useRecoMET_;
@@ -82,7 +88,8 @@ class DiHiggstoWWbb {
     void getGenMET(TClonesArray *branchGenMET);
     void matchMuon2Gen(TClonesArray *branchMuonBefore,TClonesArray *branchMuon, GenParticle *genmu1, GenParticle *genmu2, float dR);
     void matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
-
+    void SlideRescale();
+    void GetPDFc1();
     //braches used
     TClonesArray *branchParticle;
     TClonesArray *branchMuon;
@@ -120,6 +127,7 @@ class DiHiggstoWWbb {
     void getQuarkFinalState(GenParticle* &genp, TClonesArray *branchParticle);
     void printAllGenParticles(TClonesArray *branchParticle);
     //tree branches
+    int event_n;
     float b1_px;
     float b1_py;
     float b1_pz;
@@ -210,6 +218,11 @@ class DiHiggstoWWbb {
     float nu2_phi;
     float nu2_pt;
     float nu2_energy;
+    float nu1and2_pt;
+    float nu1and2_px;
+    float nu1and2_py;
+    float nu1and2_diBaxis_p;
+    float nu1and2_diBaxis_t;
 
     float w1_mass;
     float w1_px;
@@ -305,6 +318,7 @@ class DiHiggstoWWbb {
     bool hasRecob2jet;
     bool hasRecoMuon1;
     bool hasRecoMuon2;
+    float dR_bl;
     float dR_b1l1;
     float dR_b1l2;
     float dR_b2l1;
@@ -335,6 +349,14 @@ class DiHiggstoWWbb {
     float met_phi;
     float met_px;
     float met_py;
+    float genmet_diBaxis_p;
+    float genmet_diBaxis_t;
+    float met_diBaxis_p;
+    float met_diBaxis_t;
+    float met_c1_px;
+    float met_c1_py;
+    float met_diBaxis_c1_p;
+    float met_diBaxis_c1_t;
 
     float h2tohh_mass;
     //additional cuts

@@ -15,7 +15,7 @@ DelphesDir=$(shell dirname "$(CURDIR)")
 #	@echo "a"
 #	@echo $(CURDIR)
 #	@echo $(shell dirname "$(CURDIR)")
-ROOTINCLUDE=$(shell root-config --glibs 2> /dev/null)
+ROOTINCLUDE=$(shell root-config --glibs 2> /dev/null) -lTMVA
 #DelphesINCLUDE=-I$(DelphesDir)/classes -I$(DelphesDir)/modules -I$(DelphesDir)/readers
 #DelphesINCLUDE=-I$(DelphesDir) -I$(DelphesDir)/external 
 DelphesINCLUDE=-I$(DelphesDir)

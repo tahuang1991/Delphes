@@ -30,7 +30,7 @@
 
 using namespace std;
 
-void GridOpt_OptFromTXT( TString folder = "OUT_GridOpt_1/", TString txt_name = "S_B.txt" ){
+void GridOpt_OptFromTXT( TString folder = "OUT_GridOpt/", TString txt_name = "S_B.txt" ){
 
   TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
   //Opening Inputs
@@ -50,9 +50,8 @@ void GridOpt_OptFromTXT( TString folder = "OUT_GridOpt_1/", TString txt_name = "
   std::string Nline;
   while (std::getline(infileN, Nline))
          ++nTotLine;
-  //Get NEntries_S and NormCro_S (anb the same for B)
+  //Get NEntries_S and NormCro_S (and the same for B)
   while ( std::getline(infile, line1) ){
-    //cout<<"AA in "<<nTotLine<<endl;
     //nTotLine++;
     if( binN==0 ){
       std::istringstream iss1(line1);
@@ -74,9 +73,9 @@ void GridOpt_OptFromTXT( TString folder = "OUT_GridOpt_1/", TString txt_name = "
   {
     if(binN==0 || binN==1){ binN++; continue; }
     std::istringstream iss(line);
-    //BIN 24 cut_dR_l1l2 0.40 cut_dR_b1b2 1.80 cut_mass_l1l2 40.00 cut_mass_b1b2 130.00 Signal 14.123625 Background 3030.232178 S_B 0.004661 S_SqrtB 0.256571 S_SpB 0.004639 S_SqrtSB 0.255976
-    TString SBIN, SBIN_n, Scut_dR_l1l2, Scut_dR_l1l2_n, Scut_dR_b1b2, Scut_dR_b1b2_n, Scut_mass_l1l2, Scut_mass_l1l2_n, Scut_mass_b1b2, Scut_mass_b1b2_n, SS, SS_n, BB, BB_n, S_SqrtB, S_SqrtB_n, S_B, S_B_n, S_SpB, S_SpB_n, S_SqrtSB, S_SqrtSB_n;
-    if (!(iss >> SBIN >> SBIN_n >> Scut_dR_l1l2 >> Scut_dR_l1l2_n >> Scut_dR_b1b2 >> Scut_dR_b1b2_n >> Scut_mass_l1l2 >> Scut_mass_l1l2_n >> Scut_mass_b1b2 >> Scut_mass_b1b2_n >> SS >> SS_n >> BB >> BB_n >> S_B >> S_B_n >> S_SqrtB >> S_SqrtB_n >> S_SpB >> S_SpB_n >> S_SqrtSB >> S_SqrtSB_n)) { break; } // error
+    //BIN 18292 cut_dR_l1l2 1.40 cut_dR_b1b2 2.40 cut_dR_b1b2_min 0.00 cut_mass_l1l2 60.00 cut_mass_b1b2 165.00 cut_mass_b1b2_min 90.00 cut_dR_bl 2.25 Signal 248.524750 Background 21706.275391 S_B 0.011449 S_SqrtB 1.686852 S_SpB 0.011320 S_SqrtSB 1.677277 
+    TString SBIN, SBIN_n, Scut_dR_l1l2, Scut_dR_l1l2_n, Scut_dR_b1b2, Scut_dR_b1b2_n, Scut_dR_b1b2_min, Scut_dR_b1b2_min_n, Scut_mass_l1l2, Scut_mass_l1l2_n, Scut_mass_b1b2, Scut_mass_b1b2_n, Scut_mass_b1b2_min, Scut_mass_b1b2_min_n, Scut_dR_bl, Scut_dR_bl_n, SS, SS_n, BB, BB_n, S_SqrtB, S_SqrtB_n, S_B, S_B_n, S_SpB, S_SpB_n, S_SqrtSB, S_SqrtSB_n;
+    if (!(iss >> SBIN >> SBIN_n >> Scut_dR_l1l2 >> Scut_dR_l1l2_n >> Scut_dR_b1b2 >> Scut_dR_b1b2_n >> Scut_dR_b1b2_min >> Scut_dR_b1b2_min_n >> Scut_mass_l1l2 >> Scut_mass_l1l2_n >> Scut_mass_b1b2 >> Scut_mass_b1b2_n >> Scut_mass_b1b2_min >> Scut_mass_b1b2_min_n >> Scut_dR_bl >> Scut_dR_bl_n >> SS >> SS_n >> BB >> BB_n >> S_B >> S_B_n >> S_SqrtB >> S_SqrtB_n >> S_SpB >> S_SpB_n >> S_SqrtSB >> S_SqrtSB_n)) { break; } // error
     float f_ind     = ::atof(SBIN_n);
     float f_SB      = ::atof(S_B_n);
     float f_SsqrtB  = ::atof(S_SqrtB_n);
@@ -112,6 +111,7 @@ void GridOpt_OptFromTXT( TString folder = "OUT_GridOpt_1/", TString txt_name = "
       Max_SqrtSpB = f_SqrtSB;
     }
     binN++;
+    if(f_SqrtSB<0.0000001) cout<<"a "<<f_ind<<endl;
   }
   cout<<endl;
   gStyle->SetOptStat(0); myc1->cd();
