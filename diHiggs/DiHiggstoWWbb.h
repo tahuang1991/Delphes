@@ -88,7 +88,9 @@ class DiHiggstoWWbb {
     void fetchttbarchain(TClonesArray *branchParticle);
     void getGenMET(TClonesArray *branchGenMET);
     void matchMuon2Gen(TClonesArray *branchMuonBefore,TClonesArray *branchMuon, GenParticle *genmu1, GenParticle *genmu2, float dR);
-    void matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
+    void matchBjets2Gen(TClonesArray *branchGenJetNoNu, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
+    void matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticle *genb1, GenParticle *genb2, float dR);
+    
     void SlideRescale();
     void GetPDFc1();
     //braches used
@@ -97,6 +99,7 @@ class DiHiggstoWWbb {
     TClonesArray *branchMuonBeforeIso;
     TClonesArray *branchJet;
     TClonesArray *branchGenJet;
+    TClonesArray *branchGenJet_withNu;
     TClonesArray *branchMissingET;
     TClonesArray *branchGenMissingET;
 
@@ -121,12 +124,16 @@ class DiHiggstoWWbb {
     TLorentzVector genb1jet_p4, genb2jet_p4; 
     TLorentzVector mu1_p4, mu2_p4, nu1_p4, nu2_p4, b1_p4, b2_p4;
     TLorentzVector genmet_p4;
-     
+    //figure out misssing ET "contituent"
+    TLorentzVector nufromb1_p4, nufromb2_p4;
+    TLorentzVector genb1jet_withNu_p4, genb2jet_withNu_p4; 
+    
     void printGenParticle(GenParticle *genP);
     void printJet(Jet *jet);
     void getFinalState(GenParticle* &genp, TClonesArray *branchParticle);
     void getQuarkFinalState(GenParticle* &genp, TClonesArray *branchParticle);
     void printAllGenParticles(TClonesArray *branchParticle);
+    TLorentzVector findNeutrinosfromJet(TRefArray particles);
     //tree branches
     int event_n;
     float b1_px;
@@ -168,6 +175,34 @@ class DiHiggstoWWbb {
     float dR_genb2jet;
     bool hasgenb1jet;
     bool hasgenb2jet;
+
+    float genb1jet_withNu_px;
+    float genb1jet_withNu_py;
+    float genb1jet_withNu_pz;
+    float genb1jet_withNu_eta;
+    float genb1jet_withNu_phi;
+    float genb1jet_withNu_pt;
+    float genb1jet_withNu_energy;
+    float genb2jet_withNu_px;
+    float genb2jet_withNu_py;
+    float genb2jet_withNu_pz;
+    float genb2jet_withNu_eta;
+    float genb2jet_withNu_phi;
+    float genb2jet_withNu_pt;
+    float genb2jet_withNu_energy;
+    float dR_genb1jet_withNu;
+    float dR_genb2jet_withNu;
+    bool hasgenb1jet_withNu;
+    bool hasgenb2jet_withNu;
+   
+    float nufromb1_px;
+    float nufromb1_py;
+    float nufromb1_pz;
+    float nufromb1_energy;
+    float nufromb2_px;
+    float nufromb2_py;
+    float nufromb2_pz;
+    float nufromb2_energy;
 
     float dR_b1jet;
     float dR_b2jet;
