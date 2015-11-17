@@ -111,7 +111,6 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   getboolpara(strs, "weightfromonshellnupt_hist", weightfromonshellnupt_hist_, true);
   getboolpara(strs, "weightfromonoffshellWmass_hist", weightfromonoffshellWmass_hist_, true);
   std::cout <<" jetspt "<< jetsPt_ <<" jetsEta "<< jetsEta_ <<" bjetspt " << bjetsPt_ <<" bjetsEta " << bjetsEta_ << std::endl; 
-  histNnT = new TH1F( "MVA_BDT"," MVA_BDT", 100, -0.8, 0.8 );
 }
 
 void DiHiggstoWWbb::getboolpara(std::vector<std::string>& strs, std::string paraname, bool &para, bool def){
@@ -190,6 +189,7 @@ void DiHiggstoWWbb::init(){
   treeReader = new ExRootTreeReader(chain);
   evtree = new TTree("evtree","event tree");
   evtree->Branch("event_n",&event_n, "event_n/I");
+  evtree->Branch("MVA_bdt",&MVA_bdt, "MVA_bdt/F");
   evtree->Branch("b1_px",&b1_px, "b1_px/F");
   evtree->Branch("b1_py",&b1_py, "b1_py/F");
   evtree->Branch("b1_pz",&b1_pz, "b1_pz/F");
@@ -980,6 +980,8 @@ void DiHiggstoWWbb::initBranches(){
   //Track *track;
   //Tower *tower;
   //create branches 
+  event_n = -999;
+  MVA_bdt = -999.;
   b1_px =0;
   b1_py =0;
   b1_pz =0;
@@ -1422,10 +1424,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	reader->AddVariable("dR_bl",var2);
 	reader->AddVariable("mass_l1l2",var3);
 	reader->AddVariable("mass_b1b2",var4);
-	reader->BookMVA("BDT method", "MVAs/weights/TMVAClassification_BDT.weights.xml");  
-	Float_t BDT_response = reader->EvaluateMVA("BDT method");
-	histNnT->Fill( BDT_response );
-	cout<<"MVA::=> "<<BDT_response<<endl;
+	reader->BookMVA("MLP method", "MVAs/weights/TMVAClassification_MLP.weights.xml");  
+	Float_t MLP_response = reader->EvaluateMVA("MLP method");
+	MVA_bdt = MLP_response;
     }
     fillbranches();
 

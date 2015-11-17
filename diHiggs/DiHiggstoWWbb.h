@@ -61,7 +61,6 @@ class DiHiggstoWWbb {
     std::vector<float> v_bjetrescalec1pdf;
     float b2rescalefactor;
     TH1F *bjetrescalec1pdf;
-    TH1F *histNnT;
     //Parameters for MMC
     bool runMMC_;
     bool useRecoMET_;
@@ -128,6 +127,7 @@ class DiHiggstoWWbb {
     void printAllGenParticles(TClonesArray *branchParticle);
     //tree branches
     int event_n;
+    float MVA_bdt;
     float b1_px;
     float b1_py;
     float b1_pz;
