@@ -450,6 +450,9 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("met_diBaxis_c1_p",&met_diBaxis_c1_p,"met_diBaxis_c1_p/F");
   evtree->Branch("met_diBaxis_c1_t",&met_diBaxis_c1_t,"met_diBaxis_c1_t/F");
 
+  evtree->Branch("HhhtoWWWW",&HhhtoWWWW, "HhhtoWWWW/B");
+  evtree->Branch("allnu_met",&allnu_met, "allnu_met/F");
+  
   evtree->Branch("hasGenMET",&hasGenMET, "hasGenMET/B");
   evtree->Branch("hasMET",&hasMET, "hasMET/B");
   evtree->Branch("hasdRljet",&hasdRljet, "hasdRljet/B");
@@ -482,6 +485,115 @@ DiHiggstoWWbb::~DiHiggstoWWbb(){
   delete treeReader;
   delete chain;
   delete evtree;
+}
+
+
+// ------------ To find H->hh->WWWW->lvlvlvlv  ------------
+void DiHiggstoWWbb::fetchHhhWWWWchain(TClonesArray *branchParticle){
+
+  GenParticle *genh2,*genhiggs1,*genhiggs2;
+   
+  genh2 =  (GenParticle*) branchParticle->At(0);
+  //printGenParticle(genP);
+  if (genh2->PID != 99926 and genh2->PID != 99927) {
+    cout <<" first genparticle is not 99926 nor 99927 " << endl; 
+    printGenParticle(genh2);
+    return;
+  }
+  genhiggs1 =  (GenParticle*) branchParticle->At(genh2->D1); 
+  genhiggs2 =  (GenParticle*) branchParticle->At(genh2->D2); 
+  //printGenParticle(genhiggs2);
+  while ((genhiggs1->D1>0 && ((GenParticle*)branchParticle->At(genhiggs1->D1))->PID == genhiggs1->PID) 
+	|| (genhiggs1->D2>0 && ((GenParticle*)branchParticle->At(genhiggs1->D2))->PID == genhiggs1->PID)){
+    if (genhiggs1->D1>0 && ((GenParticle*)branchParticle->At(genhiggs1->D1))->PID == genhiggs1->PID) 
+	genhiggs1 = (GenParticle*)branchParticle->At(genhiggs1->D1);
+    else   genhiggs1 = (GenParticle*)branchParticle->At(genhiggs1->D2);
+  }
+  while ((genhiggs2->D1>0 && ((GenParticle*)branchParticle->At(genhiggs2->D1))->PID == genhiggs2->PID) 
+	|| (genhiggs2->D2>0 && ((GenParticle*)branchParticle->At(genhiggs2->D2))->PID == genhiggs2->PID)){
+    if (genhiggs2->D1>0 && ((GenParticle*)branchParticle->At(genhiggs2->D1))->PID == genhiggs2->PID) 
+	genhiggs2 = (GenParticle*)branchParticle->At(genhiggs2->D1);
+    else   genhiggs2 = (GenParticle*)branchParticle->At(genhiggs2->D2);
+  }
+  if (abs(((GenParticle*)branchParticle->At(genhiggs1->D1))->PID) ==24 && 
+	abs(((GenParticle*)branchParticle->At(genhiggs1->D2))->PID) ==24 &&
+	abs(((GenParticle*)branchParticle->At(genhiggs2->D1))->PID) ==24 &&
+	abs(((GenParticle*)branchParticle->At(genhiggs2->D2))->PID) ==24) {
+    //printGenParticle(genhiggs2);
+    //printGenParticle((GenParticle*)branchParticle->At(genhiggs2->D1));
+    //printGenParticle((GenParticle*)branchParticle->At(genhiggs2->D2));
+    HhhtoWWWW = true;
+  }
+  if (HhhtoWWWW){
+  	GenParticle *genW1,*genW2,*genW3,*genW4,*gennu1,*gennu2,*gennu3,*gennu4;
+	genW1=0; genW2=0; genW3=0; genW4=0; gennu1=0; gennu2=0; gennu3=0; gennu4=0;
+ 	genW1 = (GenParticle*) branchParticle->At(genhiggs1->D1);
+  	genW2 = (GenParticle*) branchParticle->At(genhiggs1->D2);
+  	genW3 = (GenParticle*) branchParticle->At(genhiggs2->D1);
+  	genW4 = (GenParticle*) branchParticle->At(genhiggs2->D2);
+  	getFinalState(genW1, branchParticle);
+  	getFinalState(genW2, branchParticle);
+  	getFinalState(genW3, branchParticle);
+  	getFinalState(genW4, branchParticle);
+		/*printGenParticle(genh2);
+		printGenParticle(genhiggs1);
+		printGenParticle(genhiggs2);
+		printGenParticle(genW1);
+		printGenParticle(genW2);
+		printGenParticle(genW3);
+		printGenParticle(genW4);
+		*/
+    	if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID) == 14)
+       		gennu1 = (GenParticle*)branchParticle->At(genW1->D1); 
+        else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID) == 14)
+		gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
+    	if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID) == 12)
+       		gennu1 = (GenParticle*)branchParticle->At(genW1->D1); 
+        else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID) == 12)
+		gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
+    	if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID) == 14)
+       		gennu2 = (GenParticle*)branchParticle->At(genW2->D1); 
+        else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID) == 14)
+		gennu2 = (GenParticle*)branchParticle->At(genW2->D2);
+    	if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID) == 12)
+       		gennu2 = (GenParticle*)branchParticle->At(genW2->D1); 
+        else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID) == 12)
+		gennu2 = (GenParticle*)branchParticle->At(genW2->D2);
+    	if (genW3->D1>0 && abs(((GenParticle*)branchParticle->At(genW3->D1))->PID) == 14)
+       		gennu3 = (GenParticle*)branchParticle->At(genW3->D1); 
+        else if (genW3->D2>0 && abs(((GenParticle*)branchParticle->At(genW3->D2))->PID) == 14)
+		gennu3 = (GenParticle*)branchParticle->At(genW3->D2);
+    	if (genW3->D1>0 && abs(((GenParticle*)branchParticle->At(genW3->D1))->PID) == 12)
+       		gennu3 = (GenParticle*)branchParticle->At(genW3->D1); 
+        else if (genW3->D2>0 && abs(((GenParticle*)branchParticle->At(genW3->D2))->PID) == 12)
+		gennu3 = (GenParticle*)branchParticle->At(genW3->D2);
+    	if (genW4->D1>0 && abs(((GenParticle*)branchParticle->At(genW4->D1))->PID) == 14)
+       		gennu4 = (GenParticle*)branchParticle->At(genW4->D1); 
+        else if (genW4->D2>0 && abs(((GenParticle*)branchParticle->At(genW4->D2))->PID) == 14)
+		gennu4 = (GenParticle*)branchParticle->At(genW4->D2);
+    	if (genW4->D1>0 && abs(((GenParticle*)branchParticle->At(genW4->D1))->PID) == 12)
+       		gennu4 = (GenParticle*)branchParticle->At(genW4->D1); 
+        else if (genW4->D2>0 && abs(((GenParticle*)branchParticle->At(genW4->D2))->PID) == 12)
+		gennu4 = (GenParticle*)branchParticle->At(genW4->D2);
+        
+       if (gennu1 != 0 and gennu2 != 0 and gennu3 != 0 and gennu4 != 0){
+ 		getFinalState(gennu1, branchParticle);
+ 		getFinalState(gennu2, branchParticle);
+ 		getFinalState(gennu3, branchParticle);
+ 		getFinalState(gennu4, branchParticle);
+ 		cout <<" genparticle in Hhh to WWWW " << endl;
+		
+		//(gennu1->P4()).Print();
+		//(gennu2->P4()).Print();
+		//(gennu3->P4()).Print();
+		//(gennu4->P4()).Print();
+		TLorentzVector allnu_p4 = gennu1->P4()+gennu2->P4()+gennu3->P4()+gennu4->P4();
+		allnu_met = allnu_p4.Pt();
+		std::cout <<" all nu p4 "; allnu_p4.Print();
+	}
+  }
+  
+
 }
 
 // ------------ To find H->hh->WWBB->lvlvBB  ------------
@@ -1365,6 +1477,9 @@ void DiHiggstoWWbb::initBranches(){
   met_diBaxis_c1_p = -999;
   met_diBaxis_c1_t = -999;
 
+  allnu_met = -999;
+  HhhtoWWWW = false;
+
   h2tohh_mass =0;
   //additional cuts
   hasMET = false;
@@ -1429,6 +1544,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if (simulation_){
 	if (sample_ == Signal) fetchHhhchain(branchParticle); 
 	else fetchttbarchain(branchParticle);
+	if (sample_ == Signal) fetchHhhWWWWchain(branchParticle); 
 	dR_genl1l2 = (Wtomu1nu1 and Wtomu2nu2)?mu1_p4.DeltaR(mu2_p4): -1; 
 	if (sample_ == Background and dR_genl1l2 > 2.5) continue;
 	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2, jetsDeltaR_); 
@@ -1690,7 +1806,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	delete thismmc;
     }
     //fill branches
-    //if ((hasb1jet or hasb2jet) and h2tohh) evtree->Fill();
+    //if (HhhtoWWWW) cout <<"recomet "<< met <<" genmet "<< genmet << " all nu pt " << allnu_met <<endl;
+    //if (HhhtoWWWW) evtree->Fill();
     if (runMMC_ and (runMMCok or preselections_gen)) evtree->Fill();
     //if (not(runMMC_) and (h2tohh or ttbar)) evtree->Fill();
     //evtree->Fill();

@@ -84,6 +84,7 @@ class DiHiggstoWWbb {
     void calculateNormfactor(int bm=3);  //print the normalization factor
     void initBranches();                 //create tree and branches
     void init();                         //create tree and branches
+    void fetchHhhWWWWchain(TClonesArray *branchParticle);
     void fetchHhhchain(TClonesArray *branchParticle);
     void fetchttbarchain(TClonesArray *branchParticle);
     void getGenMET(TClonesArray *branchGenMET);
@@ -393,6 +394,9 @@ class DiHiggstoWWbb {
     float met_c1_py;
     float met_diBaxis_c1_p;
     float met_diBaxis_c1_t;
+
+    bool HhhtoWWWW;
+    float allnu_met;
 
     float h2tohh_mass;
     //additional cuts

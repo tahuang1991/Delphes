@@ -195,6 +195,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
    //std::cout <<" onshellnupt max content " <<onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()) << std::endl;
    onshellnupt_hist->Scale(1.0/onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()));
    onoffshellWmass_hist->Scale(1.0/onoffshellWmass_hist->GetBinContent(onoffshellWmass_hist->GetMaximumBin()));
+   bjetrescalec1_hist->Scale(1.0/bjetrescalec1_hist->GetBinContent(bjetrescalec1_hist->GetMaximumBin()));
    bjetrescalec2_hist->Scale(1.0/bjetrescalec2_hist->GetBinContent(bjetrescalec2_hist->GetMaximumBin()));
    //replace above by normalization
    //onshellnupt_hist->Scale(1.0/onshellnupt_hist->GetBinContent(onshellnupt_hist->GetMaximumBin()));
@@ -239,24 +240,36 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     }
     else if (metcorrection_ ==2){
 	rescalec1 = bjetrescalec1_hist->GetRandom();
-	bjetsCorrection();
+	bjetsCorrection();//calculate b1rescalefactor b2rescalefactor
 	metCorrection(); 
     }
+    else if (metcorrection_ ==3){
+	rescalec1 = bjetrescalec1_hist->GetRandom();
+	rescalec2 = bjetrescalec2_hist->GetRandom();
+        b1rescalefactor = rescalec1; b2rescalefactor=rescalec2;
+	//bjetsCorrection();
+	metCorrection(); 
+    }
+    
 
     if (bjetrescale_ == -1 and simulation)
 	*htoBB_lorentz = *htoBB_lorentz_true;
     if (metcorrection_ ==-1 and simulation)
 	*met_vec2 = TVector2(nu1_lorentz_true->Px()+nu2_lorentz_true->Px(),nu1_lorentz_true->Py()+nu2_lorentz_true->Py());
-
-    //std::cout <<" MMC metCorrection b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
-    //std::cout <<" MMC input met  px "<< mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
+    /*
+    std::cout <<" MMC metCorrection b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
+    std::cout <<"b1jet Px "<<mmc_b1jet_lorentz->Px() <<" Py "<<mmc_b1jet_lorentz->Py() 
+	<<" b2jet Px "<< mmc_b2jet_lorentz->Px() <<" Py "<<mmc_b2jet_lorentz->Py() << std::endl;
+    std::cout <<"sum of two nu  px "<<nu1_lorentz_true->Px()+nu2_lorentz_true->Px() <<" py "<<nu1_lorentz_true->Py()+nu2_lorentz_true->Py()<<std::endl;
+    std::cout <<" MMC input met  px "<< mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
+    std::cout <<" met after correction px "<< met_vec2->Px() << " py "<< met_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
     // std::cout <<" bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
     //wmass_gen = wmasspdf->GetRandom(50.0,90.0);
     //test
     //eta_gen = eta_nuonshellW_true;
     //phi_gen = phi_nuonshellW_true;
     //wmass_gen = mass_onshellW_true; 
-    /*std::cout << "true eta phi of nuonshell ("<<eta_nuonshellW_true <<","<<phi_nuonshellW_true<<"), pt " <<pt_nuonshellW_true 
+    std::cout << "true eta phi of nuonshell ("<<eta_nuonshellW_true <<","<<phi_nuonshellW_true<<"), pt " <<pt_nuonshellW_true 
 	<<" mass of onshellW " << mass_onshellW_true <<" wmass_gen "<< wmass_gen  << std::endl;
 	std::cout << "true eta phi of nuoffshell ("<<eta_nuoffshellW_true <<","<<phi_nuoffshellW_true<<"), pt " <<pt_nuoffshellW_true 
 	<<" mass of offshellW " << mass_offshellW_true <<  std::endl;
@@ -1242,6 +1255,7 @@ MMC::nulorentz_offshellW(TVector2* met,
 }
 
 //--------------------------- bjets correction, based on c1, calculate c2 here  ----------------------------------------------------------
+//use rescalec1, rescalec2 to correct bjets
 void 
 MMC::bjetsCorrection(){
   //c1rescale taken from pdf
@@ -1252,6 +1266,7 @@ MMC::bjetsCorrection(){
     b2lorentz = *mmc_b2jet_lorentz;
   }
   else {
+    std::cout <<"wired b1jet is not jet with larger pt "<< std::endl;
     b1lorentz = *mmc_b2jet_lorentz;
     b2lorentz = *mmc_b1jet_lorentz;
   }
