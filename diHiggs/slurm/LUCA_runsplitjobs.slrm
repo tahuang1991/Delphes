@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH -J runsplit
+#SBATCH -p hepx 
+#SBATCH --time=72:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=2000
+#SBATCH -o batchjobs_runsplit-%A-%a.out
+#SBATCH -e batchjobs_runsplit-%A-%a.err
+#SBATCH --ntasks-per-core=1
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+#change to dir
+Curdir=`pwd`
+parentdir="$(dirname "$Curdir")"
+echo "current dir is $Curdir, parentdir is $parentdir"
+jobid=$SLURM_JOBID
+echo "job$jobid starts, `date`"
+
+./LUCA_splitjobs_B6.sh
+./LUCA_splitjobs_B3.sh
+./LUCA_splitjobs_ttbar.sh
+
+echo "job$jobid is done, `date`"
+
+
+exit 0
+
