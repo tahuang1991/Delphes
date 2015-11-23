@@ -36,15 +36,15 @@ Example_SRC = testMake.cpp
 Example_EXE = testMake.exe
 
 #DiHiggsAnalyzer
-DiHiggsAna_SRC = DiHiggsAnalyzer.cpp DiHiggstollbb.h DiHiggstollbb.C MMC.h MMC.cc
+DiHiggsAna_SRC = DiHiggsAnalyzer.cpp DiHiggstollbb.h DiHiggstollbb.C MMC.h MMC.cc CrossSections_and_BR.h CrossSections_and_BR.cc
 DiHiggsAna_EXE = DiHiggsAna.exe
-DiHiggsVal_SRC = DiHiggsValidation.cpp DiHiggstoWWbb.h DiHiggstoWWbb.C MMC.h MMC.cc
+DiHiggsVal_SRC = DiHiggsValidation.cpp DiHiggstoWWbb.h DiHiggstoWWbb.C MMC.h MMC.cc CrossSections_and_BR.h CrossSections_and_BR.cc
 DiHiggsVal_EXE = DiHiggsValidation.exe
 #DiHiggsVal_EXE = ttbarValidation.exe
 
-ttbarAna_SRC = ttbarAnalyzer.cpp ttbartollbb.h ttbartollbb.C MMC.h MMC.cc
+ttbarAna_SRC = ttbarAnalyzer.cpp ttbartollbb.h ttbartollbb.C MMC.h MMC.cc CrossSections_and_BR.h CrossSections_and_BR.cc
 ttbarAna_EXE = ttbarAna.exe
-ttbarVal_SRC = ttbarValidation.cpp ttbartoWWbb.h ttbartoWWbb.C MMC.h MMC.cc
+ttbarVal_SRC = ttbarValidation.cpp ttbartoWWbb.h ttbartoWWbb.C MMC.h MMC.cc CrossSections_and_BR.h CrossSections_and_BR.cc
 ttbarVal_EXE = ttbarValidation.exe
 # test print out
 #var=TEST

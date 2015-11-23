@@ -42,7 +42,7 @@ class DiHiggstoWWbb {
     int nStarts_;
     bool simulation_;  //True if you have also GEN info
     int sample_;       //Signal or Background (see next enum)
-    enum {Signal = 1, Background = 2};
+    enum {tt = 0, B3 = 1, B6 = 2};
 
     //Parameters in config file
     double jetsPt_;
@@ -62,6 +62,7 @@ class DiHiggstoWWbb {
     float b2rescalefactor;
     TH1F *bjetrescalec1pdf;
     //Parameters for MMC
+    bool runMVA_;
     bool runMMC_;
     bool useRecoMET_;
     bool useRecoMuon_;
@@ -127,6 +128,7 @@ class DiHiggstoWWbb {
     void printAllGenParticles(TClonesArray *branchParticle);
     //tree branches
     int event_n;
+    float weight;
     float MVA_bdt;
     float b1_px;
     float b1_py;

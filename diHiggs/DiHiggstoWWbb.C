@@ -38,6 +38,7 @@
 #include "classes/DelphesClasses.h"
 #include "DiHiggstoWWbb.h"
 #include "MMC.h"
+#include "CrossSections_and_BR.h"
 
 using namespace std;
 using namespace TMVA;
@@ -70,6 +71,10 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, std::ifstr
   allEntries = treeReader->GetEntries();
   cout << "** Chain contains " << allEntries << " events" << endl;
   cout <<" DiHiggstoWWbb gFile get options " << gFile->GetOption() << endl;
+  //Compute weight
+  CrossSections_and_BR *my_br = new CrossSections_and_BR();
+  weight = my_br->GetWeight(300,1000000,sample_);
+  delete my_br;
 }
 
 void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
@@ -85,7 +90,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   }
   getintpara(strs, "nEvents", nEvents_, -1);
   getintpara(strs, "nStarts", nStarts_, 0);
-  getintpara(strs, "sample", sample_, Signal);
+  getintpara(strs, "sample", sample_, B3);
   getboolpara(strs, "simulation", simulation_, true);
   getdoublepara(strs,"jetsPt", jetsPt_, 20.0);
   getdoublepara(strs,"jetsEta", jetsEta_, 5.0);
@@ -99,6 +104,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   getdoublepara(strs,"muonPt2", muonPt2_, 20.0);
   getdoublepara(strs,"muonEta", muonsEta_, 2.40);
   getdoublepara(strs,"metPt", metPt_, 20);
+  getboolpara(strs, "runMVA", runMVA_, false);
   getboolpara(strs, "runMMC", runMMC_, false);
   getboolpara(strs, "useRecoMET", useRecoMET_, false);//whether to use reco met or not as MMC input
   getboolpara(strs, "useRecoMuon", useRecoMuon_, false);
@@ -189,6 +195,7 @@ void DiHiggstoWWbb::init(){
   treeReader = new ExRootTreeReader(chain);
   evtree = new TTree("evtree","event tree");
   evtree->Branch("event_n",&event_n, "event_n/I");
+  evtree->Branch("weight",&weight, "weight/F");
   evtree->Branch("MVA_bdt",&MVA_bdt, "MVA_bdt/F");
   evtree->Branch("b1_px",&b1_px, "b1_px/F");
   evtree->Branch("b1_py",&b1_py, "b1_py/F");
@@ -981,6 +988,7 @@ void DiHiggstoWWbb::initBranches(){
   //Tower *tower;
   //create branches 
   event_n = -999;
+  weight = 0.;
   MVA_bdt = -999.;
   b1_px =0;
   b1_py =0;
@@ -1273,10 +1281,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 
     // If simulation, take GEN info
     if (simulation_){
-	if (sample_ == Signal) fetchHhhchain(branchParticle); 
+	if (sample_ == B3 || sample_ == B6) fetchHhhchain(branchParticle); 
 	else fetchttbarchain(branchParticle);
 	dR_genl1l2 = (Wtomu1nu1 and Wtomu2nu2)?mu1_p4.DeltaR(mu2_p4): -1; 
-	if (sample_ == Background and dR_genl1l2 > 2.5) continue;
+	if (sample_ == tt and dR_genl1l2 > 2.5) continue;
 	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2, jetsDeltaR_); 
 	matchMuon2Gen(branchMuonBeforeIso, branchMuon,genmu1, genmu2, leptonsDeltaR_); 
 	getGenMET(branchGenMissingET);
@@ -1416,17 +1424,19 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	mass_trans = sqrt(2*ll_p4.Pt()*met*(1-cos(dphi_llmet)));
 	if (dR_b1l1 > jetleptonDeltaR_ and dR_b1l2 > jetleptonDeltaR_ and dR_b2l1 > jetleptonDeltaR_ and dR_b2l2 > jetleptonDeltaR_) hasdRljet =true;
 	//TMva
-	TMVA::Tools::Instance();
-	TMVA::Reader *reader = new TMVA::Reader( "V:Color:Silent" );
-	float *var0=&(dR_l1l2), *var1=&(dR_b1b2), *var2=&(dR_bl), *var3=&(mass_l1l2), *var4=&(mass_b1b2);
-	reader->AddVariable("dR_l1l2",var0);
-	reader->AddVariable("dR_b1b2",var1);
-	reader->AddVariable("dR_bl",var2);
-	reader->AddVariable("mass_l1l2",var3);
-	reader->AddVariable("mass_b1b2",var4);
-	reader->BookMVA("MLP method", "MVAs/weights/TMVAClassification_MLP.weights.xml");  
-	Float_t MLP_response = reader->EvaluateMVA("MLP method");
-	MVA_bdt = MLP_response;
+	if(runMVA_){
+	  TMVA::Tools::Instance();
+	  TMVA::Reader *reader = new TMVA::Reader( "V:Color:Silent" );
+	  float *var0=&(dR_l1l2), *var1=&(dR_b1b2), *var2=&(dR_bl), *var3=&(mass_l1l2), *var4=&(mass_b1b2);
+	  reader->AddVariable("dR_l1l2",var0);
+	  reader->AddVariable("dR_b1b2",var1);
+	  reader->AddVariable("dR_bl",var2);
+	  reader->AddVariable("mass_l1l2",var3);
+	  reader->AddVariable("mass_b1b2",var4);
+	  reader->BookMVA("MLP method", "MVAs/weights_noMMC/TMVAClassification_MLP.weights.xml");  
+	  Float_t MLP_response = reader->EvaluateMVA("MLP method");
+	  MVA_bdt = MLP_response;
+	}
     }
     fillbranches();
 
@@ -1440,22 +1450,22 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     //only in simulation case, these two could be true
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
-    if (runMMC_ and preselections and (not(simulation_) || (h2tohh and sample_==Signal) || (ttbar and sample_ ==Background))){
-	cout <<" start to run MMC for this event " << entry <<endl;
+    if (runMMC_ and preselections and (not(simulation_) || (h2tohh and (sample_==B3 || sample_==B6)) || (ttbar and sample_==tt))){
+	//cout <<" start to run MMC for this event " << entry <<endl;
 	TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
 	if (useRecoBJet_ and b1jet_p4.Pt()>b2jet_p4.Pt()) {
-	  cout <<" use Reco bjet " << endl;
+	  //cout <<" use Reco bjet " << endl;
 	  bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
 	} else if(useRecoBJet_){ 
-	  cout <<" use Reco bjet " << endl;
+	  //cout <<" use Reco bjet " << endl;
 	  bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;
 	}
 
 	if (simulation_ and not(useRecoBJet_) and genb1jet_p4.Pt()>genb2jet_p4.Pt()) {
-	  cout <<" use Gen bjet " << endl;
+	  //cout <<" use Gen bjet " << endl;
 	  bjet_pt1_lorentz = genb1jet_p4; bjet_pt2_lorentz = genb2jet_p4; }
 	else if (simulation_ and not(useRecoBJet_) and genb1jet_p4.Pt()<genb2jet_p4.Pt()) {
-	  cout <<" use Gen bjet " << endl;
+	  //cout <<" use Gen bjet " << endl;
 	  bjet_pt1_lorentz = genb2jet_p4; bjet_pt2_lorentz = genb1jet_p4;
 	}
 
@@ -1466,22 +1476,21 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 
 	TLorentzVector lepton1_lorentz, lepton2_lorentz;
 	if (useRecoMuon_ ){
-	  cout <<" use Reco Muon " << endl;
+	  //cout <<" use Reco Muon " << endl;
 	  lepton1_lorentz = Muon1_p4; lepton2_lorentz = Muon2_p4;
 	}else if (not(useRecoMuon_) and simulation_){
-	  cout <<" use Gen Muon " << endl;
+	  //cout <<" use Gen Muon " << endl;
 	  lepton1_lorentz = mu1_p4; lepton2_lorentz = mu2_p4;
 	}
 
 	TLorentzVector Met_lorentz;
-	cout <<" use "<<(useRecoMET_?" Reco ":" Gen ") << "MET" << endl;
+	//cout <<" use "<<(useRecoMET_?" Reco ":" Gen ") << "MET" << endl;
 	if (useRecoMET_)	Met_lorentz = Met_p4;
 	else if (not(useRecoMET_) and simulation_) Met_lorentz = genmet_p4;
 
 
 	TLorentzVector h2tohh_genp_lorentz = TLorentzVector();
-	//if (simulation_ and sample_==Signal) genh2->P4().Print();
-	if (simulation_ and sample_==Signal) h2tohh_genp_lorentz = genh2->P4();
+	if (simulation_ and (sample_==B3 || sample_==B6)) h2tohh_genp_lorentz = genh2->P4();
 	else if (simulation_) h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
 
 	int onshellMarker_;
@@ -1499,7 +1508,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  TH1F* MMC_h2mass =(TH1F*)(thismmc->getMMCh2()).Clone("MMC_h2mass");
 	  TH1F* MMC_h2mass_weight1 =(TH1F*)(thismmc->getMMCh2weight1()).Clone("MMC_h2massweight1");
 	  TH1F* MMC_h2mass_weight4 =(TH1F*)(thismmc->getMMCh2weight4()).Clone("MMC_h2massweight4");
-	  std::cout <<" Mass_h2mass in Analyzer " << std::endl;
+	  //std::cout <<" Mass_h2mass in Analyzer " << std::endl;
 	  MMC_h2mass_prob = (MMC_h2mass->GetXaxis())->GetBinCenter(MMC_h2mass->GetMaximumBin());
 	  MMC_h2massweight1_prob = (MMC_h2mass_weight1->GetXaxis())->GetBinCenter(MMC_h2mass_weight1->GetMaximumBin());
 	  MMC_h2massweight4_prob = (MMC_h2mass_weight4->GetXaxis())->GetBinCenter(MMC_h2mass_weight4->GetMaximumBin());
@@ -1509,8 +1518,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  int nbin=(MMC_h2mass->GetXaxis())->GetNbins();
 	  MMC_h2mass_overflow = MMC_h2mass->GetBinContent(nbin+1);
 	  MMC_h2mass_underflow = MMC_h2mass->GetBinContent(-1);
-	  std::cout <<" most prob " << MMC_h2mass_prob <<" RMS "<< MMC_h2mass_RMS << " entries " << MMC_h2mass_Entries 
-	    << " most prob weight1 "<< MMC_h2massweight1_prob <<" weight4 "<< MMC_h2massweight4_prob <<std::endl;
+	  //std::cout <<" most prob " << MMC_h2mass_prob <<" RMS "<< MMC_h2mass_RMS << " entries " << MMC_h2mass_Entries 
+	  //  << " most prob weight1 "<< MMC_h2massweight1_prob <<" weight4 "<< MMC_h2massweight4_prob <<std::endl;
 	}
 	//MMCfile->WriteObject(mmctree,mmctree->GetTitle());
 	delete thismmc;
