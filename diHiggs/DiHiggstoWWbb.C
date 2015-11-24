@@ -39,6 +39,7 @@
 #include "DiHiggstoWWbb.h"
 #include "MMC.h"
 #include "CrossSections_and_BR.h"
+#include "mt2_bisect.h"
 
 using namespace std;
 using namespace TMVA;
@@ -73,7 +74,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, std::ifstr
   cout <<" DiHiggstoWWbb gFile get options " << gFile->GetOption() << endl;
   //Compute weight
   CrossSections_and_BR *my_br = new CrossSections_and_BR();
-  weight = my_br->GetWeight(300,1000000,sample_);
+  Thisweight = my_br->GetWeight(300,1000000,sample_);
   delete my_br;
 }
 
@@ -197,6 +198,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("event_n",&event_n, "event_n/I");
   evtree->Branch("weight",&weight, "weight/F");
   evtree->Branch("MVA_bdt",&MVA_bdt, "MVA_bdt/F");
+  evtree->Branch("MT2",&MT2, "MT2/F");
   evtree->Branch("b1_px",&b1_px, "b1_px/F");
   evtree->Branch("b1_py",&b1_py, "b1_py/F");
   evtree->Branch("b1_pz",&b1_pz, "b1_pz/F");
@@ -990,6 +992,7 @@ void DiHiggstoWWbb::initBranches(){
   event_n = -999;
   weight = 0.;
   MVA_bdt = -999.;
+  MT2 = -999.;
   b1_px =0;
   b1_py =0;
   b1_pz =0;
@@ -1268,6 +1271,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   for(entry = nStarts_; entry < totalevents; ++entry){
 
     initBranches();
+    weight = Thisweight;
     // Load selected branches with data from specified event
     bool readsuccess = treeReader->ReadEntry(entry);
     if (not readsuccess) {
@@ -1423,7 +1427,42 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	mass_b1b2 = bjets_p4.M(); energy_b1b2 = bjets_p4.Energy(); pt_b1b2 = bjets_p4.Pt(); eta_b1b2 = bjets_p4.Eta(); phi_b1b2 = bjets_p4.Phi();
 	mass_trans = sqrt(2*ll_p4.Pt()*met*(1-cos(dphi_llmet)));
 	if (dR_b1l1 > jetleptonDeltaR_ and dR_b1l2 > jetleptonDeltaR_ and dR_b2l1 > jetleptonDeltaR_ and dR_b2l2 > jetleptonDeltaR_) hasdRljet =true;
-	//TMva
+	//MT2: In order to construct MT2 for either the t tbar -> bW bW system or our signal H -> h h -> bb WW,
+	//we group each pair b_jet-lepton into an object: we then get "Particle A" and "Particle B" (each one given by a b_jet-lepton object),
+	//whose Kinematics is to be fed into the MT2 variable.
+	//There are two possible Lepton-Bquark pairings. We compute MT2 for both and pick the smallest value.
+	//-Sorting leptons and b-jets
+	TLorentzVector MU_1, MU_2, Bj_1, Bj_2;
+	MU_1 = (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon1_p4 : Muon2_p4;
+	MU_2 = (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon2_p4 : Muon1_p4;
+	Bj_1 = (b1jet_p4.Pt()>b2jet_p4.Pt()) ? b1jet_p4 : b2jet_p4;
+	Bj_2 = (b1jet_p4.Pt()>b2jet_p4.Pt()) ? b2jet_p4 : b1jet_p4;
+	//-Invariant mass for "Particle A"
+	float sumesBl1_1=(MU_1.E()+Bj_1.E())*(MU_1.E()+Bj_1.E());
+	float sumpxsBl1_1=(MU_1.Px()+Bj_1.Px())*(MU_1.Px()+Bj_1.Px());
+	float sumpysBl1_1=(MU_1.Py()+Bj_1.Py())*(MU_1.Py()+Bj_1.Py());
+	float sumpzsBl1_1=(MU_1.Pz()+Bj_1.Pz())*(MU_1.Pz()+Bj_1.Pz());
+	float M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
+	float Pxa_1 = MU_1.Px()+Bj_1.Px();
+	float Pya_1 = MU_1.Py()+Bj_1.Py();
+
+	// Invariant mass for "Particle B"
+	float sumesBl2_1=(MU_2.E()+Bj_2.E())*(MU_2.E()+Bj_2.E());
+	float sumpxsBl2_1=(MU_2.Px()+Bj_2.Px())*(MU_2.Px()+Bj_2.Px());
+	float sumpysBl2_1=(MU_2.Py()+Bj_2.Py())*(MU_2.Py()+Bj_2.Py());
+	float sumpzsBl2_1=(MU_2.Pz()+Bj_2.Pz())*(MU_2.Pz()+Bj_2.Pz());
+	float M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
+	float Pxb_1 = MU_2.Px()+Bj_2.Px();
+	float Pyb_1 = MU_2.Py()+Bj_2.Py();
+
+	double pa1[3] = { M_Bl1_1, Pxa_1, Pya_1 };
+	double pb1[3] = {  M_Bl2_1, Pxb_1, Pyb_1 };
+	double pmiss[3] = { 0, Met_p4.Px(), Met_p4.Py() };
+	mt2_bisect::mt2 mt2_event1;
+	mt2_event1.set_momenta(pa1,pb1,pmiss);
+	mt2_event1.set_mn(0.);
+	MT2 = mt2_event1.get_mt2();
+	//MVA
 	if(runMVA_){
 	  TMVA::Tools::Instance();
 	  TMVA::Reader *reader = new TMVA::Reader( "V:Color:Silent" );

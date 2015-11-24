@@ -128,8 +128,10 @@ class DiHiggstoWWbb {
     void printAllGenParticles(TClonesArray *branchParticle);
     //tree branches
     int event_n;
+    float Thisweight;
     float weight;
     float MVA_bdt;
+    float MT2;
     float b1_px;
     float b1_py;
     float b1_pz;

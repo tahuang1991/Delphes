@@ -4,7 +4,7 @@ from ROOT import gSystem, gROOT, gApplication, TFile, TTree, TCut
 from optparse import OptionParser
 print "===> Optimizing cuts for selecting heavy Higgs vs tt."
 
-Signal = "B6"
+Signal = "B3"
 
 #Parameters
 signalFile           = "../Output/delphes_" + Signal + "_1M_PU0_Btag.root"
