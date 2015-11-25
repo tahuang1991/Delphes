@@ -1445,7 +1445,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	float M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
 	float Pxa_1 = MU_1.Px()+Bj_1.Px();
 	float Pya_1 = MU_1.Py()+Bj_1.Py();
-
 	// Invariant mass for "Particle B"
 	float sumesBl2_1=(MU_2.E()+Bj_2.E())*(MU_2.E()+Bj_2.E());
 	float sumpxsBl2_1=(MU_2.Px()+Bj_2.Px())*(MU_2.Px()+Bj_2.Px());
@@ -1454,14 +1453,38 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	float M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
 	float Pxb_1 = MU_2.Px()+Bj_2.Px();
 	float Pyb_1 = MU_2.Py()+Bj_2.Py();
-
+	// computation
 	double pa1[3] = { M_Bl1_1, Pxa_1, Pya_1 };
-	double pb1[3] = {  M_Bl2_1, Pxb_1, Pyb_1 };
+	double pb1[3] = { M_Bl2_1, Pxb_1, Pyb_1 };
 	double pmiss[3] = { 0, Met_p4.Px(), Met_p4.Py() };
 	mt2_bisect::mt2 mt2_event1;
 	mt2_event1.set_momenta(pa1,pb1,pmiss);
 	mt2_event1.set_mn(0.);
-	MT2 = mt2_event1.get_mt2();
+	float MT2_1 = mt2_event1.get_mt2();
+	//-Invariant mass for "Particle A 2"
+	float sumesBl1_2=(MU_1.E()+Bj_2.E())*(MU_1.E()+Bj_2.E());
+	float sumpxsBl1_2=(MU_1.Px()+Bj_2.Px())*(MU_1.Px()+Bj_2.Px());
+	float sumpysBl1_2=(MU_1.Py()+Bj_2.Py())*(MU_1.Py()+Bj_2.Py());
+	float sumpzsBl1_2=(MU_1.Pz()+Bj_2.Pz())*(MU_1.Pz()+Bj_2.Pz());
+	float M_Bl1_2=sqrt(sumesBl1_2-(sumpxsBl1_2+sumpysBl1_2+sumpzsBl1_2));
+	float Pxa_2 = MU_1.Px()+Bj_2.Px();
+	float Pya_2 = MU_1.Py()+Bj_2.Py();
+	// Invariant mass for "Particle B 2"
+	float sumesBl2_2=(MU_2.E()+Bj_1.E())*(MU_2.E()+Bj_1.E());
+	float sumpxsBl2_2=(MU_2.Px()+Bj_1.Px())*(MU_2.Px()+Bj_1.Px());
+	float sumpysBl2_2=(MU_2.Py()+Bj_1.Py())*(MU_2.Py()+Bj_1.Py());
+	float sumpzsBl2_2=(MU_2.Pz()+Bj_1.Pz())*(MU_2.Pz()+Bj_1.Pz());
+	float M_Bl2_2=sqrt(sumesBl2_2-(sumpxsBl2_2+sumpysBl2_2+sumpzsBl2_2));
+	float Pxb_2 = MU_2.Px()+Bj_1.Px();
+	float Pyb_2 = MU_2.Py()+Bj_1.Py();
+	// computation
+	double pa2[3] = { M_Bl1_2, Pxa_2, Pya_2 };
+	double pb2[3] = { M_Bl2_2, Pxb_2, Pyb_2 };
+	mt2_bisect::mt2 mt2_event2;
+	mt2_event2.set_momenta(pa2,pb2,pmiss);
+	mt2_event2.set_mn(0.);
+	float MT2_2 = mt2_event2.get_mt2();
+	MT2 = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
 	//MVA
 	if(runMVA_){
 	  TMVA::Tools::Instance();

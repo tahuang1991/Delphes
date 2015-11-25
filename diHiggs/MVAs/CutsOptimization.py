@@ -185,6 +185,7 @@ def main():
     factory.AddVariable( "dR_bl", "dR_bl", "", 'F' )
     factory.AddVariable( "mass_l1l2", "mass_l1l2", "", 'F' )
     factory.AddVariable( "mass_b1b2", "mass_b1b2", "", 'F' )
+    factory.AddVariable( "MT2", "MT2", "", 'F' )
     #factory.AddVariable( "MMC_h2massweight1_prob", "MMC_h2massweight1_prob", "", 'F' )
 
     # You can add so-called "Spectator variables", which are not used in the MVA training, 
