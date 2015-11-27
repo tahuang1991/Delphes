@@ -18,6 +18,7 @@ cd $parentdir
 jobid=$SLURM_JOBID
 echo "job$jobid starts, `date`"
 echo "inputfile "$1"  outputfile "$2"  config "$3
+echo COMMAND: ./DiHiggsValidation.exe -i $1 -o $2 -config $3
 ./DiHiggsValidation.exe -i $1 -o $2 -config $3
 echo "job$jobid is done, `date`"
 

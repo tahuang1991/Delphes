@@ -73,6 +73,7 @@ do
         sed -i "2i \nStarts   $nstarts" $newparafile
 	cat $newparafile
 	arrayjobid[i]=$(sbatch $batchjob $inputfile $outputfile $newparafile | awk 'NF>1{print $NF}')
+	echo COMMAND: sbatch $batchjob $inputfile $outputfile $newparafile | awk 'NF>1{print $NF}'
 	echo "jobid "${arrayjobid[i]}
 	if [ $i -eq $((numjobs-1)) ]; then
 		echo "all jobs id "${arrayjobid[@]}
