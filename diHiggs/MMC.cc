@@ -170,6 +170,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
   // genetated (eta,phi) pair
   eta_gen = 0;
   phi_gen = 0;
+  float met_sigma = 14.8;
   //mmctree->SetDebug(100,0,9999999);
   //int count = 100000;
 
@@ -211,6 +212,15 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     phi_gen = generator->Uniform(-3.1415926, 3.1415926);
     //wmass_gen = generator->Gaus(80.385,0.015);
     hmass_gen = generator->Gaus(125.03,0.3);
+    if (metcorrection_>3){
+    	metpx_gen = generator->Gaus(0.0,met_sigma);
+   	metpy_gen = generator->Gaus(0.0,met_sigma);
+    }else {
+	metpx_gen = 0;
+   	metpy_gen = 0;
+	}
+    TVector2 met_gen = TVector2(metpx_gen, metpy_gen);
+    
     //generate onshell Wmass
     step = generator->Uniform(-4,4);
     //step = generator->Gaus(0,8);
@@ -232,18 +242,18 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     if (bjetrescale_>0)
 	*htoBB_lorentz = b1rescalefactor*(*mmc_b1jet_lorentz)+b2rescalefactor*(*mmc_b2jet_lorentz);
 
-    if (metcorrection_>0 and metcorrection_ == bjetrescale_) metCorrection();
-    else if (metcorrection_ ==1){
+    if ((metcorrection_-3)>0 and (metcorrection_ -3)== bjetrescale_) metCorrection();
+    else if ((metcorrection_-3) ==1){
 	b1rescalefactor = 125/mmc_bjets_lorentz->M();
 	b2rescalefactor = 125/mmc_bjets_lorentz->M();
 	metCorrection(); 
     }
-    else if (metcorrection_ ==2){
+    else if ((metcorrection_-3) ==2){
 	rescalec1 = bjetrescalec1_hist->GetRandom();
 	bjetsCorrection();//calculate b1rescalefactor b2rescalefactor
 	metCorrection(); 
     }
-    else if (metcorrection_ ==3){
+    else if ((metcorrection_-3) ==3){
 	rescalec1 = bjetrescalec1_hist->GetRandom();
 	rescalec2 = bjetrescalec2_hist->GetRandom();
         b1rescalefactor = rescalec1; b2rescalefactor=rescalec2;
@@ -252,6 +262,11 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     }
     
 
+    //std::cout <<" Met input px "<< mmcmet_vec2->Px() << " py "<< mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
+    //std::cout <<" met before smearing metpx_gen " << met_vec2->Px() <<" metpy_gen " << met_vec2->Py() <<std::endl;
+    //std::cout <<" metpx_gen " << metpx_gen <<" metpy_gen " << metpy_gen <<std::endl;
+    if (metcorrection_>3 and useMET_) *met_vec2 = *met_vec2+met_gen;
+    //std::cout <<" met after smearing metpx_gen " << met_vec2->Px() <<" metpy_gen " << met_vec2->Py() <<std::endl;
     if (bjetrescale_ == -1 and simulation)
 	*htoBB_lorentz = *htoBB_lorentz_true;
     if (metcorrection_ ==-1 and simulation)
@@ -348,6 +363,10 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	*offshellW_lorentz = *mu_offshellW_lorentz+*nu_offshellW_lorentz;
 	*htoWW_lorentz = *onshellW_lorentz+*offshellW_lorentz;
 	*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz;
+	if (h2tohh_lorentz->M()<250 or h2tohh_lorentz->M()>1000) {
+		std::cerr <<" MMC h2 mass is too large or too small,  M_h " <<h2tohh_lorentz->M() << std::endl;
+		continue;
+	}
 	//*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz_true;
 
 	//*met_vec2 = TVector2(nu_onshellW_lorentz->Px()+nu_offshellW_lorentz->Px(),
@@ -853,8 +872,9 @@ MMC::readoutbjetrescalec1PDF(){
 
   //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
   //   TFile* file = TFile::Open(RefPDFfile_.c_str(), "READ");
-  TH1F* bjetrescalec1pdf = (TH1F*)file->Get("bjetrescalec1dR4pdf");
-  // std::cout <<" print c1 PDF " ; bjetrescalec1pdf->Print();
+  TH1F* bjetrescalec1pdf;
+  //bjetrescalec1pdf = (TH1F*)file->Get("bjetrescalec1dR4pdf");
+  bjetrescalec1pdf = (TH1F*)file->Get("recobjetrescalec1pdf");
   //delete file;
   //file->Close();
   return bjetrescalec1pdf;

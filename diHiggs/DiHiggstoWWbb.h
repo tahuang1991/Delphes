@@ -49,6 +49,7 @@ class DiHiggstoWWbb {
     double jetsEta_;
     double bjetsPt_;
     double bjetsEta_;
+    bool energeticbjets_;
     double jetsDeltaR_;//deltaR matching
     double jetleptonDeltaR_;
     double leptonsDeltaR_;//deltaR matching

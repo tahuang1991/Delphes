@@ -2,11 +2,12 @@
 
 Curdir=`pwd`
 parentdir="$(dirname "$Curdir")"
-outputdir=/fdata/hepx/store/user/taohuang/Hhh/Delphes_split_mediumbtag_JetNoNu/
+outputdir=/fdata/hepx/store/user/taohuang/Hhh/Delphes_leptonW_antik4_allReco_22/
 outputsuffix=.root
-outputprefix=DiHiggs_WWbb_1M_B3_btagtest_1020_JetNoNu
+outputprefix=DiHiggs_WWbb_1M_B3_allReco_22
 #inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes330_B3_10k_PU0_1020_btagv3_6969448.root
-inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1015_Btag_leptonW_6969448.root
+#inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1015_Btag_leptonW_6969448.root
+inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1105_Btag_leptonW_antik4_6969448.root
 parafile=/home/taohuang/delphes/diHiggs/parametersconfig.txt
 totalevents=1000000
 numjobs=10

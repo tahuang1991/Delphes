@@ -20,11 +20,12 @@ echo "job$jobid starts, `date`"
  #./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_0921_leptonW_6969448.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_WWbb_1M_PU0_leptonW_6969448_B3_1010_validatecuts.root
 #./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_0921_leptonW_6969448.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_test.root -config parametersconfig.txt
 #./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes330_B3_10k_PU0_1020_btagv3_6969448.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_test.root -config parametersconfig.txt
-./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1015_Btag_leptonW_6969448.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_test.root -config parametersconfig.txt
-sleep 10
+./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1105_Btag_leptonW_antik4_6969448.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_test.root -config parametersconfig.txt
+#./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_B3_1M_PU0_1105_Btag_leptonW_antik4_6969448.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_1M_leptonW_antik4_MMC_allReco.root -config parametersconfig.txt
+#sleep 10
 
 #./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_1M_PU0_0926_leptonW_7570700.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/TTbar_WWbb_1M_PU0_leptonW_7570700_1010_validatecuts.root -config paraconfig_ttbar.txt
-./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_1M_PU0_Wtobmu_1020_8088741.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/TTbar_WWbb_test.root -config paraconfig_ttbar.txt
+#./DiHiggsValidation.exe -i /fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_1M_PU0_Wtobmu_1020_8088741.root -o /fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/TTbar_WWbb_test.root -config paraconfig_ttbar.txt
 echo "job$jobid is done, `date`"
 
 

@@ -867,6 +867,7 @@ module BTagging BTaggingLoose {
 
 ###########
 # b-tagging
+# medium
 ###########
 
 module BTagging BTagging {

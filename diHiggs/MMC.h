@@ -190,6 +190,8 @@ class MMC{
       float phi_gen;
       float wmass_gen;
       float hmass_gen;
+      float metpx_gen;
+      float metpy_gen;
        
       
       int control;
