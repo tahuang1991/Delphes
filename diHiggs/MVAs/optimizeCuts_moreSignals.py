@@ -16,16 +16,17 @@ backgroundWeight      = [3.230581,3.230581]
 signalFriendFile     = ""
 backgroundFriendFile = ""
 #additionalCut        = '&& mass_b1b2<300 && dR_l1l2>0 && dR_l1l2<2.5 && dR_b1b2>1 && dR_bl>1. && mass_l1l2<90. && mass_b1b2>50. && hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons' #Place here an addicional cut you want to apply
-additionalCut        = 'hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons' #Place here an addicional cut you want to apply
+additionalCut        = 'hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons && dR_l1l2<2.49' #Place here an addicional cut you want to apply
 # You can have a list of categories to optimize.
 #cuts        = ['nu1and2_diBaxis_t>-900 && met_diBaxis_t>-900']
 cuts        = ['']
-outputs     = ['TMVA.root','TMVA.root']
+outputs     = ['TMVA_B3_DRl1l2.root','TMVA_B6_DRl1l2.root']
 weightfiles = ['OptimizedCuts.xml','OptimizedCuts.xml']
-weightDir = ['weights','weights']
+weightDir = ['weights_B3_DRl1l2','weights_B6_DRl1l2']
 
 # Loop on the category to be optimized
-for i in range(len(signalFile)-1):
+for i in range(len(signalFile)):
+#for i in range(1,2):
     print "DOING ITERATION NUMBER: " + str(i)
     if len(signalFile) != len(outputs):
         raise RuntimeError('Cut set does not correspond to output set!')
@@ -43,6 +44,6 @@ for i in range(len(signalFile)-1):
     print "---> backgr: " + str(NEntries_B*backgroundWeight[i])
     print "Now starting seriously........."
     os.system('python CutsOptimization.py -a "' + fullcut + '" -o ' + outputs[i] + ' -i ' + signalFile[i] + ' -j ' + backgroundFile[i] + ' -f ' + signalFriendFile+' -g ' + backgroundFriendFile)
-    os.system('mv ' + weightDir[i] + '/TMVAClassification_Cuts.weights.xml ' + fullweightfile)
+    os.system('mv weights ' + weightDir[i])
         
 print "DONE!"

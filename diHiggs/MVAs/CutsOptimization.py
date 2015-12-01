@@ -47,8 +47,9 @@ DEFAULT_FRIENDNAMEBKG  = ""
 DEFAULT_TREESIG        = "evtree"
 DEFAULT_TREEBKG        = "evtree"
 #DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,BoostedFisher,HMatrix,FDA_GA,FDA_SA,FDA_MC,FDA_MT,FDA_GAMT,FDA_MCMT,MLP,MLPBFGS,MLPBNN,CFMlpANN,TMlpANN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
-#DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,Fisher,FisherG,BoostedFisher,BDT,BDTD,BDTG,BDTBt"
-DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,KNN,LD,Fisher,BoostedFisher,BDT,BDTD,BDTBt,HMatrix,MLP"
+#DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,HMatrix,MLP,MLPBFGS,MLPBNN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
+#DEFAULT_METHODS        = "CutsSA"
+DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,LD,Fisher,BoostedFisher,BDT,HMatrix,MLP"
 
 # Print usage help
 def usage():
