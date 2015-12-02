@@ -15,14 +15,12 @@ backgroundWeight      = [3.230581,3.230581]
 # so you need the weight (here) and the number of event expected after the preselection.
 signalFriendFile     = ""
 backgroundFriendFile = ""
-#additionalCut        = '&& mass_b1b2<300 && dR_l1l2>0 && dR_l1l2<2.5 && dR_b1b2>1 && dR_bl>1. && mass_l1l2<90. && mass_b1b2>50. && hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons' #Place here an addicional cut you want to apply
-additionalCut        = 'hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons && dR_l1l2<2.49' #Place here an addicional cut you want to apply
+#presel        = '&& mass_b1b2<300 && dR_l1l2>0 && dR_l1l2<2.5 && dR_b1b2>1 && dR_bl>1. && mass_l1l2<90. && mass_b1b2>50. && hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons' #Place here an addicional cut you want to apply
+presel        = 'hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons && dR_l1l2<2.49' #Place here an addicional cut you want to apply
 # You can have a list of categories to optimize.
-#cuts        = ['nu1and2_diBaxis_t>-900 && met_diBaxis_t>-900']
-cuts        = ['']
-outputs     = ['TMVA_B3_DRl1l2.root','TMVA_B6_DRl1l2.root']
-weightfiles = ['OptimizedCuts.xml','OptimizedCuts.xml']
-weightDir = ['weights_B3_DRl1l2','weights_B6_DRl1l2']
+cuts        = ['','']
+outputs     = ['TMVA_B3_DRl1l2_noMT2.root','TMVA_B6_DRl1l2_noMT2.root']
+weightDir = ['weights_B3_DRl1l2_noMT2','weights_B6_DRl1l2_noMT2']
 
 # Loop on the category to be optimized
 for i in range(len(signalFile)):
@@ -30,16 +28,15 @@ for i in range(len(signalFile)):
     print "DOING ITERATION NUMBER: " + str(i)
     if len(signalFile) != len(outputs):
         raise RuntimeError('Cut set does not correspond to output set!')
-    fullcut=cuts[0]+additionalCut
-    fullweightfile = weightDir[i] + '/' + weightfiles[i]
-    print "Now running optimization with Cut = " + fullcut + ". Output will be put in " + outputs[i] + "  and xml file in " + fullweightfile
+    fullcut = presel + cuts[i]
+    print "Now running optimization with Cut = " + fullcut + ". Output will be put in " + outputs[i] + "  and xml file in " + str(weightDir[i])
     inputSig = TFile.Open( signalFile[i] )
     inputBkg = TFile.Open( backgroundFile[i] )
     treeS    = inputSig.Get("evtree")
     treeB    = inputBkg.Get("evtree")
     print "The Number of event to put in the mvaeffs*.png plot is: N_event_After_preselection*weight:"
-    NEntries_S = treeS.Draw("dR_l1l2>>hist",cuts[0]+additionalCut,"goff");
-    NEntries_B = treeB.Draw("dR_l1l2>>hist",cuts[0]+additionalCut,"goff");
+    NEntries_S = treeS.Draw("dR_l1l2>>hist",fullcut,"goff");
+    NEntries_B = treeB.Draw("dR_l1l2>>hist",fullcut,"goff");
     print "---> Signal: " + str(NEntries_S*signalWeight[i])
     print "---> backgr: " + str(NEntries_B*backgroundWeight[i])
     print "Now starting seriously........."

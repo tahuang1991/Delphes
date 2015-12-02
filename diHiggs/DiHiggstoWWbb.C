@@ -1319,7 +1319,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	if (sample_ == B3 || sample_ == B6) fetchHhhchain(branchParticle); 
 	else fetchttbarchain(branchParticle);
 	dR_genl1l2 = (Wtomu1nu1 and Wtomu2nu2)?mu1_p4.DeltaR(mu2_p4): -1; 
-	if (sample_ == tt and dR_genl1l2 > 2.5) continue;
 	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2, jetsDeltaR_); 
 	matchMuon2Gen(branchMuonBeforeIso, branchMuon,genmu1, genmu2, leptonsDeltaR_); 
 	getGenMET(branchGenMissingET);
