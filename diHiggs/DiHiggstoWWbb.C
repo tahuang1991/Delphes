@@ -81,9 +81,9 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, std::ifstr
   reader_ttB6 = new TMVA::Reader( "V:Color:Silent" );
   if(runMVA_){
     TString nameWeight = "";
-    if(sample_==B3) nameWeight = "MVAs/weights_B3/TMVAClassification_BDT.weights.xml";
-    if(sample_==B6) nameWeight = "MVAs/weights_B6/TMVAClassification_BDT.weights.xml";
-    if(sample_==tt) nameWeight = "MVAs/weights_B3/TMVAClassification_BDT.weights.xml";
+    if(sample_==B3) nameWeight = "MVAs/weights_B3_DRl1l2/TMVAClassification_BDT.weights.xml";
+    if(sample_==B6) nameWeight = "MVAs/weights_B6_DRl1l2/TMVAClassification_BDT.weights.xml";
+    if(sample_==tt) nameWeight = "MVAs/weights_B3_DRl1l2/TMVAClassification_BDT.weights.xml";
     reader->AddVariable("dR_l1l2",&MVA_dR_l1l2);
     reader->AddVariable("dR_b1b2",&MVA_dR_b1b2);
     reader->AddVariable("dR_bl",&MVA_dR_bl);
@@ -98,7 +98,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(TString input_File, TString output_File, std::ifstr
 	reader_ttB6->AddVariable("mass_l1l2",&MVA_mass_l1l2);
 	reader_ttB6->AddVariable("mass_b1b2",&MVA_mass_b1b2);
 	reader_ttB6->AddVariable("MT2",&MVA_MT2);
-	nameWeight = "MVAs/weights_B6/TMVAClassification_BDT.weights.xml";
+	nameWeight = "MVAs/weights_B6_DRl1l2/TMVAClassification_BDT.weights.xml";
 	reader_ttB6->BookMVA( "BDT method", nameWeight.Data() );
     }
   }
@@ -144,6 +144,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   getboolpara(strs, "weightfromonshellnupt_func", weightfromonshellnupt_func_, false);
   getboolpara(strs, "weightfromonshellnupt_hist", weightfromonshellnupt_hist_, true);
   getboolpara(strs, "weightfromonoffshellWmass_hist", weightfromonoffshellWmass_hist_, true);
+  getboolpara(strs, "debug", debug_, false);
   std::cout <<" jetspt "<< jetsPt_ <<" jetsEta "<< jetsEta_ <<" bjetspt " << bjetsPt_ <<" bjetsEta " << bjetsEta_ << std::endl; 
 }
 
@@ -1283,6 +1284,7 @@ void DiHiggstoWWbb::initBranches(){
  *************************/  
 void DiHiggstoWWbb::DiHiggstoWWbbrun()
 {
+  if(debug_) cout<<"DEBUG::0"<<endl;
   long entry;
   TLorentzVector momentum;
 
@@ -1300,7 +1302,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   }
 
   for(entry = nStarts_; entry < totalevents; ++entry){
-
+ 
+    if(debug_) cout<<"DEBUG::1"<<endl;
     initBranches();
     weight = Thisweight;
     // Load selected branches with data from specified event
@@ -1340,6 +1343,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  }
 	}
     }
+    if(debug_) cout<<"DEBUG::2"<<endl;
 
     //loop all reco jets 
     for (i =0;  i < branchJet->GetEntries(); i++){
@@ -1380,6 +1384,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	b2jet_p4 = b2jet->P4();
     }
 
+    if(debug_) cout<<"DEBUG::3"<<endl;
     // Analyse MET, reco level
     if(branchMissingET->GetEntriesFast() > 0){
 	Met = (MissingET*) branchMissingET->At(0);
@@ -1439,6 +1444,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	Muon2_p4 = muon2->P4();
     }
 
+    if(debug_) cout<<"DEBUG::4"<<endl;
     //calculate additional variables for clearing up cuts and other studies
     if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2){
 	dR_bl   = (b1jet_p4.Pt()>b2jet_p4.Pt()) ? (b1jet_p4.DeltaR( (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon1_p4 : Muon2_p4 )) : (b2jet_p4.DeltaR( (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon1_p4 : Muon2_p4 ));
@@ -1525,8 +1531,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  }
 	}
     }
+    if(debug_) cout<<"DEBUG::5"<<endl;
     fillbranches();
-
+    if(debug_) cout<<"DEBUG::6"<<endl;
     //-------- Here is possible to compute new variables --------
     if(true){ //Selection to be applied before the computation
 	//Use GEN or RECO particles
@@ -1537,6 +1544,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     //only in simulation case, these two could be true
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
+    if(debug_) cout<<"DEBUG::7"<<endl;
     if (runMMC_ and preselections and (not(simulation_) || (h2tohh and (sample_==B3 || sample_==B6)) || (ttbar and sample_==tt))){
 	//cout <<" start to run MMC for this event " << entry <<endl;
 	TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
@@ -1560,7 +1568,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  bgenp_pt1_lorentz = b1_p4; bgenp_pt2_lorentz = b2_p4;
 	} else { bgenp_pt1_lorentz = b2_p4; bgenp_pt2_lorentz = b1_p4; }
 
-
+	if(debug_) cout<<"DEBUG::8"<<endl;
 	TLorentzVector lepton1_lorentz, lepton2_lorentz;
 	if (useRecoMuon_ ){
 	  //cout <<" use Reco Muon " << endl;
@@ -1575,7 +1583,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	if (useRecoMET_)	Met_lorentz = Met_p4;
 	else if (not(useRecoMET_) and simulation_) Met_lorentz = genmet_p4;
 
-
 	TLorentzVector h2tohh_genp_lorentz = TLorentzVector();
 	if (simulation_ and (sample_==B3 || sample_==B6)) h2tohh_genp_lorentz = genh2->P4();
 	else if (simulation_) h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
@@ -1585,6 +1592,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	else onshellMarker_=2;
 	// Rescale bjets in MMC?????
 	//MMC *thismmc = new MMC();
+	if(debug_) cout<<"DEBUG::9"<<endl;
 	MMC *thismmc = new MMC(&lepton1_lorentz, &lepton2_lorentz, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_lorentz, 
 	    &nu1_p4, &nu2_p4, &bgenp_pt1_lorentz, &bgenp_pt2_lorentz, &h2tohh_genp_lorentz, 
 	    onshellMarker_, simulation_, entry, weightfromonshellnupt_func_, weightfromonshellnupt_hist_, weightfromonoffshellWmass_hist_,
@@ -1613,7 +1621,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
     //fill branches
     //if ((hasb1jet or hasb2jet) and h2tohh) evtree->Fill();
+    if(debug_) cout<<"DEBUG::10"<<endl;
     if (h2tohh or ttbar or (hasb1jet and hasb2jet)) evtree->Fill();
+    if(debug_) cout<<"DEBUG::11"<<endl;
   }
   //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
   //MMCfile->Close();

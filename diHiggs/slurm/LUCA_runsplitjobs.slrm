@@ -16,8 +16,8 @@ echo "current dir is $Curdir, parentdir is $parentdir"
 jobid=$SLURM_JOBID
 echo "job$jobid starts, `date`"
 
-#./LUCA_splitjobs_B6.sh
-#./LUCA_splitjobs_B3.sh
+./LUCA_splitjobs_B6.sh
+./LUCA_splitjobs_B3.sh
 ./LUCA_splitjobs_ttbar.sh
 
 echo "job$jobid is done, `date`"
