@@ -27,35 +27,35 @@
 #include <iostream>
 #include <sstream>  
 #include <fstream>
+#include "../CrossSections_and_BR.h"
 
 using namespace std;
-//enum BR{ h_bb = 0.577, h_WW = 0.215, W_lnu = 0.3272, W_munu = 0.1063, t_WB =1. };
 struct BRs {
   float h_bb; float h_WW; float W_lnu; float W_munu; float t_WB;
 } MyBR;
 
 //void GridOpt_MakeTXT( TString folder = "OUT_GridOpt_1/", TString Sig_name = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/DiHiggs_WWbb_1M_PU0_leptonW_6969448_B3_1010_validatecuts.root", TString Bac_name = "/fdata/hepx/store/user/taohuang/Hhh/Delphes_ana/TTbar_WWbb_1M_PU0_leptonW_7570700_1010_validatecuts.root" )
-void GridOpt_MakeTXT( TString folder = "OUT_GridOpt/", TString Sig_name = "../delphes_B3_1M_PU0_Btag.root", TString Bac_name = "../delphes_ttbar_1M_PU0.root" ){
-
+void GridOpt_MakeTXT( TString folder = "OUT_GridOpt_tmp/", TString Sig_name = "../Output/delphes_B3_1M_PU0_Btag.root", TString Bac_name = "../Output/delphes_ttbar_1M_PU0_Wtobmu.root " ){
   TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
-  //Cross sections and BR
-  MyBR.h_bb =  0.577; MyBR.h_WW = 0.215; MyBR.W_lnu = 0.3272; MyBR.W_munu = 0.1063; MyBR.t_WB = 1.;
-  float LumiInt     = 300 * 1000;   //L_int = 300 fb-1
-  float Ntot_Hhh    = 1000000; 
-  float Xsec_Hhh    = 1.15 * 0.685; //sigma(pp->H->hh) [pb]
-  float Br_Hhh      = ( MyBR.h_bb + MyBR.h_WW * MyBR.W_lnu * MyBR.W_lnu ) * ( MyBR.h_bb + MyBR.h_WW * MyBR.W_lnu * MyBR.W_lnu ); //H->hh ; hh->bbbb  hh->WWbb, hh->WWWW ;  W -> lnu;
-  float Ntot_tt     = 1000000;
-  float Xsec_tt     = 953;          //sigma(pp->tt) [pb]
-  //float Br_tt       = MyBR.t_WB * MyBR.t_WB * MyBR.W_lnu * MyBR.W_lnu;
-  float Br_tt       = MyBR.t_WB * MyBR.t_WB * MyBR.W_munu * MyBR.W_munu;
-  float Weight_Hhh  = (Xsec_Hhh * Br_Hhh * LumiInt) / Ntot_Hhh;
-  float Weight_tt   = (Xsec_tt * Br_tt * LumiInt) / Ntot_tt;
+//  //Cross sections and BR
+//  MyBR.h_bb =  0.577; MyBR.h_WW = 0.215; MyBR.W_lnu = 0.3272; MyBR.W_munu = 0.1063; MyBR.t_WB = 1.;
+//  float LumiInt     = 300 * 1000;   //L_int = 300 fb-1
+//  float Ntot_Hhh    = 1000000; 
+//  float Xsec_Hhh    = isB3? 1.15*0.685 : 0.26*0.12; //sigma(pp->H->hh) [pb]
+//  //float Br_Hhh      = ( MyBR.h_bb + MyBR.h_WW * MyBR.W_lnu * MyBR.W_lnu ) * ( MyBR.h_bb + MyBR.h_WW * MyBR.W_lnu * MyBR.W_lnu ); //H->hh ; hh->bbbb  hh->WWbb, hh->WWWW ;  W -> lnu;
+//  float Br_Hhh      = (MyBR.h_bb*MyBR.h_bb) + (MyBR.h_WW*MyBR.h_WW*MyBR.W_lnu*MyBR.W_lnu*MyBR.W_lnu*MyBR.W_lnu) + (2*MyBR.h_bb*MyBR.h_WW*MyBR.W_lnu*MyBR.W_lnu);
+//  float Ntot_tt     = 1000000;
+//  float Xsec_tt     = 953;          //sigma(pp->tt) [pb]
+//  //float Br_tt       = MyBR.t_WB * MyBR.t_WB * MyBR.W_lnu * MyBR.W_lnu;
+//  float Br_tt       = MyBR.t_WB * MyBR.t_WB * MyBR.W_munu * MyBR.W_munu;
+//  float Weight_Hhh  = (Xsec_Hhh * Br_Hhh * LumiInt) / Ntot_Hhh;
+//  float Weight_tt   = (Xsec_tt * Br_tt * LumiInt) / Ntot_tt;
   //Opening Inputs
   cout<<"Hello, I'm creating the '"<<folder<<"' folder, and opening the input files:"<<endl;
   cout<<"Signal: "<<Sig_name<<endl;
   cout<<"Background: "<<Bac_name<<endl;
-  cout<<"Signal: has a Cross section of: "<<Xsec_Hhh<<" and a BR of "<<Br_Hhh<<". The #Events at 300pb are: "<<(Xsec_Hhh * Br_Hhh * LumiInt)<<". The Weights is: "<<Weight_Hhh<<endl;
-  cout<<"Backgr: has a Cross section of: "<<Xsec_tt<<" and a BR of "<<Br_tt<<". The #Events at 300pb are: "<<(Xsec_tt * Br_tt * LumiInt)<<". The Weights is: "<<Weight_tt<<endl;
+  //cout<<"Signal: has a Cross section of: "<<Xsec_Hhh<<" and a BR of "<<Br_Hhh<<". The #Events at 300pb are: "<<(Xsec_Hhh * Br_Hhh * LumiInt)<<". The Weights is: "<<Weight_Hhh<<endl;
+  //cout<<"Backgr: has a Cross section of: "<<Xsec_tt<<" and a BR of "<<Br_tt<<". The #Events at 300pb are: "<<(Xsec_tt * Br_tt * LumiInt)<<". The Weights is: "<<Weight_tt<<endl;
   TString Comm = "mkdir -p " + folder;
   system( Comm.Data() );
   TFile* f_Sig = TFile::Open(Sig_name.Data());
@@ -68,7 +68,15 @@ void GridOpt_MakeTXT( TString folder = "OUT_GridOpt/", TString Sig_name = "../de
   if( !T_Bac ) cout<<"Waring! TTree evtree in "<<Bac_name<<" not present!"<<endl;
   float NEntries_S = T_Sig->Draw("dR_l1l2>>hist","dR_l1l2>0","goff");
   float NEntries_B = T_Bac->Draw("dR_l1l2>>hist","dR_l1l2>0","goff");
-  cout<<"You have "<<NEntries_S<<" entries for Signal and "<<NEntries_B<<" for background."<<endl;
+  //Weights
+  TH1F *S_W = new TH1F("S_W","",4000,0.,4.);
+  T_Sig->Draw("weight>>S_W","weight>0","goff");
+  float Weight_Hhh = S_W->GetMean();
+  TH1F *B_W = new TH1F("B_W","",4000,0.,4.);
+  T_Bac->Draw("weight>>B_W","weight>0","goff");
+  float Weight_tt = B_W->GetMean();
+  cout<<"Weights are "<<Weight_Hhh<<" for signal and "<<Weight_tt<<" for tt."<<endl;
+  // Events:
   float Norm1_S = 1./NEntries_S, Norm1_B = 1./NEntries_B;
   float NormCro_S = Weight_Hhh, NormCro_B = Weight_tt;
 

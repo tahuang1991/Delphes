@@ -42,7 +42,7 @@ class DiHiggstoWWbb {
     int nStarts_;
     bool simulation_;  //True if you have also GEN info
     int sample_;       //Signal or Background (see next enum)
-    enum {Signal = 1, Background = 2};
+    enum {tt = 0, B3 = 1, B6 = 2};
 
     //Parameters in config file
     double jetsPt_;
@@ -62,8 +62,8 @@ class DiHiggstoWWbb {
     std::vector<float> v_bjetrescalec1pdf;
     float b2rescalefactor;
     TH1F *bjetrescalec1pdf;
-    TH1F *histNnT;
     //Parameters for MMC
+    bool runMVA_;
     bool runMMC_;
     bool useRecoMET_;
     bool useRecoMuon_;
@@ -138,6 +138,10 @@ class DiHiggstoWWbb {
     TLorentzVector findNeutrinosfromJet(TRefArray particles);
     //tree branches
     int event_n;
+    float Thisweight;
+    float weight;
+    float MVA_bdt;
+    float MT2;
     float b1_px;
     float b1_py;
     float b1_pz;

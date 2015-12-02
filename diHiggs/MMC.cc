@@ -144,7 +144,7 @@ MMC::~MMC(){
   delete h2tohh_lorentz;
   delete met_vec2;
   //delete file_ref;
-  std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
+  //std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
   file->Close();
   if (not writemmctree_) delete mmctree;
 
@@ -176,7 +176,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 
   eta_mean=0;
   eta_rms=1.403;
-  std::cout <<" time null " << time(NULL) << std::endl;
+  //std::cout <<" time null " << time(NULL) << std::endl;
   seed_ = time(NULL);
   TRandom3 *generator = new TRandom3();
   generator->SetSeed(seed_+iev);
@@ -441,9 +441,9 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     }//end controls loop,(0,1,2,3)
     //mmctree->Fill();
   }//end of iteration
-  std::cout <<"last iteration MMC input met  px "<<met_vec2->Px() << " py "<<met_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
-  std::cout <<"last iteration bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
-  std::cout <<"num of solutions " << MMC_h2Mass.GetEntries() << std::endl;
+  //std::cout <<"last iteration MMC input met  px "<<met_vec2->Px() << " py "<<met_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
+  //std::cout <<"last iteration bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
+  //std::cout <<"num of solutions " << MMC_h2Mass.GetEntries() << std::endl;
   delete generator;
   if (MMC_h2Mass.GetEntries()>0) return true;
   else return false;
@@ -453,7 +453,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 void
 MMC::initTree(TTree* mmctree){
 
-  std::cout <<" init tree "<< mmctree->GetTitle() << std::endl; 
+  //std::cout <<" init tree "<< mmctree->GetTitle() << std::endl; 
   //initial branch value if necessary
   //
   //
@@ -873,8 +873,8 @@ MMC::readoutbjetrescalec1PDF(){
   //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
   //   TFile* file = TFile::Open(RefPDFfile_.c_str(), "READ");
   TH1F* bjetrescalec1pdf;
-  //bjetrescalec1pdf = (TH1F*)file->Get("bjetrescalec1dR4pdf");
-  bjetrescalec1pdf = (TH1F*)file->Get("recobjetrescalec1pdf");
+  bjetrescalec1pdf = (TH1F*)file->Get("bjetrescalec1dR4pdf");
+  //bjetrescalec1pdf = (TH1F*)file->Get("recobjetrescalec1pdf");
   //delete file;
   //file->Close();
   return bjetrescalec1pdf;

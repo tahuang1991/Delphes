@@ -4,20 +4,28 @@ from ROOT import gSystem, gROOT, gApplication, TFile, TTree, TCut
 from optparse import OptionParser
 print "===> Optimizing cuts for selecting heavy Higgs vs tt."
 
+Signal = "B3"
+
 #Parameters
-signalFile           = "../delphes_B3_1M_PU0_Btag.root"
-backgroundFile       = "../delphes_ttbar_1M_PU0.root"
+signalFile           = "../Output/delphes_" + Signal + "_1M_PU0_Btag.root"
+backgroundFile       = "../Output/delphes_ttbar_1M_PU0_Wtobmu.root"
 #S/sqrt(S+B) is done for same number of S and B. You have to put manually in the Gui the number expected before cutting in the MVA.
 # so you need the weight (here) and the number of event expected after the preselection.
-signalWeight         = 0.085082 
+if(Signal == "B3"):
+    signalWeight         = 0.085082
+elif(Signal == "B6"):
+    signalWeight         = 0.0033698
+else:
+    print "WARNING: NO Signal"
+    signalWeight         = -1.
 backgroundWeight     = 3.230581
 signalFriendFile     = ""
 backgroundFriendFile = ""
 additionalCut        = '&& mass_b1b2<300 && dR_l1l2>0 && dR_l1l2<2.5 && dR_b1b2>1 && dR_bl>1. && mass_l1l2<90. && mass_b1b2>50. && hasb1jet && hasb2jet && hasMET && hasGenMET && hasdRljet && hastwomuons' #Place here an addicional cut you want to apply
 # You can have a list of categories to optimize.
-cuts        = ['nu1and2_diBaxis_t>-900 && met_diBaxis_t>-900']
-outputs     = ['TMVA.root']
-weightfiles = ['OptimizedCuts.xml']
+cuts        = ['nu1and2_diBaxis_t>-900 && met_diBaxis_t>-900 && MMC_h2massweight1_prob>100 && MMC_h2massweight1_prob<1000']
+outputs     = ['TMVA_' + Signal + '.root']
+weightfiles = ['OptimizedCuts_' + Signal + '.xml']
 
 #Open file to compure evnts after preselection
 inputSig = TFile.Open( signalFile )

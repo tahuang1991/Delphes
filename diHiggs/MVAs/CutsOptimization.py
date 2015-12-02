@@ -48,7 +48,7 @@ DEFAULT_TREESIG        = "evtree"
 DEFAULT_TREEBKG        = "evtree"
 #DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,BoostedFisher,HMatrix,FDA_GA,FDA_SA,FDA_MC,FDA_MT,FDA_GAMT,FDA_MCMT,MLP,MLPBFGS,MLPBNN,CFMlpANN,TMlpANN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
 #DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,Fisher,FisherG,BoostedFisher,BDT,BDTD,BDTG,BDTBt"
-DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,KNN,LD,Fisher,BoostedFisher,BDT,BDTD,BDTBt,CFMlpANN,TMlpANN"
+DEFAULT_METHODS        = "Cuts,CutsD,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,KNN,LD,Fisher,BoostedFisher,BDT,BDTD,BDTBt,HMatrix,MLP"
 
 # Print usage help
 def usage():
@@ -185,6 +185,8 @@ def main():
     factory.AddVariable( "dR_bl", "dR_bl", "", 'F' )
     factory.AddVariable( "mass_l1l2", "mass_l1l2", "", 'F' )
     factory.AddVariable( "mass_b1b2", "mass_b1b2", "", 'F' )
+    factory.AddVariable( "MT2", "MT2", "", 'F' )
+    #factory.AddVariable( "MMC_h2massweight1_prob", "MMC_h2massweight1_prob", "", 'F' )
 
     # You can add so-called "Spectator variables", which are not used in the MVA training, 
     # but will appear in the final "TestTree" produced by TMVA. This TestTree will contain the 
