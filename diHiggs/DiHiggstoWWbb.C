@@ -637,7 +637,6 @@ void DiHiggstoWWbb::fetchHhhWWWWchain(TClonesArray *branchParticle){
 	}
   }
   
-
 }
 
 // ------------ To find H->hh->WWBB->lvlvBB  ------------
@@ -1671,6 +1670,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     // If simulation, take GEN info
     getGenMET(branchGenMissingET);
     if (simulation_){
+
 	//if (sample_ == tt and dR_genl1l2 > 2.5) continue;
 	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2, jetsDeltaR_); 
 	matchBjetswithNu2Gen(branchGenJet_withNu, genb1, genb2, jetsDeltaR_); 
