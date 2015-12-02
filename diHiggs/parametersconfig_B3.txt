@@ -27,4 +27,4 @@ weightfromonoffshellWmass_hist	true
 useMET 		true
 bjetrescaleAlgo	2
 metcorrection	2
-debug		true
+debug		false
