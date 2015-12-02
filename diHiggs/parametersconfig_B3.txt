@@ -2,7 +2,7 @@
 nEvents		-1
 nStarts		0
 sample		1 #0 = tt, B3 = 1, B6 = 2
-simulation	true
+simulation	false
 jetsPt 		20
 jetsEta		5.0
 bjetsPt 	30
@@ -15,7 +15,7 @@ muonPt1		10.0
 muonPt2		10.0
 muonsEta	2.4
 runMVA 	true
-runMMC  	false
+runMMC  	true
 useRecoBJet	true
 useRecoMuon	true
 useRecoMET	true
@@ -27,3 +27,4 @@ weightfromonoffshellWmass_hist	true
 useMET 		true
 bjetrescaleAlgo	2
 metcorrection	2
+debug		true

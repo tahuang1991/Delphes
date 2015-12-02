@@ -74,6 +74,7 @@ class DiHiggstoWWbb {
     bool weightfromonshellnupt_hist_;
     bool weightfromonoffshellWmass_hist_; 
     bool useMET_;
+    bool debug_;
     int bjetrescaleAlgo_; //0.no corrections; 1. simpel rescale, 2. elaborate rescale, -1. ideal case
     int metcorrection_; //0.no corrections; 1. simpel rescale, 2. elaborate rescale, -1. ideal case
     //private module to process different steps

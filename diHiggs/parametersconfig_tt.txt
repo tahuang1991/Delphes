@@ -15,7 +15,7 @@ muonPt1		10.0
 muonPt2		10.0
 muonsEta	2.4
 runMVA 	true
-runMMC  	false
+runMMC  	true
 useRecoBJet	true
 useRecoMuon	true
 useRecoMET	true
@@ -27,3 +27,4 @@ weightfromonoffshellWmass_hist	true
 useMET 		true
 bjetrescaleAlgo	2
 metcorrection	2
+debug		true
