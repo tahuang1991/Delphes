@@ -1068,12 +1068,16 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
      }//if (dR_genb1jet > dR_genb2jet)
   }
 
-	  if (hasgenb1jet && hasgenb2jet){
+
+  if (hasgenb1jet && hasgenb2jet){
 	//TRefArray b1jet_pars = genb1jet_withNu.Particle;
 	//cout <<" tried to find neutrino from bjets(NoNu) " << endl;
 	findNeutrinosfromJet(genb1jet->Particles);
 	findNeutrinosfromJet(genb2jet->Particles);
   }
+   
+  if (not (hasgenb1jet and hasgenb2jet)) return;
+
   //loop all reco jets 
   for (int i =0;  i<  branchJet->GetEntries(); i++)
   {
@@ -1082,16 +1086,16 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
     //cout <<" jet btag " << ((jet->BTag)&2) <<" pt " << jet->PT <<" eta " << abs(jet->Eta) << "  dR_b1 " <<jet_p4.DeltaR(genb1->P4()) <<" dR_b2 "<< jet_p4.DeltaR(genb2->P4()) << endl;
     if (((jet->BTag)&2)<1 || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
     //if (jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-    if (genb1 !=0 && jet_p4.DeltaR(genb1->P4()) < dR_b1jet && jet_p4.DeltaR(genb1->P4()) < dR_) {
+    if (hasgenb1jet && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet && jet_p4.DeltaR(genb1jet_p4) < dR_) {
 	b1jet = jet;
-	dR_b1jet = jet_p4.DeltaR(genb1->P4());
+	dR_b1jet = jet_p4.DeltaR(genb1jet_p4);
 	b1jet_p4 = jet_p4;
-	//cout <<"b1jet pt "<< b1jet_pt << endl;
 	hasb1jet = true;
+	//cout <<"b1jet pt "<< b1jet_pt << endl;
     }
-    if (genb2 !=0 && jet_p4.DeltaR(genb2->P4()) < dR_b2jet && jet_p4.DeltaR(genb2->P4()) < dR_){
+    if (hasgenb2jet && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet && jet_p4.DeltaR(genb2jet_p4) < dR_){
 	b2jet = jet;
-	dR_b2jet = jet_p4.DeltaR(genb2->P4());
+	dR_b2jet = jet_p4.DeltaR(genb2jet_p4);
 	b2jet_p4 = jet_p4;
 	hasb2jet = true;
 	//cout <<"b2jet pt "<< b2jet_pt << endl;
@@ -1108,9 +1112,9 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
    		if (((jet->BTag)&2)<1 || jet==b1jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
    		//if (jet==b1jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
     		TLorentzVector jet_p4 = jet->P4();
-    		if (genb2 !=0 && jet_p4.DeltaR(genb2->P4()) < dR_b2jet && jet_p4.DeltaR(genb2->P4()) < dR_) {
+    		if (genb2 !=0 && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet && jet_p4.DeltaR(genb2jet_p4) < dR_) {
 			b2jet = jet;
-			dR_b2jet = jet_p4.DeltaR(genb2->P4());
+			dR_b2jet = jet_p4.DeltaR(genb2jet_p4);
 			b2jet_p4 = jet_p4;
 			hasb2jet = true;
 		}
@@ -1125,9 +1129,9 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
     		jet = (Jet*) branchJet->At(i);
    		if (((jet->BTag)&2)<1 || jet==b2jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
 		TLorentzVector jet_p4 = jet->P4();
-    		if (genb1 !=0 && jet_p4.DeltaR(genb1->P4()) < dR_b1jet && jet_p4.DeltaR(genb1->P4()) < dR_) {
+    		if (genb1 !=0 && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet && jet_p4.DeltaR(genb1jet_p4) < dR_) {
 			b1jet = jet;
-			dR_b1jet = jet_p4.DeltaR(genb1->P4());
+			dR_b1jet = jet_p4.DeltaR(genb1jet_p4);
 			b1jet_p4 = jet_p4;
 			hasb1jet = true;
 		}
@@ -1999,7 +2003,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     else if (not hasMET) cout <<" eventid "<< entry <<" failed to hasMET, met  " << met  << endl;
     else cout <<"eventid "<<entry <<" failed to pass preselections due to some reason " << endl;
     */
-    if (runMMCok or preselections_gen or preselections) evtree->Fill();
+    if (runMMCok or preselections_gen or preselections) {
+	cout <<" fill tree " << endl;
+	evtree->Fill();
+	}
     //if (not(runMMC_) and (h2tohh or ttbar)) evtree->Fill();
     //evtree->Fill();
   }
