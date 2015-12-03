@@ -14,8 +14,8 @@ leptonIso	0.15
 muonPt1		10.0
 muonPt2		10.0
 muonsEta	2.4
-runMVA 	true
-runMMC  	true
+runMVA 	false
+runMMC  	false
 useRecoBJet	true
 useRecoMuon	true
 useRecoMET	true

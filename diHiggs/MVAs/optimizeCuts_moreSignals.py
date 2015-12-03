@@ -7,18 +7,19 @@ print "===> Optimizing cuts for selecting heavy Higgs vs tt."
 Signal = "B3"
 
 #Parameters
-signalFile           = ['../Output/delphes_B3_1M_PU0_Btag.root','../Output/delphes_B6_1M_PU0_Btag.root']
-backgroundFile       = ['../Output/delphes_ttbar_1M_PU0_Wtobmu.root','../Output/delphes_ttbar_1M_PU0_Wtobmu.root']
+signalFile           = ['../Output/delphes_B3_1M_PU0_Btag_noSim_noMMCnoMVA.root','../Output/delphes_B6_1M_PU0_Btag_noSim_noMMCnoMVA.root']
+backgroundFile       = ['../Output/delphes_tt_1M_PU0_Wtobmu_noSim_noMMCnoMVA.root','../Output/delphes_tt_1M_PU0_Wtobmu_noSim_noMMCnoMVA.root']
 signalFriendFile     = ""
 backgroundFriendFile = ""
 #presel        = '&& mass_b1b2<300 && dR_l1l2>0 && dR_l1l2<2.5 && dR_b1b2>1 && dR_bl>1. && mass_l1l2<90. && mass_b1b2>50. && hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons'
 presel        = 'hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons && dR_l1l2<2.49'
 cuts        = ['','']
-outputs     = ['TMVA_B3_DRl1l2_withMMC.root','TMVA_B6_DRl1l2_withMMC.root']
-weightDir = ['weights_B3_DRl1l2_withMMC','weights_B6_DRl1l2_withMMC']
+outputs     = ['TMVA_B3_DRl1l2_noSim.root','TMVA_B6_DRl1l2_noSim.root']
+weightDir = ['weights_B3_DRl1l2_noSim','weights_B6_DRl1l2_noSim']
 
 # Loop on the category to be optimized
-for i in range(len(signalFile)):
+#for i in range(len(signalFile)):
+for i in range(1,2):
     print "DOING ITERATION NUMBER: " + str(i)
     if len(signalFile) != len(outputs):
         raise RuntimeError('Cut set does not correspond to output set!')
@@ -37,8 +38,8 @@ for i in range(len(signalFile)):
     signalWeight =  hW.GetMean()
     treeB.Draw("weight>>hW",fullcut,"goff")
     backgroundWeight = hW.GetMean()
-    print "---> Signal: " + str(NEntries_S*signalWeight)
-    print "---> backgr: " + str(NEntries_B*backgroundWeight)
+    print "---> Signal: " + str(NEntries_S*signalWeight) + " the weight used is: " + str(signalWeight)
+    print "---> backgr: " + str(NEntries_B*backgroundWeight) + " the weight used is: " + str(backgroundWeight)
     #Now the MVA
     print "Now starting seriously..."
     os.system('python CutsOptimization.py -a "' + fullcut + '" -o ' + outputs[i] + ' -i ' + signalFile[i] + ' -j ' + backgroundFile[i] + ' -f ' + signalFriendFile+' -g ' + backgroundFriendFile)
