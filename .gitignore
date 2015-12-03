@@ -7,3 +7,4 @@
 *.so
 DiHiggs*.root
 *out.root
+*.txt_*
