@@ -17,7 +17,7 @@
 #include "external/ExRootAnalysis/ExRootTreeBranch.h"
 #include "external/ExRootAnalysis/ExRootResult.h"
 #include "external/ExRootAnalysis/ExRootUtilities.h"
-
+#include "TMVA/Reader.h"
 #include "MMC.h"
 
 class DiHiggstoWWbb {
@@ -74,6 +74,7 @@ class DiHiggstoWWbb {
     bool weightfromonshellnupt_hist_;
     bool weightfromonoffshellWmass_hist_; 
     bool useMET_;
+    bool debug_;
     int bjetrescaleAlgo_; //0.no corrections; 1. simpel rescale, 2. elaborate rescale, -1. ideal case
     int metcorrection_; //0.no corrections; 1. simpel rescale, 2. elaborate rescale, -1. ideal case
     //private module to process different steps
@@ -140,7 +141,16 @@ class DiHiggstoWWbb {
     int event_n;
     float Thisweight;
     float weight;
+    TMVA::Reader *reader;
+    TMVA::Reader *reader_ttB6;
+    float MVA_dR_l1l2;
+    float MVA_dR_b1b2;
+    float MVA_dR_bl;
+    float MVA_mass_l1l2;
+    float MVA_mass_b1b2;
+    float MVA_MT2;
     float MVA_bdt;
+    float MVA_bdt_B6fortt;
     float MT2;
     float b1_px;
     float b1_py;

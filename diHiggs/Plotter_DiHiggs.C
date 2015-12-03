@@ -28,7 +28,7 @@ void Make2Plot(TTree * TS, TTree * TB, TString Var, TString Sel, TString Tag, TS
 float GetMax(TH1F *h);
 int GetHigherH(TH1F *h1, TH1F *h2);
 
-void Plotter_DiHiggs( TString folder="Plots_FileOptim_B6", TString File_S="Output/delphes_B6_1M_PU0_Btag_noMMCnoMVA.root", TString File_B="Output/delphes_tt_1M_PU0_Btag_noMMCnoMVA.root" ){
+void Plotter_DiHiggs( TString folder="Plots_FileOptim_B3", TString File_S="Output/delphes_B3_1M_PU0_Btag_noMMCnoMVA.root", TString File_B="Output/delphes_tt_1M_PU0_Wtobmu_noMMCnoMVA.root"){
   gROOT->Reset(); 
   // Topology
   int Topology =- 1;
