@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J SplitDelphesAna
-#SBATCH -p hepx 
+#SBATCH -p serial
 #SBATCH --time=72:00:00
 #SBATCH -n1
 #SBATCH --mem-per-cpu=2000

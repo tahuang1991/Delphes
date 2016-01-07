@@ -8,7 +8,7 @@ outputprefix=delphes_ttbar_1M_PU0_Wtobmu_bis
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_1M_PU0_1118_Btag_antik4_Wtobmu_8088741.root
 parafile=/home/lpernie/HeavyHiggs/delphes/diHiggs/parametersconfig_tt.txt
 totalevents=1000000
-numjobs=35
+numjobs=10
 batchjob=Delphes_splitjobs_Ana.slrm
 
 function checkjobsstatus(){
