@@ -1834,8 +1834,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	else hasRecob1b2jetPt_bTag = true;
     }
     if ( !simulation_ and Ptb1at!=-1 and Ptb2at!=-1){
-	b1jet = alljets.at(Ptb1at);
-	b2jet = alljets.at(Ptb2at);
+	b1jet = alljets.at(b1at);
+	b2jet = alljets.at(b2at);
 	hasRECOjet1=true;
 	hasRECOjet2=true; 
 	if( ((b1jet->BTag)&2)<1 ) hasb1jet = false;
