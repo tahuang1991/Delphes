@@ -57,6 +57,7 @@ class DiHiggstoWWbb {
     double muonPt2_;
     double muonPt1_;
     double muonsEta_;
+    double muonsIso_;
     double metPt_;
     float b1rescalefactor;
     std::vector<float> v_bjetrescalec1pdf;
@@ -92,6 +93,7 @@ class DiHiggstoWWbb {
     void getGenMET(TClonesArray *branchGenMET);
     void matchMuon2Gen(TClonesArray *branchMuonBefore,TClonesArray *branchMuon, GenParticle *genmu1, GenParticle *genmu2, float dR);
     void matchBjets2Gen(TClonesArray *branchGenJetNoNu, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
+    void checkBjets2Gen(TClonesArray *branchGenJetNoNu, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
     void matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticle *genb1, GenParticle *genb2, float dR);
     
     void SlideRescale();
@@ -241,6 +243,8 @@ class DiHiggstoWWbb {
     int energeticbjets;
     bool hasb1jet;
     bool hasb2jet;
+    bool hasgenb1;
+    bool hasgenb2;
 
     float mu1_px;
     float mu1_py;
@@ -334,6 +338,7 @@ class DiHiggstoWWbb {
     bool Muon2_beforeIso_passIso; 
     bool hasMuon1_beforeIso;
     bool hasMuon2_beforeIso;
+    bool hastwomuons_beforeIso;
 
     float Muon1_px;
     float Muon1_py;
@@ -342,6 +347,7 @@ class DiHiggstoWWbb {
     float Muon1_phi;
     float Muon1_pt;
     float Muon1_energy;
+    float Muon1_IsoVar;
     float Muon2_px;
     float Muon2_py;
     float Muon2_pz;
@@ -349,6 +355,7 @@ class DiHiggstoWWbb {
     float Muon2_phi;
     float Muon2_pt;
     float Muon2_energy;
+    float Muon2_IsoVar;
     bool energeticMuon1;
     bool energeticMuon2;
     float dR_mu1;
