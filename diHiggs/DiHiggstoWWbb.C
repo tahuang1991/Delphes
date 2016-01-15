@@ -1195,7 +1195,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	  jet = (Jet*) branchJet->At(i);
 	  if ( jet==b1jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
 	  TLorentzVector jet_p4 = jet->P4();
-	  if (genb2 !=0 && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet) {
+	  if (genb2jet !=0 && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet) {
 	    b2jet = jet;
 	    dR_b2jet = jet_p4.DeltaR(genb2jet_p4);
 	    b2jet_p4 = jet_p4;
@@ -1212,7 +1212,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	  jet = (Jet*) branchJet->At(i);
 	  if ( jet==b2jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
 	  TLorentzVector jet_p4 = jet->P4();
-	  if (genb1 !=0 && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet) {
+	  if (genb1jet !=0 && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet) {
 	    b1jet = jet;
 	    dR_b1jet = jet_p4.DeltaR(genb1jet_p4);
 	    b1jet_p4 = jet_p4;
@@ -1220,8 +1220,8 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	  }
 	}
     }
+    else if (dR_b1jet == dR_b2jet) cerr<<" error dR_b1jet = dR_b2jet " << endl;
   }
-
   //Now Btag
   if(hasRECOjet1 && !((b1jet->BTag)&2)<1 )  hasb1jet = true;
   if(hasRECOjet2 && !((b2jet->BTag)&2)<1 )  hasb2jet = true;
@@ -1370,6 +1370,10 @@ void DiHiggstoWWbb::checkBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
     if (genb1 !=0  and genb2 !=0 and  tmpdR2<dR2) {
 	hasgenb2 = false;
     }
+  }
+  if (htobb and not(simulation_)){
+	  dR_b1jet=dR1;
+	  dR_b2jet=dR2;
   }
 
 }
@@ -1895,7 +1899,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 //if (simulation_ and hasRECOjet1 and hasRECOjet2) cout<<"--------------"<<endl;
     for (int i =0;  i < branchJet->GetEntries(); i++){
 	Jet* jet = (Jet*) branchJet->At(i);
-	if (jet->PT < jetsPt_ || abs(jet->Eta) > jetsEta_) continue;
+	if (jet->PT < bjetsPt_ || abs(jet->Eta) > bjetsEta_) continue;
 	NJet++;
 	totjets_lorentz +=jet->P4();
 	//bit1: loose btag, bit2: medium btag, bit3: tight. current sample: only medium btag implemented
@@ -2070,7 +2074,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
     numLeptons1 = allMuon1.size();
     numLeptons2 = allMuon2.size();
-
+    /*
     if (simulation_ and hasMuon1 and hasMuon2 and allMuon1.size()>0 and allMuon2.size()>0){
 	if (muon1 == allMuon1.at(0)) hasRecoMuon1 = true;
 	if (muon2 == allMuon2.at(0)) hasRecoMuon2 = true;
@@ -2082,8 +2086,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	muon2 = allMuon2.at(0);
 	Muon1_p4 = muon1->P4();
 	Muon2_p4 = muon2->P4();
-    }
-     /*
+    }*/
     //special case, choose two reco muons without matching
     if (allMuon1.size()>0 and allMuon2.size()>0){
 	hasMuon1 = true; hasRecoMuon1 = true;
@@ -2092,11 +2095,11 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	muon2 = allMuon2.at(0);
 	Muon1_p4 = muon1->P4();
 	Muon2_p4 = muon2->P4();
-    }*/
+    }
 
     if(debug_) cout<<"DEBUG::4"<<endl;
     //calculate additional variables for clearing up cuts and other studies
-    if (hasb1jet and hasb2jet and hasMuon1 and hasMuon2){
+    if (hasRECOjet1 and hasRECOjet2 and hasMuon1 and hasMuon2){
 	dR_bl   = (b1jet_p4.Pt()>b2jet_p4.Pt()) ? (b1jet_p4.DeltaR( (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon1_p4 : Muon2_p4 )) : (b2jet_p4.DeltaR( (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon1_p4 : Muon2_p4 ));
 	dR_b1l1 = b1jet_p4.DeltaR(Muon1_p4);
 	dR_b1l2 = b1jet_p4.DeltaR(Muon2_p4);
@@ -2215,20 +2218,21 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 
     }*/
     //-------- MMC --------
-    preselections = (hasb1jet and hasb2jet and hasMET and hastwomuons_beforeIso and hasdRljet);
+    preselections = (hasRECOjet1 and hasRECOjet1 and hasMET and hastwomuons_beforeIso and hasdRljet);
     //for simulation case
     preselections_gen = (hasgenb1jet and hasgenb2jet and hastwogenmuons);
-    bool MMCready =  (((h2tohh and (sample_==B3 or sample_==B6)) || (ttbar and sample_ ==tt)) and hasgenb1jet and hasgenb2jet);
+    //bool MMCready =  (((h2tohh and (sample_==B3 or sample_==B6)) || (ttbar and sample_ ==tt)) and hasgenb1jet and hasgenb2jet);
+    bool MMCready =  ((h2tohh and (sample_==B3 or sample_==B6)) || (ttbar and sample_ ==tt));
     bool objectsready = (((useRecoMuon_ and hastwomuons_beforeIso) or (not(useRecoMuon_) and hastwogenmuons)) and 
-			((useRecoBJet_ and hasb1jet and hasb2jet) or (not(useRecoBJet_) and hasgenb1jet and hasgenb2jet)));
+			((useRecoBJet_ and hasRECOjet1 and hasRECOjet2) or (not(useRecoBJet_) and hasgenb1jet and hasgenb2jet)));
     if (runMMC_ and objectsready and (not(simulation_) || MMCready)){
 	cout <<" start to run MMC for this event " << entry <<endl;
 	TLorentzVector bjet_pt1_lorentz, bjet_pt2_lorentz, bgenp_pt1_lorentz, bgenp_pt2_lorentz;
 	if ((not(simulation_) or useRecoBJet_) and b1jet_p4.Pt()>b2jet_p4.Pt()) {
-	  cout <<" use Reco bjet " << endl;
+	  cout <<" use Reco bjet " <<" b1jetpt "<< b1jet_p4.Pt()<< " b2jetpt "<<b2jet_p4.Pt() <<endl;
 	  bjet_pt1_lorentz = b1jet_p4; bjet_pt2_lorentz = b2jet_p4;
 	} else if((not(simulation_) or useRecoBJet_)){ 
-	  cout <<" use Reco bjet " << endl;
+	  cout <<" use Reco bjet " <<" b2jetpt "<<b2jet_p4.Pt() <<" b1jetpt "<<b1jet_p4.Pt() <<endl;
 	  bjet_pt1_lorentz = b2jet_p4; bjet_pt2_lorentz = b1jet_p4;
 	}
 
