@@ -232,6 +232,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("MVA_bdt",&MVA_bdt, "MVA_bdt/F");
   evtree->Branch("MVA_bdt_B6fortt",&MVA_bdt_B6fortt, "MVA_bdt_B6fortt/F");
   evtree->Branch("MT2",&MT2, "MT2/F");
+  evtree->Branch("MT2_reco",&MT2_reco, "MT2_reco/F");
   evtree->Branch("b1_px",&b1_px, "b1_px/F");
   evtree->Branch("b1_py",&b1_py, "b1_py/F");
   evtree->Branch("b1_pz",&b1_pz, "b1_pz/F");
@@ -271,6 +272,8 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("dR_genb2jet", &dR_genb2jet,"dR_genb2jet/F");  
   evtree->Branch("hasgenb1jet",&hasgenb1jet, "hasgenb1jet/B");
   evtree->Branch("hasgenb2jet",&hasgenb2jet, "hasgenb2jet/B");
+  evtree->Branch("DE_partonGneJet1",&DE_partonGneJet1, "DE_partonGneJet1/F");
+  evtree->Branch("DE_partonGneJet2",&DE_partonGneJet2, "DE_partonGneJet2/F");
 
 
   evtree->Branch("genb1jet_withNu_px",&genb1jet_withNu_px, "genb1jet_withNu_px/F");
@@ -291,7 +294,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("dR_genb2jet_withNu", &dR_genb2jet_withNu,"dR_genb2jet_withNu/F");  
   evtree->Branch("hasgenb1jet_withNu",&hasgenb1jet_withNu, "hasgenb1jet_withNu/B");
   evtree->Branch("hasgenb2jet_withNu",&hasgenb2jet_withNu, "hasgenb2jet_withNu/B");
-  
+
   evtree->Branch("nufromb1_px",&nufromb1_px, "nufromb1_px/F");
   evtree->Branch("nufromb1_py",&nufromb1_py, "nufromb1_py/F");
   evtree->Branch("nufromb1_pz",&nufromb1_pz, "nufromb1_pz/F");
@@ -325,10 +328,26 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("hasb2jet",&hasb2jet, "hasb2jet/B");
   evtree->Branch("hasgenb1",&hasgenb1, "hasgenb1/B");
   evtree->Branch("hasgenb2",&hasgenb2, "hasgenb2/B");
+  evtree->Branch("hasRECOjet1",&hasRECOjet1, "hasRECOjet1/B");
+  evtree->Branch("hasRECOjet2",&hasRECOjet2, "hasRECOjet2/B");
+  evtree->Branch("bpartonsOK",&bpartonsOK, "bpartonsOK/B");
   evtree->Branch("hasRecob1jet",&hasRecob1jet, "hasRecob1jet/B");
   evtree->Branch("hasRecob2jet",&hasRecob2jet, "hasRecob2jet/B");
+  evtree->Branch("hasRecob1jetCorr",&hasRecob1jetCorr, "hasRecob1jetCorr/B");
+  evtree->Branch("hasRecob2jetCorr",&hasRecob2jetCorr, "hasRecob2jetCorr/B");
+  evtree->Branch("hasRecob1jetPt",&hasRecob1jetPt, "hasRecob1jetPt/B");
+  evtree->Branch("hasRecob2jetPt",&hasRecob2jetPt, "hasRecob2jetPt/B");
+  evtree->Branch("hasRecob1jetPtCorr",&hasRecob1jetPtCorr, "hasRecob1jetPtCorr/B");
+  evtree->Branch("hasRecob2jetPtCorr",&hasRecob2jetPtCorr, "hasRecob2jetPtCorr/B");
+  evtree->Branch("hasRecob1b2jet_bTag",&hasRecob1b2jet_bTag, "hasRecob1b2jet_bTag/B");
+  evtree->Branch("hasRecob1b2jetPt_bTag",&hasRecob1b2jetPt_bTag, "hasRecob1b2jetPt_bTag/B");
+  evtree->Branch("reconMassJet1_PtRes",&reconMassJet1_PtRes, "reconMassJet1_PtRes/F");
+  evtree->Branch("reconMassJet2_PtRes",&reconMassJet2_PtRes, "reconMassJet2_PtRes/F");
+  evtree->Branch("reconDRJet1_PtRes",&reconDRJet1_PtRes, "reconDRJet1_PtRes/F");
+  evtree->Branch("reconDRJet2_PtRes",&reconDRJet2_PtRes, "reconDRJet2_PtRes/F");
   evtree->Branch("hastwogenmuons",&hastwogenmuons, "hastwogenmuons/B");
   evtree->Branch("hastwomuons",&hastwomuons, "hastwomuons/B");
+  evtree->Branch("minMass",&minMass, "minMass/F");
 
   evtree->Branch("mu1_px",&mu1_px, "mu1_px/F");
   evtree->Branch("mu1_py",&mu1_py, "mu1_py/F");
@@ -405,29 +424,29 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("tbartoWbbar",&tbartoWbbar,"tbartoWbbar/B");
   evtree->Branch("ttbar",&ttbar,"ttbar/B");
   
-     evtree->Branch("Muon1_beforeIso_px",&Muon1_beforeIso_px, "Muon1_beforeIso_px/F");
-     evtree->Branch("Muon1_beforeIso_py",&Muon1_beforeIso_py, "Muon1_beforeIso_py/F");
-     evtree->Branch("Muon1_beforeIso_pz",&Muon1_beforeIso_pz, "Muon1_beforeIso_pz/F");
-     evtree->Branch("Muon1_beforeIso_eta",&Muon1_beforeIso_eta, "Muon1_beforeIso_eta/F");
-     evtree->Branch("Muon1_beforeIso_phi",&Muon1_beforeIso_phi, "Muon1_beforeIso_phi/F");
-     evtree->Branch("Muon1_beforeIso_pt",&Muon1_beforeIso_pt, "Muon1_beforeIso_pt/F");
-     evtree->Branch("Muon1_beforeIso_energy",&Muon1_beforeIso_energy, "Muon1_beforeIso_energy/F");
-     evtree->Branch("Muon2_beforeIso_px",&Muon2_beforeIso_px, "Muon2_beforeIso_px/F");
-     evtree->Branch("Muon2_beforeIso_py",&Muon2_beforeIso_py, "Muon2_beforeIso_py/F");
-     evtree->Branch("Muon2_beforeIso_pz",&Muon2_beforeIso_pz, "Muon2_beforeIso_pz/F");
-     evtree->Branch("Muon2_beforeIso_eta",&Muon2_beforeIso_eta, "Muon2_beforeIso_eta/F");
-     evtree->Branch("Muon2_beforeIso_phi",&Muon2_beforeIso_phi, "Muon2_beforeIso_phi/F");
-     evtree->Branch("Muon2_beforeIso_pt",&Muon2_beforeIso_pt, "Muon2_beforeIso_pt/F");
-     evtree->Branch("Muon2_beforeIso_energy",&Muon2_beforeIso_energy, "Muon2_beforeIso_energy/F");
-     evtree->Branch("dR_mu1_beforeIso",&dR_mu1_beforeIso, "dR_mu1_beforeIso/F");
-     evtree->Branch("dR_mu2_beforeIso",&dR_mu2_beforeIso, "dR_mu2_beforeIso/F");
-     evtree->Branch("hasMuon1_beforeIso",&hasMuon1_beforeIso, "hasMuon1_beforeIso/B");
-     evtree->Branch("hasMuon2_beforeIso",&hasMuon2_beforeIso, "hasMuon2_beforeIso/B");
-     evtree->Branch("Muon1_beforeIso_hasgenMu",&Muon1_beforeIso_hasgenMu, "Muon1_beforeIso_hasgenMu/B");
-     evtree->Branch("Muon2_beforeIso_hasgenMu",&Muon2_beforeIso_hasgenMu, "Muon2_beforeIso_hasgenMu/B");
-     evtree->Branch("Muon1_beforeIso_passIso",&Muon1_beforeIso_passIso, "Muon1_beforeIso_passIso/B");
-     evtree->Branch("Muon2_beforeIso_passIso",&Muon2_beforeIso_passIso, "Muon2_beforeIso_passIso/B");
-     evtree->Branch("hastwomuons_beforeIso",&hastwomuons_beforeIso, "hastwomuons_beforeIso/B");
+  evtree->Branch("Muon1_beforeIso_px",&Muon1_beforeIso_px, "Muon1_beforeIso_px/F");
+  evtree->Branch("Muon1_beforeIso_py",&Muon1_beforeIso_py, "Muon1_beforeIso_py/F");
+  evtree->Branch("Muon1_beforeIso_pz",&Muon1_beforeIso_pz, "Muon1_beforeIso_pz/F");
+  evtree->Branch("Muon1_beforeIso_eta",&Muon1_beforeIso_eta, "Muon1_beforeIso_eta/F");
+  evtree->Branch("Muon1_beforeIso_phi",&Muon1_beforeIso_phi, "Muon1_beforeIso_phi/F");
+  evtree->Branch("Muon1_beforeIso_pt",&Muon1_beforeIso_pt, "Muon1_beforeIso_pt/F");
+  evtree->Branch("Muon1_beforeIso_energy",&Muon1_beforeIso_energy, "Muon1_beforeIso_energy/F");
+  evtree->Branch("Muon2_beforeIso_px",&Muon2_beforeIso_px, "Muon2_beforeIso_px/F");
+  evtree->Branch("Muon2_beforeIso_py",&Muon2_beforeIso_py, "Muon2_beforeIso_py/F");
+  evtree->Branch("Muon2_beforeIso_pz",&Muon2_beforeIso_pz, "Muon2_beforeIso_pz/F");
+  evtree->Branch("Muon2_beforeIso_eta",&Muon2_beforeIso_eta, "Muon2_beforeIso_eta/F");
+  evtree->Branch("Muon2_beforeIso_phi",&Muon2_beforeIso_phi, "Muon2_beforeIso_phi/F");
+  evtree->Branch("Muon2_beforeIso_pt",&Muon2_beforeIso_pt, "Muon2_beforeIso_pt/F");
+  evtree->Branch("Muon2_beforeIso_energy",&Muon2_beforeIso_energy, "Muon2_beforeIso_energy/F");
+  evtree->Branch("dR_mu1_beforeIso",&dR_mu1_beforeIso, "dR_mu1_beforeIso/F");
+  evtree->Branch("dR_mu2_beforeIso",&dR_mu2_beforeIso, "dR_mu2_beforeIso/F");
+  evtree->Branch("hasMuon1_beforeIso",&hasMuon1_beforeIso, "hasMuon1_beforeIso/B");
+  evtree->Branch("hasMuon2_beforeIso",&hasMuon2_beforeIso, "hasMuon2_beforeIso/B");
+  evtree->Branch("Muon1_beforeIso_hasgenMu",&Muon1_beforeIso_hasgenMu, "Muon1_beforeIso_hasgenMu/B");
+  evtree->Branch("Muon2_beforeIso_hasgenMu",&Muon2_beforeIso_hasgenMu, "Muon2_beforeIso_hasgenMu/B");
+  evtree->Branch("Muon1_beforeIso_passIso",&Muon1_beforeIso_passIso, "Muon1_beforeIso_passIso/B");
+  evtree->Branch("Muon2_beforeIso_passIso",&Muon2_beforeIso_passIso, "Muon2_beforeIso_passIso/B");
+  evtree->Branch("hastwomuons_beforeIso",&hastwomuons_beforeIso, "hastwomuons_beforeIso/B");
    
   evtree->Branch("Muon1_px",&Muon1_px, "Muon1_px/F");
   evtree->Branch("Muon1_py",&Muon1_py, "Muon1_py/F");
@@ -457,6 +476,8 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("Muon2_hasgenMu",&Muon2_hasgenMu, "Muon2_hasgenMu/B");
 
   evtree->Branch("numbjets",&numbjets, "numbjets/I");
+  evtree->Branch("numjets",&numjets, "numjets/I");
+  evtree->Branch("numGenJet",&numGenJet, "numGenJet/I");
   evtree->Branch("numLeptons1",&numLeptons1, "numLeptons1/I");
   evtree->Branch("numLeptons2",&numLeptons2, "numLeptons2/I");
   evtree->Branch("dR_bl",&dR_bl, "dR_bl/F");
@@ -501,7 +522,7 @@ void DiHiggstoWWbb::init(){
 
   evtree->Branch("HhhtoWWWW",&HhhtoWWWW, "HhhtoWWWW/B");
   evtree->Branch("allnu_met",&allnu_met, "allnu_met/F");
-  
+
   evtree->Branch("hasGenMET",&hasGenMET, "hasGenMET/B");
   evtree->Branch("hasMET",&hasMET, "hasMET/B");
   evtree->Branch("hasdRljet",&hasdRljet, "hasdRljet/B");
@@ -543,7 +564,7 @@ DiHiggstoWWbb::~DiHiggstoWWbb(){
 void DiHiggstoWWbb::fetchHhhWWWWchain(TClonesArray *branchParticle){
 
   GenParticle *genh2,*genhiggs1,*genhiggs2;
-   
+
   genh2 =  (GenParticle*) branchParticle->At(0);
   //printGenParticle(genP);
   if (genh2->PID != 99926 and genh2->PID != 99927) {
@@ -576,73 +597,67 @@ void DiHiggstoWWbb::fetchHhhWWWWchain(TClonesArray *branchParticle){
     HhhtoWWWW = true;
   }
   if (HhhtoWWWW){
-  	GenParticle *genW1,*genW2,*genW3,*genW4,*gennu1,*gennu2,*gennu3,*gennu4;
-	genW1=0; genW2=0; genW3=0; genW4=0; gennu1=0; gennu2=0; gennu3=0; gennu4=0;
- 	genW1 = (GenParticle*) branchParticle->At(genhiggs1->D1);
-  	genW2 = (GenParticle*) branchParticle->At(genhiggs1->D2);
-  	genW3 = (GenParticle*) branchParticle->At(genhiggs2->D1);
-  	genW4 = (GenParticle*) branchParticle->At(genhiggs2->D2);
-  	getFinalState(genW1, branchParticle);
-  	getFinalState(genW2, branchParticle);
-  	getFinalState(genW3, branchParticle);
-  	getFinalState(genW4, branchParticle);
-		/*printGenParticle(genh2);
-		printGenParticle(genhiggs1);
-		printGenParticle(genhiggs2);
-		printGenParticle(genW1);
-		printGenParticle(genW2);
-		printGenParticle(genW3);
-		printGenParticle(genW4);
-		*/
-    	if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID) == 14)
-       		gennu1 = (GenParticle*)branchParticle->At(genW1->D1); 
-        else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID) == 14)
-		gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
-    	if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID) == 12)
-       		gennu1 = (GenParticle*)branchParticle->At(genW1->D1); 
-        else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID) == 12)
-		gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
-    	if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID) == 14)
-       		gennu2 = (GenParticle*)branchParticle->At(genW2->D1); 
-        else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID) == 14)
-		gennu2 = (GenParticle*)branchParticle->At(genW2->D2);
-    	if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID) == 12)
-       		gennu2 = (GenParticle*)branchParticle->At(genW2->D1); 
-        else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID) == 12)
-		gennu2 = (GenParticle*)branchParticle->At(genW2->D2);
-    	if (genW3->D1>0 && abs(((GenParticle*)branchParticle->At(genW3->D1))->PID) == 14)
-       		gennu3 = (GenParticle*)branchParticle->At(genW3->D1); 
-        else if (genW3->D2>0 && abs(((GenParticle*)branchParticle->At(genW3->D2))->PID) == 14)
-		gennu3 = (GenParticle*)branchParticle->At(genW3->D2);
-    	if (genW3->D1>0 && abs(((GenParticle*)branchParticle->At(genW3->D1))->PID) == 12)
-       		gennu3 = (GenParticle*)branchParticle->At(genW3->D1); 
-        else if (genW3->D2>0 && abs(((GenParticle*)branchParticle->At(genW3->D2))->PID) == 12)
-		gennu3 = (GenParticle*)branchParticle->At(genW3->D2);
-    	if (genW4->D1>0 && abs(((GenParticle*)branchParticle->At(genW4->D1))->PID) == 14)
-       		gennu4 = (GenParticle*)branchParticle->At(genW4->D1); 
-        else if (genW4->D2>0 && abs(((GenParticle*)branchParticle->At(genW4->D2))->PID) == 14)
-		gennu4 = (GenParticle*)branchParticle->At(genW4->D2);
-    	if (genW4->D1>0 && abs(((GenParticle*)branchParticle->At(genW4->D1))->PID) == 12)
-       		gennu4 = (GenParticle*)branchParticle->At(genW4->D1); 
-        else if (genW4->D2>0 && abs(((GenParticle*)branchParticle->At(genW4->D2))->PID) == 12)
-		gennu4 = (GenParticle*)branchParticle->At(genW4->D2);
-        
-       if (gennu1 != 0 and gennu2 != 0 and gennu3 != 0 and gennu4 != 0){
- 		getFinalState(gennu1, branchParticle);
- 		getFinalState(gennu2, branchParticle);
- 		getFinalState(gennu3, branchParticle);
- 		getFinalState(gennu4, branchParticle);
- 		//cout <<" genparticle in Hhh to WWWW " << endl;
-		//(gennu1->P4()).Print();
-		//(gennu2->P4()).Print();
-		//(gennu3->P4()).Print();
-		//(gennu4->P4()).Print();
-		TLorentzVector allnu_p4 = gennu1->P4()+gennu2->P4()+gennu3->P4()+gennu4->P4();
-		allnu_met = allnu_p4.Pt();
-		//std::cout <<" all nu p4 "; allnu_p4.Print();
-	}
+    GenParticle *genW1,*genW2,*genW3,*genW4,*gennu1,*gennu2,*gennu3,*gennu4;
+    genW1=0; genW2=0; genW3=0; genW4=0; gennu1=0; gennu2=0; gennu3=0; gennu4=0;
+    genW1 = (GenParticle*) branchParticle->At(genhiggs1->D1);
+    genW2 = (GenParticle*) branchParticle->At(genhiggs1->D2);
+    genW3 = (GenParticle*) branchParticle->At(genhiggs2->D1);
+    genW4 = (GenParticle*) branchParticle->At(genhiggs2->D2);
+    getFinalState(genW1, branchParticle);
+    getFinalState(genW2, branchParticle);
+    getFinalState(genW3, branchParticle);
+    getFinalState(genW4, branchParticle);
+    /*printGenParticle(genh2);
+	printGenParticle(genhiggs1);
+	printGenParticle(genhiggs2);
+	printGenParticle(genW1);
+	printGenParticle(genW2);
+	printGenParticle(genW3);
+	printGenParticle(genW4);
+     */
+    if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID) == 14)
+	gennu1 = (GenParticle*)branchParticle->At(genW1->D1); 
+    else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID) == 14)
+	gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
+    if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID) == 12)
+	gennu1 = (GenParticle*)branchParticle->At(genW1->D1); 
+    else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID) == 12)
+	gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
+    if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID) == 14)
+	gennu2 = (GenParticle*)branchParticle->At(genW2->D1); 
+    else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID) == 14)
+	gennu2 = (GenParticle*)branchParticle->At(genW2->D2);
+    if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID) == 12)
+	gennu2 = (GenParticle*)branchParticle->At(genW2->D1); 
+    else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID) == 12)
+	gennu2 = (GenParticle*)branchParticle->At(genW2->D2);
+    if (genW3->D1>0 && abs(((GenParticle*)branchParticle->At(genW3->D1))->PID) == 14)
+	gennu3 = (GenParticle*)branchParticle->At(genW3->D1); 
+    else if (genW3->D2>0 && abs(((GenParticle*)branchParticle->At(genW3->D2))->PID) == 14)
+	gennu3 = (GenParticle*)branchParticle->At(genW3->D2);
+    if (genW3->D1>0 && abs(((GenParticle*)branchParticle->At(genW3->D1))->PID) == 12)
+	gennu3 = (GenParticle*)branchParticle->At(genW3->D1); 
+    else if (genW3->D2>0 && abs(((GenParticle*)branchParticle->At(genW3->D2))->PID) == 12)
+	gennu3 = (GenParticle*)branchParticle->At(genW3->D2);
+    if (genW4->D1>0 && abs(((GenParticle*)branchParticle->At(genW4->D1))->PID) == 14)
+	gennu4 = (GenParticle*)branchParticle->At(genW4->D1); 
+    else if (genW4->D2>0 && abs(((GenParticle*)branchParticle->At(genW4->D2))->PID) == 14)
+	gennu4 = (GenParticle*)branchParticle->At(genW4->D2);
+    if (genW4->D1>0 && abs(((GenParticle*)branchParticle->At(genW4->D1))->PID) == 12)
+	gennu4 = (GenParticle*)branchParticle->At(genW4->D1); 
+    else if (genW4->D2>0 && abs(((GenParticle*)branchParticle->At(genW4->D2))->PID) == 12)
+	gennu4 = (GenParticle*)branchParticle->At(genW4->D2);
+
+    if (gennu1 != 0 and gennu2 != 0 and gennu3 != 0 and gennu4 != 0){
+	getFinalState(gennu1, branchParticle);
+	getFinalState(gennu2, branchParticle);
+	getFinalState(gennu3, branchParticle);
+	getFinalState(gennu4, branchParticle);
+	TLorentzVector allnu_p4 = gennu1->P4()+gennu2->P4()+gennu3->P4()+gennu4->P4();
+	allnu_met = allnu_p4.Pt();
+    }
   }
-  
+
 }
 
 // ------------ To find H->hh->WWBB->lvlvBB  ------------
@@ -718,7 +733,6 @@ void DiHiggstoWWbb::fetchHhhchain(TClonesArray *branchParticle){
     htobb_px = genhtobb->Px; htobb_py= genhtobb->Py; htobb_pz = genhtobb->Pz; htobb_energy = genhtobb->E;
     htobb_mass = genhtobb->Mass;
   }
-
   if (htoWW){
     if (((GenParticle*)branchParticle->At(genhtoWW->D1))->PID == -24){ //W
 	genW1 = (GenParticle*)branchParticle->At(genhtoWW->D1);  //to muon(13)
@@ -728,7 +742,6 @@ void DiHiggstoWWbb::fetchHhhchain(TClonesArray *branchParticle){
 	genW1 = (GenParticle*)branchParticle->At(genhtoWW->D2);
 	genW2 = (GenParticle*)branchParticle->At(genhtoWW->D1);
     }
-
     getFinalState(genW1, branchParticle);
     //cout <<" htoWW genW1 "; printGenParticle(genW1);
     getFinalState(genW2, branchParticle);	
@@ -890,7 +903,6 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
     w1_eta = genW1->Eta; w1_phi = genW1->Phi;
     w2_mass = genW2->Mass; w2_px = genW2->Px; w2_py = genW2->Py; w2_pz = genW2->Pz; w2_energy = genW2->E;
     w2_eta = genW2->Eta; w2_phi = genW2->Phi;
-    //cout <<" htoWW genW2 "; printGenParticle(genW2);
 
     if (genW1->D1>0 && ((GenParticle*)branchParticle->At(genW1->D1))->PID == 13){
 	genmu1 = (GenParticle*)branchParticle->At(genW1->D1);
@@ -960,6 +972,8 @@ void DiHiggstoWWbb::getGenMET(TClonesArray *branchGenMET){
   }
 }
 
+
+//current use reco muon before Iso, rather after Iso
 void DiHiggstoWWbb::matchMuon2Gen(TClonesArray *branchMuonBeforeIso, TClonesArray *branchMuon, GenParticle* genmu1, GenParticle* genmu2, float dR_){
 
   Muon *muon;
@@ -973,12 +987,26 @@ void DiHiggstoWWbb::matchMuon2Gen(TClonesArray *branchMuonBeforeIso, TClonesArra
 	dR_mu1_beforeIso = muon_p4.DeltaR(genmu1->P4());
 	muon1_beforeIso = muon;
 	hasMuon1_beforeIso = true;
+	Muon1_beforeIso_p4 = muon->P4();
+	
+	dR_mu1 = muon_p4.DeltaR(genmu1->P4());//trick to replace Isolated muon by muons before Iso 
+	muon1 = muon;
+	hasMuon1 = true;
+	Muon1_p4 = muon->P4();
+
 	if (particle == genmu1) Muon1_beforeIso_hasgenMu = true;
     }
     else if(genmu2 !=0 and muon->Charge>0 and muon_p4.DeltaR(genmu2->P4())<dR_mu2_beforeIso and muon_p4.DeltaR(genmu2->P4())<dR_) {
 	dR_mu2_beforeIso = muon_p4.DeltaR(genmu2->P4());
 	muon2_beforeIso = muon;
 	hasMuon2_beforeIso = true;
+	Muon2_beforeIso_p4 = muon->P4();
+        
+	dR_mu2 = muon_p4.DeltaR(genmu2->P4());
+	muon2 = muon;
+	hasMuon2 = true;
+	Muon2_p4 = muon->P4();
+
 	if (particle == genmu2) Muon2_beforeIso_hasgenMu = true;
     }
     //if (hasMuon1_beforeIso) std::cout <<" has reco Muon1 before Iso  " << std::endl;
@@ -1002,6 +1030,7 @@ void DiHiggstoWWbb::matchMuon2Gen(TClonesArray *branchMuonBeforeIso, TClonesArra
     if (((muon1_beforeIso->PT > muonPt1_ && muon2_beforeIso->PT > muonPt2_) || (muon1_beforeIso->PT > muonPt2_ && muon2_beforeIso->PT > muonPt1_)) && fabs(muon1_beforeIso->Eta)<muonsEta_ && fabs(muon2_beforeIso->Eta)< muonsEta_) hastwomuons_beforeIso =true;
   }
   // Loop over all Muon in event, reco muon
+  /*
   for(int i = 0; i < branchMuon->GetEntriesFast(); ++i){
     muon = (Muon*) branchMuon->At(i);
     TLorentzVector muon_p4 = muon->P4(); 
@@ -1027,18 +1056,21 @@ void DiHiggstoWWbb::matchMuon2Gen(TClonesArray *branchMuonBeforeIso, TClonesArra
     //if (hasMuon1) std::cout <<" has reco Muon1 " << std::endl;
     //if (hasMuon2) std::cout <<" has reco Muon2 " << std::endl;
     //cout <<" muon eta " << muon->Eta << " phi " << muon->Phi << " Pt "<< muon->PT << endl; 
-  }
+  }*/
 }
 
-void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *branchJet, GenParticle* genb1, GenParticle* genb2, float dR_){
-  //loop all Gen jets 
+void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *branchJet, GenParticle* genb1, GenParticle* genb2){
+
   Jet *genjet, *jet;
   genjet =0; jet=0;
-  for (int i =0;  i<  branchGenJet->GetEntries(); i++){
+  //loop all Gen jets 
+  int NGenJet=0;
+  for (int i =0;  i<branchGenJet->GetEntries(); i++){
     genjet = (Jet*) branchGenJet->At(i);
     if (genjet->PT < bjetsPt_ || abs(genjet->Eta)> bjetsEta_) continue;
+    NGenJet++;
     TLorentzVector genjet_p4 = genjet->P4();
-    if (genb1 !=0  && genjet_p4.DeltaR(genb1->P4()) < dR_genb1jet && genjet_p4.DeltaR(genb1->P4())< dR_) {
+    if (genb1 !=0  && genjet_p4.DeltaR(genb1->P4()) < dR_genb1jet) {
 	genb1jet_p4 = genjet_p4;
 	dR_genb1jet = genjet_p4.DeltaR(genb1->P4());
 	genb1jet_px = genjet_p4.Px(); genb1jet_py = genjet_p4.Py(); genb1jet_pz=genjet_p4.Pz(); genb1jet_energy = genjet_p4.Energy();
@@ -1048,7 +1080,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	genb1jet = genjet;
 	//cout <<"genb1jet pt "<< genb1jet->PT << endl;
     }
-    if (genb2 !=0  && genjet_p4.DeltaR(genb2->P4()) < dR_genb2jet && genjet_p4.DeltaR(genb2->P4()) < dR_){
+    if (genb2 !=0  && genjet_p4.DeltaR(genb2->P4()) < dR_genb2jet){
 	genb2jet_p4 = genjet_p4;
 	dR_genb2jet = genjet_p4.DeltaR(genb2->P4());
 	genb2jet_px = genjet_p4.Px(); genb2jet_py = genjet_p4.Py(); genb2jet_pz=genjet_p4.Pz(); genb2jet_energy = genjet_p4.Energy();
@@ -1059,16 +1091,17 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	//cout <<"genb2jet pt "<< genb2jet->pt << endl;
     }
   }
+  numGenJet = NGenJet;
   // genb1jet should be different from genb2jet
   if (hasgenb1jet && hasgenb2jet && genb1jet == genb2jet){
     if (dR_genb1jet < dR_genb2jet){
 	hasgenb2jet = false;
-	dR_genb2jet = dR_;
+	dR_genb2jet = jetsDeltaR_;
   	for (int i =0;  i<  branchGenJet->GetEntries(); i++){
     		genjet = (Jet*) branchGenJet->At(i);
     		if (genjet==genb1jet || genjet->PT < bjetsPt_ || abs(genjet->Eta)> bjetsEta_) continue;
     		TLorentzVector genjet_p4 = genjet->P4();
-    		if (genb2 !=0  && genjet_p4.DeltaR(genb2->P4()) < dR_genb2jet && genjet_p4.DeltaR(genb2->P4()) < dR_){
+    		if (genb2 !=0  && genjet_p4.DeltaR(genb2->P4()) < dR_genb2jet){
 			genb2jet_p4 = genjet_p4;
 			dR_genb2jet = genjet_p4.DeltaR(genb2->P4());
 			genb2jet_px = genjet_p4.Px(); genb2jet_py = genjet_p4.Py(); genb2jet_pz=genjet_p4.Pz(); genb2jet_energy = genjet_p4.Energy();
@@ -1081,35 +1114,30 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
      }//if (dR_genb1jet < dR_genb2jet)
     else if (dR_genb1jet > dR_genb2jet){
 	hasgenb1jet = false;
-	dR_genb1jet = dR_;
-  	for (int i =0;  i<  branchGenJet->GetEntries(); i++){
-    		genjet = (Jet*) branchGenJet->At(i);
-    		if (genjet==genb2jet || genjet->PT < bjetsPt_ || abs(genjet->Eta)> bjetsEta_) continue;
-    		TLorentzVector genjet_p4 = genjet->P4();
-    		if (genb1 !=0  && genjet_p4.DeltaR(genb1->P4()) < dR_genb1jet && genjet_p4.DeltaR(genb1->P4())< dR_) {
-			genb1jet_p4 = genjet_p4;
-			dR_genb1jet = genjet_p4.DeltaR(genb1->P4());
-			genb1jet_px = genjet_p4.Px(); genb1jet_py = genjet_p4.Py(); genb1jet_pz=genjet_p4.Pz(); genb1jet_energy = genjet_p4.Energy();
-			genb1jet_eta = genjet_p4.Eta(); genb1jet_phi = genjet_p4.Phi();
-			genb1jet_pt = genjet_p4.Pt();
-			hasgenb1jet = true;
-			genb1jet = genjet;
-		}
-	}		
-     }//if (dR_genb1jet > dR_genb2jet)
+	dR_genb1jet = jetsDeltaR_;
+	for (int i =0;  i<  branchGenJet->GetEntries(); i++){
+	  genjet = (Jet*) branchGenJet->At(i);
+	  if (genjet==genb2jet || genjet->PT < bjetsPt_ || abs(genjet->Eta)> bjetsEta_) continue;
+	  TLorentzVector genjet_p4 = genjet->P4();
+	  if (genb1 !=0  && genjet_p4.DeltaR(genb1->P4()) < dR_genb1jet){
+	    genb1jet_p4 = genjet_p4;
+	    dR_genb1jet = genjet_p4.DeltaR(genb1->P4());
+	    genb1jet_px = genjet_p4.Px(); genb2jet_py = genjet_p4.Py(); genb2jet_pz=genjet_p4.Pz(); genb2jet_energy = genjet_p4.Energy();
+	    genb1jet_eta = genjet_p4.Eta(); genb2jet_phi = genjet_p4.Phi();
+	    genb1jet_pt = genjet_p4.Pt();
+	    hasgenb1jet = true;
+	    genb1jet = genjet;
+	  }
+	}
+    }//if (dR_genb1jet > dR_genb2jet)
   }
-
 
   if (hasgenb1jet && hasgenb2jet){
-	//TRefArray b1jet_pars = genb1jet_withNu.Particle;
-	//cout <<" tried to find neutrino from bjets(NoNu) " << endl;
-	findNeutrinosfromJet(genb1jet->Particles);
-	findNeutrinosfromJet(genb2jet->Particles);
+    findNeutrinosfromJet(genb1jet->Particles);
+    findNeutrinosfromJet(genb2jet->Particles);
   }
-   
-  if (not (hasgenb1jet and hasgenb2jet)) return;
 
-  bool fidcut=(abs(genb1->Eta)<bjetsEta_ and abs(genb2->Eta)<bjetsEta_ and (genb1->PT)>bjetsPt_ and (genb2->PT)>bjetsPt_);
+  /*bool fidcut=(abs(genb1->Eta)<bjetsEta_ and abs(genb2->Eta)<bjetsEta_ and (genb1->PT)>bjetsPt_ and (genb2->PT)>bjetsPt_);
   //bool fidcut=true;
   if (fidcut and hasgenb1jet and hasgenb2jet and (dR_genb1jet>1 or dR_genb2jet>1)){
 	cout <<"------------------- begin  dR debug jetwithout Nutrinos eventid "<<event_n <<"   ------------------------- "<< endl;
@@ -1128,73 +1156,75 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 	}
 	
 	cout <<"------------------- end    dR debug jetwithout Nutrinos    ------------------------- "<< endl;
-   }
+   }*/
 
 
+  if (not (hasgenb1jet and hasgenb2jet)) return;
+  DE_partonGneJet1 = genb1->P4().E()-genb1jet_energy; 
+  DE_partonGneJet2 = genb2->P4().E()-genb2jet_energy; 
   //loop all reco jets 
-  for (int i =0;  i<  branchJet->GetEntries(); i++)
+  for (int i =0;  i<branchJet->GetEntries(); i++)
   {
     jet = (Jet*) branchJet->At(i);
     TLorentzVector jet_p4 = jet->P4();
     //cout <<" jet btag " << ((jet->BTag)&2) <<" pt " << jet->PT <<" eta " << abs(jet->Eta) << "  dR_b1 " <<jet_p4.DeltaR(genb1->P4()) <<" dR_b2 "<< jet_p4.DeltaR(genb2->P4()) << endl;
     //if (((jet->BTag)&2)<1 || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-    if (jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-    if (hasgenb1jet && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet && jet_p4.DeltaR(genb1jet_p4) < dR_) {
+    if ( jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+    if (hasgenb1jet && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet) {
 	b1jet = jet;
 	dR_b1jet = jet_p4.DeltaR(genb1jet_p4);
 	b1jet_p4 = jet_p4;
-	hasb1jet = true;
-	//cout <<"b1jet pt "<< b1jet->PT << endl;
+	hasRECOjet1=true;
     }
-    if (hasgenb2jet && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet && jet_p4.DeltaR(genb2jet_p4) < dR_){
+    if (hasgenb2jet && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet){
 	b2jet = jet;
 	dR_b2jet = jet_p4.DeltaR(genb2jet_p4);
 	b2jet_p4 = jet_p4;
 	hasb2jet = true;
 	//cout <<"b2jet pt "<< b2jet->PT << endl;
+	hasRECOjet2 = true;
     }
   }
   // b1jet should be different from b2jet
-  if (hasb1jet && hasb2jet && b1jet == b2jet){
+  if (hasRECOjet1 && hasRECOjet2 && b1jet == b2jet){
     if (dR_b1jet < dR_b2jet){ //to find another b1jet
-	hasb2jet = false;
-	dR_b2jet = dR_;
-  	for (int i =0;  i<  branchJet->GetEntries(); i++)
- 	 {
-    		jet = (Jet*) branchJet->At(i);
-   		if (((jet->BTag)&2)<1 || jet==b1jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-   		//if (jet==b1jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-    		TLorentzVector jet_p4 = jet->P4();
-    		if (genb2 !=0 && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet && jet_p4.DeltaR(genb2jet_p4) < dR_) {
-			b2jet = jet;
-			dR_b2jet = jet_p4.DeltaR(genb2jet_p4);
-			b2jet_p4 = jet_p4;
-			hasb2jet = true;
-		}
-		
+	hasRECOjet2 = false;
+	dR_b2jet = jetsDeltaR_;
+	for (int i =0;  i<branchJet->GetEntries(); i++)
+	{
+	  jet = (Jet*) branchJet->At(i);
+	  if ( jet==b1jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+	  TLorentzVector jet_p4 = jet->P4();
+	  if (genb2 !=0 && jet_p4.DeltaR(genb2jet_p4) < dR_b2jet) {
+	    b2jet = jet;
+	    dR_b2jet = jet_p4.DeltaR(genb2jet_p4);
+	    b2jet_p4 = jet_p4;
+	    hasRECOjet2 = true;
+	  }
+
 	}
     } //if (dR_b1jet < dR_b2jet)
     else if (dR_b1jet > dR_b2jet){
-	hasb1jet = false;
-	dR_b1jet = dR_;
-  	for (int i =0;  i<  branchJet->GetEntries(); i++)
- 	 {
-    		jet = (Jet*) branchJet->At(i);
-   		if (((jet->BTag)&2)<1 || jet==b2jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-		TLorentzVector jet_p4 = jet->P4();
-    		if (genb1 !=0 && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet && jet_p4.DeltaR(genb1jet_p4) < dR_) {
-			b1jet = jet;
-			dR_b1jet = jet_p4.DeltaR(genb1jet_p4);
-			b1jet_p4 = jet_p4;
-			hasb1jet = true;
-		}
-		
+	hasRECOjet1 = false;
+	dR_b1jet = jetsDeltaR_;
+	for (int i =0;  i<  branchJet->GetEntries(); i++)
+	{
+	  jet = (Jet*) branchJet->At(i);
+	  if ( jet==b2jet || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
+	  TLorentzVector jet_p4 = jet->P4();
+	  if (genb1 !=0 && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet) {
+	    b1jet = jet;
+	    dR_b1jet = jet_p4.DeltaR(genb1jet_p4);
+	    b1jet_p4 = jet_p4;
+	    hasRECOjet1 = true;
+	  }
 	}
-    }//if (dR_b1jet > dR_b2jet)
+    }
   }
 
-
-
+  //Now Btag
+  if(hasRECOjet1 && !((b1jet->BTag)&2)<1 )  hasb1jet = true;
+  if(hasRECOjet2 && !((b2jet->BTag)&2)<1 )  hasb2jet = true;
 }
 
 
@@ -1205,10 +1235,6 @@ void DiHiggstoWWbb::matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticl
   genjet =0;
   genb1jet_withNu=0;
   genb2jet_withNu=0;
-  //float dR_genb1jet_withNu = dR;
-  //float dR_genb2jet_withNu = dR;
-  //bool hasgenb1jet_withNu =true;
-  //bool hasgenb2jet_withNu =true;
   nufromb1_p4 = TLorentzVector();
   nufromb2_p4 = TLorentzVector();
 
@@ -1273,11 +1299,11 @@ void DiHiggstoWWbb::matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticl
   }
 
   if (hasgenb1jet_withNu && hasgenb2jet_withNu){
-	genb1jet_withNu_px = genb1jet_withNu_p4.Px(); genb1jet_withNu_py = genb1jet_withNu_p4.Py(); genb1jet_withNu_pz=genb1jet_withNu_p4.Pz(); genb1jet_withNu_energy = genb1jet_withNu_p4.Energy();
-	genb1jet_withNu_eta = genb1jet_withNu_p4.Eta(); genb1jet_withNu_phi = genb1jet_withNu_p4.Phi(); genb1jet_withNu_pt=genb1jet_withNu_p4.Pt(); 
-	genb2jet_withNu_px = genb2jet_withNu_p4.Px(); genb2jet_withNu_py = genb2jet_withNu_p4.Py(); genb2jet_withNu_pz=genb2jet_withNu_p4.Pz(); genb2jet_withNu_energy = genb2jet_withNu_p4.Energy();
-	genb2jet_withNu_eta = genb2jet_withNu_p4.Eta(); genb2jet_withNu_phi = genb2jet_withNu_p4.Phi(); genb2jet_withNu_pt=genb2jet_withNu_p4.Pt(); 
-   }
+    genb1jet_withNu_px = genb1jet_withNu_p4.Px(); genb1jet_withNu_py = genb1jet_withNu_p4.Py(); genb1jet_withNu_pz=genb1jet_withNu_p4.Pz(); genb1jet_withNu_energy = genb1jet_withNu_p4.Energy();
+    genb1jet_withNu_eta = genb1jet_withNu_p4.Eta(); genb1jet_withNu_phi = genb1jet_withNu_p4.Phi(); genb1jet_withNu_pt=genb1jet_withNu_p4.Pt(); 
+    genb2jet_withNu_px = genb2jet_withNu_p4.Px(); genb2jet_withNu_py = genb2jet_withNu_p4.Py(); genb2jet_withNu_pz=genb2jet_withNu_p4.Pz(); genb2jet_withNu_energy = genb2jet_withNu_p4.Energy();
+    genb2jet_withNu_eta = genb2jet_withNu_p4.Eta(); genb2jet_withNu_phi = genb2jet_withNu_p4.Phi(); genb2jet_withNu_pt=genb2jet_withNu_p4.Pt(); 
+  }
 
   if (hasgenb1jet_withNu && hasgenb2jet_withNu){
 	//TRefArray b1jet_pars = genb1jet_withNu.Particle;
@@ -1287,7 +1313,7 @@ void DiHiggstoWWbb::matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticl
 	nufromb1_px = nufromb1_p4.Px(); nufromb1_py = nufromb1_p4.Py(); nufromb1_pz = nufromb1_p4.Pz(); nufromb1_energy = nufromb1_p4.Energy();
 	nufromb2_px = nufromb2_p4.Px(); nufromb2_py = nufromb2_p4.Py(); nufromb2_pz = nufromb2_p4.Pz(); nufromb2_energy = nufromb2_p4.Energy();
      }
-  bool fidcut=(abs(genb1->Eta)<bjetsEta_ and abs(genb2->Eta)<bjetsEta_ and (genb1->PT)>bjetsPt_ and (genb2->PT)>bjetsPt_);
+  /*bool fidcut=(abs(genb1->Eta)<bjetsEta_ and abs(genb2->Eta)<bjetsEta_ and (genb1->PT)>bjetsPt_ and (genb2->PT)>bjetsPt_);
   //bool fidcut=true;
   if (fidcut and hasgenb1jet_withNu and hasgenb2jet_withNu and (dR_genb1jet_withNu>1 or dR_genb2jet_withNu>1)){
 	cout <<"-------------------   dR debug jetwithNutrinos  eventid "<<event_n <<"   ------------------------- "<< endl;
@@ -1305,7 +1331,7 @@ void DiHiggstoWWbb::matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticl
 		printJet(genjet);
 	}
 	
-   }
+   }*/
 
 }
 
@@ -1356,14 +1382,14 @@ TLorentzVector DiHiggstoWWbb::findNeutrinosfromJet(TRefArray particles){
   unsigned int numneutrinos = 0;
   TLorentzVector nu_p4 = TLorentzVector();
   for(int i=0; i<particles.GetEntries(); i++){
-      genp = (GenParticle*)particles.At(i);
-      if (abs(genp->PID)==12 or abs(genp->PID)== 14 or abs(genp->PID)==16){
+    genp = (GenParticle*)particles.At(i);
+    if (abs(genp->PID)==12 or abs(genp->PID)== 14 or abs(genp->PID)==16){
 	//cout <<" find one neutrinos in jet: "; printGenParticle(genp);
 	nu_p4 = nu_p4+genp->P4();
 	numneutrinos++;
-	}
+    }
 
-   }
+  }
 
   //cout <<" total number of neutrinos in jet " << numneutrinos <<" px "  << nu_p4.Px() <<" py "<< nu_p4.Py() <<endl;
   return nu_p4;
@@ -1464,13 +1490,13 @@ void DiHiggstoWWbb::printAllGenParticles(TClonesArray *branchParticle){
 }
 
 void DiHiggstoWWbb::initBranches(){
-  allbjets.clear();
+  alljets.clear();
   allMuon1.clear();
   allMuon2.clear();
   muon1 =0; muon2=0;
   b1jet=0; b2jet=0; genb1jet =0; genb2jet=0;
   Met=0; genMet=0;
-  genh2=0; genhiggs1 =0; genhiggs2 =0; 
+  genh2=0; genhiggs1 =0; genhiggs2 =0;
   gent1 =0; gent2=0;
   genhtobb =0; genb1= 0; genb2=0;
   genhtoWW =0; genW1 =0; genW2=0; genmu1=0; genmu2=0; gennu1=0; gennu2=0;
@@ -1483,6 +1509,7 @@ void DiHiggstoWWbb::initBranches(){
   MVA_bdt = -999.;
   MVA_bdt_B6fortt = -999.;
   MT2 = -999.;
+  MT2_reco = -999.;
   b1_px =0;
   b1_py =0;
   b1_pz =0;
@@ -1522,6 +1549,8 @@ void DiHiggstoWWbb::initBranches(){
   dR_genb2jet=jetsDeltaR_;
   hasgenb1jet=false;
   hasgenb2jet=false;
+  DE_partonGneJet1=0;
+  DE_partonGneJet2=0;
 
   genb1jet_withNu_px=0;
   genb1jet_withNu_py=0;
@@ -1570,10 +1599,13 @@ void DiHiggstoWWbb::initBranches(){
   b2jet_energy=0;
   b2jet_btag = 0;
   energeticbjets = 0;
+  hasRECOjet1=false;
+  hasRECOjet2=false;
   hasb1jet=false;
   hasb2jet=false;
   hasgenb1=false;
   hasgenb2=false;
+  bpartonsOK=false;
 
   mu1_px =0;
   mu1_py =0;
@@ -1701,12 +1733,27 @@ void DiHiggstoWWbb::initBranches(){
   htoWW_mass = 0;
 
   numbjets =0;
+  numjets =0;
+  numGenJet =0;
   numLeptons1 =0;
   numLeptons2 =0;
   hasRecob1jet =false;
   hasRecob2jet =false;
+  hasRecob1jetCorr =false;
+  hasRecob2jetCorr =false;
+  hasRecob1jetPt =false;
+  hasRecob2jetPt =false;
+  hasRecob1jetPtCorr =false;
+  hasRecob2jetPtCorr =false;
+  hasRecob1b2jet_bTag =false;
+  hasRecob1b2jetPt_bTag =false;
+  reconMassJet1_PtRes=-999.;
+  reconMassJet2_PtRes=-999.;
+  reconDRJet1_PtRes=-999.;
+  reconDRJet2_PtRes=-999.;
   hasRecoMuon1 =false;
   hasRecoMuon2 =false;
+  minMass=-1.;
   dR_bl=-1.0;
   dR_b1l1=-1.0;
   dR_b1l2=-1.0;
@@ -1784,9 +1831,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   long entry;
   TLorentzVector momentum;
 
-  int i =0;
-  int totnumbjets=0;
-  //TFile *MMCfile = new TFile("testMMC.root", "recreate"); 
   /****** Loop over all events *****/
   int totalevents=0;
   if (nEvents_ < 0) totalevents = allEntries;
@@ -1798,7 +1842,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   }
 
   for(entry = nStarts_; entry < totalevents; ++entry){
- 
+
     if(debug_) cout<<"DEBUG::1"<<endl;
     initBranches();
     weight = Thisweight;
@@ -1809,39 +1853,23 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	exit(0);
     }
     event_n = entry;
-    //if (nEvents_ < 100) cout << "event id  "<< entry << endl;
-    //else if ((entry-nStarts_+1)%(nEvents_/100) == 0)   cout <<" event id " << entry <<" number of bjets pairs " << totnumbjets <<endl;
     if((entry-nStarts_)%1000==0) std::cerr<<"Analazyning event: "<<entry<<" / "<<totalevents<<std::endl;
-    
-    //
+
     if (sample_ == B3 || sample_ == B6) fetchHhhchain(branchParticle); 
     else fetchttbarchain(branchParticle);
-   //only in simulation case, these two could be true
+    //only in simulation case, these two could be true
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
-    //if (sample_ == Signal) fetchHhhWWWWchain(branchParticle); 
-    // If simulation, take GEN info
     getGenMET(branchGenMissingET);
-    if (simulation_ and not(h2tohh) and not(ttbar)) continue;
+    if (not(h2tohh) and not(ttbar)) continue;
     if (simulation_){
 
-	//if (sample_ == tt and dR_genl1l2 > 2.5) continue;
+	if( genb1->P4().Pt()>30. && fabs(genb1->P4().Eta())<2.4 && genb2->P4().Pt()>30. && fabs(genb2->P4().Eta())<2.4 ) bpartonsOK = true;
 	matchBjetswithNu2Gen(branchGenJet_withNu, genb1, genb2, jetsDeltaR_); 
-	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2, jetsDeltaR_); 
+	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2); 
 	//special case
 	matchMuon2Gen(branchMuonBeforeIso, branchMuon,genmu1, genmu2, leptonsDeltaR_); 
-        /*if ((h2tohh or ttbar) and hasgenb1jet_withNu and hasgenb2jet_withNu){
-	TLorentzVector transMomentum = genmet_p4-nu1_p4-nu2_p4-nufromb1_p4-nufromb2_p4;
-	if (transMomentum.Pt()>5){
-		cout <<" \n transMomentum sum >5GeV "; 
-		cout <<" \n transP px "<< transMomentum.Px() <<" py "<< transMomentum.Py(); 
-		cout <<" \n met px "<< genmet_p4.Px() <<" py "<< genmet_p4.Py(); 
-		cout <<" \n nu1 px "<< nu1_p4.Px() <<" py "<< nu1_p4.Py(); 
-		cout <<" \n nu2 px "<< nu2_p4.Px() <<" py "<< nu2_p4.Py(); 
-		cout <<" \n nufromb1 px "<< nufromb1_p4.Px() <<" py "<< nufromb1_p4.Py(); 
-		cout <<" \n nufromb2 px "<< nufromb2_p4.Px() <<" py "<< nufromb2_p4.Py(); 
-		}
-	}*/
+
 	//GENMET on Di-BJet Axis
 	if( hasgenb1jet and hasgenb2jet ){
 	  TVector3 genDiBjet_Transv( (genb1jet_p4 + genb2jet_p4).Px(), (genb1jet_p4 + genb2jet_p4).Py(), 0.);
@@ -1863,42 +1891,133 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if(debug_) cout<<"DEBUG::2"<<endl;
 
     //loop all reco jets 
-    for (i =0;  i < branchJet->GetEntries(); i++){
+    int NJet=0;
+//if (simulation_ and hasRECOjet1 and hasRECOjet2) cout<<"--------------"<<endl;
+    for (int i =0;  i < branchJet->GetEntries(); i++){
 	Jet* jet = (Jet*) branchJet->At(i);
-	//Btag does not work here?????????
-	if (jet->PT < jetsPt_ || abs(jet->Eta)> jetsEta_) continue;
+	if (jet->PT < jetsPt_ || abs(jet->Eta) > jetsEta_) continue;
+	NJet++;
 	totjets_lorentz +=jet->P4();
 	//bit1: loose btag, bit2: medium btag, bit3: tight. current sample: only medium btag implemented
 	//if (((jet->BTag)&2)<1 || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-	if (jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
-	allbjets.push_back(jet);
+	alljets.push_back(jet);
     }
-    numbjets = allbjets.size();
-    if (numbjets>=2) totnumbjets++;
-    unsigned int b1at = 0;
-    unsigned int b2at = 1;
-    if (allbjets.size() > 2 and not(energeticbjets_)){
-	float diff_higgsmass = 125.0;
-	for (unsigned k =0; k<allbjets.size()-1; k++)
-	  for (unsigned int j =k+1; j<allbjets.size(); j++){
-	    TLorentzVector bjets_p4 = allbjets[k]->P4()+allbjets[j]->P4();
+    numjets = NJet;
+    int b1at = -1, b2at = -1;
+    float diff_higgsmass = 999.;
+    std::vector< std::pair<int,int> > pairs;
+    if (alljets.size() >= 2){
+	for (int k=0; k<int(alljets.size())-1; k++){
+	  for (int j=k+1; j<int(alljets.size()); j++){ 
+            TLorentzVector bjets_p4 = alljets[k]->P4()+alljets[j]->P4();
 	    if (fabs(bjets_p4.M()-125)>diff_higgsmass) continue;
 	    b1at = k;
 	    b2at = j;
 	    diff_higgsmass = fabs(bjets_p4.M()-125);
+	    minMass = bjets_p4.M()-125;
+//########
+	    if (fabs(bjets_p4.M()-125)<35){
+		std::pair <int,int> foo;
+		foo=std::make_pair(j,k);
+		pairs.push_back(foo);
+	    }
+//########
+//if (simulation_ and hasRECOjet1 and hasRECOjet2){
+//float DR1k = TLorentzVector(genb1->P4()).DeltaR( TLorentzVector(alljets[k]->P4()) );
+//float DR1j = TLorentzVector(genb1->P4()).DeltaR( TLorentzVector(alljets[j]->P4()) );
+//float DR2k = TLorentzVector(genb2->P4()).DeltaR( TLorentzVector(alljets[k]->P4()) );
+//float DR2j = TLorentzVector(genb2->P4()).DeltaR( TLorentzVector(alljets[j]->P4()) );
+//float DR1 = DR1k < DR1j ? DR1k : DR1j;
+//float DR2 = DR1==DR1k ? DR2j : DR2k;
+//cout<<" -> "<<k<<" and "<<j<<" give "<<bjets_p4.M()<<" and DR is "<<DR1<<" "<<DR2<<endl;
+//}
 	  }
+	}
     }
-    if (simulation_ and hasb1jet and hasb2jet and allbjets.size() >= 2){
-	if (b1jet == allbjets.at(b1at) or b1jet==allbjets.at(b2at)) hasRecob1jet = true;
-	if (b2jet == allbjets.at(b1at) or b2jet==allbjets.at(b2at)) hasRecob2jet = true;
+    if( int(pairs.size())>1 ){
+	float ptmin=0.;
+	for(int i=0; i<int(pairs.size());i++){
+	  float PtSum = alljets[pairs[i].first]->P4().Pt()+alljets[pairs[i].second]->P4().Pt();
+	  if( PtSum>ptmin ){ b2at = pairs[i].first; b1at = pairs[i].second; ptmin = PtSum;}
+	}
     }
-    else if ( !simulation_ and allbjets.size() >= 2){
-	hasb1jet = true; hasRecob1jet = true;
-	hasb2jet = true; hasRecob1jet = true;
-	b1jet = allbjets.at(b1at);
-	b2jet = allbjets.at(b2at);
-	b1jet_p4 = b1jet->P4();
-	b2jet_p4 = b2jet->P4();
+    //Try also to choose the 2 with the greatest Pt
+    int Ptb1at = -1, Ptb2at = -1;
+    float MinPt = jetsPt_;
+    if (alljets.size() >= 2){
+	for (int k=0; k<int(alljets.size()); k++){
+	  if ( alljets[k]->P4().Pt()>MinPt ){
+	    MinPt = alljets[k]->P4().Pt();
+	    Ptb1at = k;
+	  }
+	}
+	MinPt = jetsPt_;
+	for (int k=0; k<int(alljets.size()); k++){
+	  if ( alljets[k]->P4().Pt()>MinPt && k!=Ptb1at ){
+	    MinPt = alljets[k]->P4().Pt();
+	    Ptb2at = k;
+	  }
+	}
+    }
+    //N B-Jet
+    int NumBJet=0;
+    for (unsigned k=0; k<alljets.size(); k++){ if( ((alljets[k]->BTag)&2)>=1 ) NumBJet++; }
+    numbjets = NumBJet;
+    if (simulation_ and hasRECOjet1 and hasRECOjet2 and b1at!=-1 and b2at!=-1 ){
+	//cout<<"B Jets are: "<<NumBJet<<endl;
+	//cout<<"Jets are: "<<alljets.size()<<endl;
+	//cout<<"THIS: "<<alljets.at(b1at)->P4().Pt()<<" "<<alljets.at(b2at)->P4().Pt()<<endl;
+	//cout<<"CORR: "<<b1jet->P4().Pt()<<" "<<b2jet->P4().Pt()<<endl;
+	//if(( b1jet->P4().Pt()!=alljets.at(b1at)->P4().Pt() && b1jet->P4().Pt()!= alljets.at(b2at)->P4().Pt() ) ||
+	//   ( b2jet->P4().Pt()!=alljets.at(b1at)->P4().Pt() && b2jet->P4().Pt()!= alljets.at(b2at)->P4().Pt() ) ) cout<<"WROONG"<<endl;
+	hasRecob1jet = true;
+	hasRecob2jet = true;
+	if (b1jet == alljets.at(b1at) or b1jet==alljets.at(b2at) ) hasRecob1jetCorr = true;
+	if (b2jet == alljets.at(b1at) or b2jet==alljets.at(b2at) ) hasRecob2jetCorr = true;
+	if( ((alljets.at(b1at)->BTag)&2)<1 || ((alljets.at(b2at)->BTag)&2)<1 ) hasRecob1b2jet_bTag = false;
+	else hasRecob1b2jet_bTag = true;
+	//Resol this
+	if( fabs(alljets.at(b1at)->P4().Pt()-genb1->P4().Pt()) < fabs(alljets.at(b2at)->P4().Pt()-genb1->P4().Pt()) ){
+	  reconMassJet1_PtRes = alljets.at(b1at)->P4().Pt()-genb1->P4().Pt(); 
+	  reconMassJet2_PtRes = alljets.at(b2at)->P4().Pt()-genb2->P4().Pt();
+	}
+	else{
+	  reconMassJet1_PtRes = alljets.at(b2at)->P4().Pt()-genb1->P4().Pt();
+	  reconMassJet2_PtRes = alljets.at(b1at)->P4().Pt()-genb2->P4().Pt();
+	}
+	//Resol DR
+	if( fabs(b1jet->P4().Pt()-genb1->P4().Pt()) < fabs(b2jet->P4().Pt()-genb1->P4().Pt()) ){
+	  reconDRJet1_PtRes = b1jet->P4().Pt()-genb1->P4().Pt();
+	  reconDRJet2_PtRes = b2jet->P4().Pt()-genb2->P4().Pt();
+	}
+	else{
+	  reconDRJet1_PtRes = b2jet->P4().Pt()-genb1->P4().Pt();
+	  reconDRJet2_PtRes = b1jet->P4().Pt()-genb2->P4().Pt();
+	}
+    }
+    if (simulation_ and hasRECOjet1 and hasRECOjet2 and Ptb1at!=-1 and Ptb2at!=-1 ){
+	hasRecob1jetPt = true;
+	hasRecob2jetPt = true;
+	if (b1jet == alljets.at(Ptb1at) or b1jet==alljets.at(Ptb2at) ) hasRecob1jetPtCorr = true;
+	if (b2jet == alljets.at(Ptb1at) or b2jet==alljets.at(Ptb2at) ) hasRecob2jetPtCorr = true;
+	if( ((alljets.at(Ptb1at)->BTag)&2)<1 || ((alljets.at(Ptb2at)->BTag)&2)<1 ) hasRecob1b2jetPt_bTag = false;
+	else hasRecob1b2jetPt_bTag = true;
+    }
+    if ( !simulation_ and Ptb1at!=-1 and Ptb2at!=-1){
+	b1jet = alljets.at(b1at);
+	b2jet = alljets.at(b2at);
+	hasRECOjet1=true;
+	hasRECOjet2=true; 
+	if( ((b1jet->BTag)&2)<1 ) hasb1jet = false;
+	else{
+	  hasb1jet = true;
+	  b1jet_p4 = b1jet->P4();
+	}
+	if( ((b2jet->BTag)&2)<1 ) hasb2jet = false;
+	else{
+	  hasb2jet = true;
+	  b2jet_p4 = b2jet->P4();
+	}
     }
 
     //check whether two jets are closest to b parton
@@ -1914,7 +2033,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	Met_p4 = TLorentzVector();
 	Met_p4.SetXYZT(met_px, met_py, 0, met); 
 	if (met > metPt_) hasMET = true;
-        if (Met_p4.Px() == -999 or Met_p4.Py()==-999) cout <<" wired Reco MET  in x "<<Met_p4.Px()<<" y "<<Met_p4.Py() << endl;
+	if (Met_p4.Px() == -999 or Met_p4.Py()==-999) cout <<" wired Reco MET  in x "<<Met_p4.Px()<<" y "<<Met_p4.Py() << endl;
 	//MET on Di-BJet Axis
 	if( hasgenb1jet and hasgenb2jet and hasb1jet and hasb2jet ){
 	  TVector3 genDiBjet_Transv( (genb1jet_p4 + genb2jet_p4).Px(), (genb1jet_p4 + genb2jet_p4).Py(), 0.);
@@ -1941,8 +2060,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
 
     // Loop over all Muon in the event, reco muon
-    for(i = 0; i < branchMuon->GetEntriesFast(); ++i){
-	Muon *muon = (Muon*) branchMuon->At(i);
+    //for(int i = 0; i < branchMuon->GetEntriesFast(); ++i){
+    for(int i = 0; i < branchMuonBeforeIso->GetEntriesFast(); ++i){//now we use muon bfore Isolation
+	Muon *muon = (Muon*) branchMuonBeforeIso->At(i);
 	if (muon->Charge<0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) 
 	  allMuon1.push_back(muon);
 	else if(muon->Charge>0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) 
@@ -1997,60 +2117,76 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	//we group each pair b_jet-lepton into an object: we then get "Particle A" and "Particle B" (each one given by a b_jet-lepton object),
 	//whose Kinematics is to be fed into the MT2 variable.
 	//There are two possible Lepton-Bquark pairings. We compute MT2 for both and pick the smallest value.
-	//-Sorting leptons and b-jets
-	TLorentzVector MU_1, MU_2, Bj_1, Bj_2;
-	MU_1 = (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon1_p4 : Muon2_p4;
-	MU_2 = (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon2_p4 : Muon1_p4;
-	Bj_1 = (b1jet_p4.Pt()>b2jet_p4.Pt()) ? b1jet_p4 : b2jet_p4;
-	Bj_2 = (b1jet_p4.Pt()>b2jet_p4.Pt()) ? b2jet_p4 : b1jet_p4;
-	//-Invariant mass for "Particle A"
-	float sumesBl1_1=(MU_1.E()+Bj_1.E())*(MU_1.E()+Bj_1.E());
-	float sumpxsBl1_1=(MU_1.Px()+Bj_1.Px())*(MU_1.Px()+Bj_1.Px());
-	float sumpysBl1_1=(MU_1.Py()+Bj_1.Py())*(MU_1.Py()+Bj_1.Py());
-	float sumpzsBl1_1=(MU_1.Pz()+Bj_1.Pz())*(MU_1.Pz()+Bj_1.Pz());
-	float M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
-	float Pxa_1 = MU_1.Px()+Bj_1.Px();
-	float Pya_1 = MU_1.Py()+Bj_1.Py();
-	// Invariant mass for "Particle B"
-	float sumesBl2_1=(MU_2.E()+Bj_2.E())*(MU_2.E()+Bj_2.E());
-	float sumpxsBl2_1=(MU_2.Px()+Bj_2.Px())*(MU_2.Px()+Bj_2.Px());
-	float sumpysBl2_1=(MU_2.Py()+Bj_2.Py())*(MU_2.Py()+Bj_2.Py());
-	float sumpzsBl2_1=(MU_2.Pz()+Bj_2.Pz())*(MU_2.Pz()+Bj_2.Pz());
-	float M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
-	float Pxb_1 = MU_2.Px()+Bj_2.Px();
-	float Pyb_1 = MU_2.Py()+Bj_2.Py();
-	// computation
-	double pa1[3] = { M_Bl1_1, Pxa_1, Pya_1 };
-	double pb1[3] = { M_Bl2_1, Pxb_1, Pyb_1 };
-	double pmiss[3] = { 0, Met_p4.Px(), Met_p4.Py() };
-	mt2_bisect::mt2 mt2_event1;
-	mt2_event1.set_momenta(pa1,pb1,pmiss);
-	mt2_event1.set_mn(0.);
-	float MT2_1 = mt2_event1.get_mt2();
-	//-Invariant mass for "Particle A 2"
-	float sumesBl1_2=(MU_1.E()+Bj_2.E())*(MU_1.E()+Bj_2.E());
-	float sumpxsBl1_2=(MU_1.Px()+Bj_2.Px())*(MU_1.Px()+Bj_2.Px());
-	float sumpysBl1_2=(MU_1.Py()+Bj_2.Py())*(MU_1.Py()+Bj_2.Py());
-	float sumpzsBl1_2=(MU_1.Pz()+Bj_2.Pz())*(MU_1.Pz()+Bj_2.Pz());
-	float M_Bl1_2=sqrt(sumesBl1_2-(sumpxsBl1_2+sumpysBl1_2+sumpzsBl1_2));
-	float Pxa_2 = MU_1.Px()+Bj_2.Px();
-	float Pya_2 = MU_1.Py()+Bj_2.Py();
-	// Invariant mass for "Particle B 2"
-	float sumesBl2_2=(MU_2.E()+Bj_1.E())*(MU_2.E()+Bj_1.E());
-	float sumpxsBl2_2=(MU_2.Px()+Bj_1.Px())*(MU_2.Px()+Bj_1.Px());
-	float sumpysBl2_2=(MU_2.Py()+Bj_1.Py())*(MU_2.Py()+Bj_1.Py());
-	float sumpzsBl2_2=(MU_2.Pz()+Bj_1.Pz())*(MU_2.Pz()+Bj_1.Pz());
-	float M_Bl2_2=sqrt(sumesBl2_2-(sumpxsBl2_2+sumpysBl2_2+sumpzsBl2_2));
-	float Pxb_2 = MU_2.Px()+Bj_1.Px();
-	float Pyb_2 = MU_2.Py()+Bj_1.Py();
-	// computation
-	double pa2[3] = { M_Bl1_2, Pxa_2, Pya_2 };
-	double pb2[3] = { M_Bl2_2, Pxb_2, Pyb_2 };
-	mt2_bisect::mt2 mt2_event2;
-	mt2_event2.set_momenta(pa2,pb2,pmiss);
-	mt2_event2.set_mn(0.);
-	float MT2_2 = mt2_event2.get_mt2();
-	MT2 = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
+	// Simulation=false: only 0 = RECO jets.
+	// Simulation=true: 0 = DR jets, 1 = RECO jets.
+	for(int i=0; i<2; i++){
+	  TLorentzVector B1_mt2,B2_mt2;
+	  if(i==0){
+	    B1_mt2 = b1jet_p4;
+	    B2_mt2 = b2jet_p4;
+	  }
+	  if(i==1 and simulation_ and b1at!=-1 and b2at!=-1 and hasRecob1b2jet_bTag){
+	    B1_mt2 = alljets.at(b1at)->P4();
+	    B2_mt2 = alljets.at(b2at)->P4();
+	  }
+	  if( (i==0) || (i==1 && simulation_ && b1at!=-1 && b2at!=-1 and hasRecob1b2jet_bTag) ){
+	    //-Sorting leptons and b-jets
+	    TLorentzVector MU_1, MU_2, Bj_1, Bj_2;
+	    MU_1 = (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon1_p4 : Muon2_p4;
+	    MU_2 = (Muon1_p4.Pt()>Muon2_p4.Pt()) ? Muon2_p4 : Muon1_p4;
+	    Bj_1 = (B1_mt2.Pt()>B2_mt2.Pt()) ? B1_mt2 : B2_mt2;
+	    Bj_2 = (B1_mt2.Pt()>B2_mt2.Pt()) ? B2_mt2 : B1_mt2;
+	    //-Invariant mass for "Particle A"
+	    float sumesBl1_1=(MU_1.E()+Bj_1.E())*(MU_1.E()+Bj_1.E());
+	    float sumpxsBl1_1=(MU_1.Px()+Bj_1.Px())*(MU_1.Px()+Bj_1.Px());
+	    float sumpysBl1_1=(MU_1.Py()+Bj_1.Py())*(MU_1.Py()+Bj_1.Py());
+	    float sumpzsBl1_1=(MU_1.Pz()+Bj_1.Pz())*(MU_1.Pz()+Bj_1.Pz());
+	    float M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
+	    float Pxa_1 = MU_1.Px()+Bj_1.Px();
+	    float Pya_1 = MU_1.Py()+Bj_1.Py();
+	    // Invariant mass for "Particle B"
+	    float sumesBl2_1=(MU_2.E()+Bj_2.E())*(MU_2.E()+Bj_2.E());
+	    float sumpxsBl2_1=(MU_2.Px()+Bj_2.Px())*(MU_2.Px()+Bj_2.Px());
+	    float sumpysBl2_1=(MU_2.Py()+Bj_2.Py())*(MU_2.Py()+Bj_2.Py());
+	    float sumpzsBl2_1=(MU_2.Pz()+Bj_2.Pz())*(MU_2.Pz()+Bj_2.Pz());
+	    float M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
+	    float Pxb_1 = MU_2.Px()+Bj_2.Px();
+	    float Pyb_1 = MU_2.Py()+Bj_2.Py();
+	    // computation
+	    double pa1[3] = { M_Bl1_1, Pxa_1, Pya_1 };
+	    double pb1[3] = { M_Bl2_1, Pxb_1, Pyb_1 };
+	    double pmiss[3] = { 0, Met_p4.Px(), Met_p4.Py() };
+	    mt2_bisect::mt2 mt2_event1;
+	    mt2_event1.set_momenta(pa1,pb1,pmiss);
+	    mt2_event1.set_mn(0.);
+	    float MT2_1 = mt2_event1.get_mt2();
+	    //-Invariant mass for "Particle A 2"
+	    float sumesBl1_2=(MU_1.E()+Bj_2.E())*(MU_1.E()+Bj_2.E());
+	    float sumpxsBl1_2=(MU_1.Px()+Bj_2.Px())*(MU_1.Px()+Bj_2.Px());
+	    float sumpysBl1_2=(MU_1.Py()+Bj_2.Py())*(MU_1.Py()+Bj_2.Py());
+	    float sumpzsBl1_2=(MU_1.Pz()+Bj_2.Pz())*(MU_1.Pz()+Bj_2.Pz());
+	    float M_Bl1_2=sqrt(sumesBl1_2-(sumpxsBl1_2+sumpysBl1_2+sumpzsBl1_2));
+	    float Pxa_2 = MU_1.Px()+Bj_2.Px();
+	    float Pya_2 = MU_1.Py()+Bj_2.Py();
+	    // Invariant mass for "Particle B 2"
+	    float sumesBl2_2=(MU_2.E()+Bj_1.E())*(MU_2.E()+Bj_1.E());
+	    float sumpxsBl2_2=(MU_2.Px()+Bj_1.Px())*(MU_2.Px()+Bj_1.Px());
+	    float sumpysBl2_2=(MU_2.Py()+Bj_1.Py())*(MU_2.Py()+Bj_1.Py());
+	    float sumpzsBl2_2=(MU_2.Pz()+Bj_1.Pz())*(MU_2.Pz()+Bj_1.Pz());
+	    float M_Bl2_2=sqrt(sumesBl2_2-(sumpxsBl2_2+sumpysBl2_2+sumpzsBl2_2));
+	    float Pxb_2 = MU_2.Px()+Bj_1.Px();
+	    float Pyb_2 = MU_2.Py()+Bj_1.Py();
+	    // computation
+	    double pa2[3] = { M_Bl1_2, Pxa_2, Pya_2 };
+	    double pb2[3] = { M_Bl2_2, Pxb_2, Pyb_2 };
+	    mt2_bisect::mt2 mt2_event2;
+	    mt2_event2.set_momenta(pa2,pb2,pmiss);
+	    mt2_event2.set_mn(0.);
+	    float MT2_2 = mt2_event2.get_mt2();
+	    if(i==0) MT2 = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
+	    if(i==1) MT2_reco = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
+	  }
+	}
 	//MVA
 	if(runMVA_){
 	  MVA_dR_l1l2 = dR_l1l2; MVA_dR_b1b2=dR_b1b2; MVA_dR_bl=dR_bl; MVA_mass_l1l2=mass_l1l2; MVA_mass_b1b2=mass_b1b2; MVA_MT2=MT2;
@@ -2066,7 +2202,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if(debug_) cout<<"DEBUG::6"<<endl;
     //-------- Here is possible to compute new variables --------
     if(true){ //Selection to be applied before the computation
-	//Use GEN or RECO particles
     }
 
     /*if (hastwogenmuons and not(hastwomuons)){
@@ -2080,11 +2215,11 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 
     }*/
     //-------- MMC --------
-    preselections = (hasb1jet and hasb2jet and hasMET and hastwomuons and hasdRljet);
+    preselections = (hasb1jet and hasb2jet and hasMET and hastwomuons_beforeIso and hasdRljet);
     //for simulation case
     preselections_gen = (hasgenb1jet and hasgenb2jet and hastwogenmuons);
     bool MMCready =  (((h2tohh and (sample_==B3 or sample_==B6)) || (ttbar and sample_ ==tt)) and hasgenb1jet and hasgenb2jet);
-    bool objectsready = (((useRecoMuon_ and hastwomuons) or (not(useRecoMuon_) and hastwogenmuons)) and 
+    bool objectsready = (((useRecoMuon_ and hastwomuons_beforeIso) or (not(useRecoMuon_) and hastwogenmuons)) and 
 			((useRecoBJet_ and hasb1jet and hasb2jet) or (not(useRecoBJet_) and hasgenb1jet and hasgenb2jet)));
     if (runMMC_ and objectsready and (not(simulation_) || MMCready)){
 	cout <<" start to run MMC for this event " << entry <<endl;
@@ -2117,7 +2252,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	TLorentzVector lepton1_lorentz, lepton2_lorentz;
 	if ( not(simulation_) or useRecoMuon_ ){
 	  cout <<" use Reco Muon " << endl;
-	  lepton1_lorentz = Muon1_p4; lepton2_lorentz = Muon2_p4;
+	  //lepton1_lorentz = Muon1_p4; lepton2_lorentz = Muon2_p4;
+	  lepton1_lorentz = Muon1_beforeIso_p4; lepton2_lorentz = Muon2_beforeIso_p4;
 	}else if (not(useRecoMuon_) and simulation_){
 	  cout <<" use Gen Muon " << endl;
 	  lepton1_lorentz = mu1_p4; lepton2_lorentz = mu2_p4;
@@ -2162,8 +2298,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  MMC_h2mass_underflow = MMC_h2mass->GetBinContent(-1);
 	  std::cout <<" most prob " << MMC_h2mass_prob <<" RMS "<< MMC_h2mass_RMS << " entries " << MMC_h2mass_Entries 
 	    << " most prob weight1 "<< MMC_h2massweight1_prob <<" weight4 "<< MMC_h2massweight4_prob <<std::endl;
-          if (MMC_h2mass_prob < 250 ) std::cerr <<" error !!! MMC_h2mass_prob < 250, MMC_h2mass_prob: " <<MMC_h2mass_prob 
-			<<" eventid "<<entry <<std::endl;
+	  if (MMC_h2mass_prob < 250 ) std::cerr <<" error !!! MMC_h2mass_prob < 250, MMC_h2mass_prob: " <<MMC_h2mass_prob 
+	    <<" eventid "<<entry <<std::endl;
 	}
 	//MMCfile->WriteObject(mmctree,mmctree->GetTitle());
 	delete thismmc;
@@ -2171,21 +2307,23 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     //fill branches
     //if (HhhtoWWWW) cout <<"recomet "<< met <<" genmet "<< genmet << " all nu pt " << allnu_met <<endl;
     //if (HhhtoWWWW) evtree->Fill();
-    /*if (preselections) cout <<"eventid "<< entry <<"pass preselections " << endl;
-    else if (not(h2tohh)) cout <<" eventid "<< entry <<" in fact not a h2tohhtollbb event " << endl; 
-    else if (not(hasb1jet and hasb2jet)) cout <<"eventid "<< entry <<" failed to has two reco bjets or htobb " << endl;
-    else if (not(hastwomuons)) cout <<"eventid "<< entry <<" failed to has two reco muon " << endl;
-    else if (not hasdRljet) cout <<"eventid "<< entry <<" failed to hasdRljet "<< endl;
-    else if (not hasMET) cout <<" eventid "<< entry <<" failed to hasMET, met  " << met  << endl;
-    else cout <<"eventid "<<entry <<" failed to pass preselections due to some reason " << endl;
-    */
     //if (runMMCok or preselections_gen or objectsready or preselections) {
-    if (h2tohh) {
-	evtree->Fill();
+    /*if (h2tohh) {
+	else if (not(hasb1jet and hasb2jet)) cout <<"eventid "<< entry <<" failed to has two reco bjets or htobb " << endl;
+	else if (not(hastwomuons)) cout <<"eventid "<< entry <<" failed to has two reco muon " << endl;
+	else if (not hasdRljet) cout <<"eventid "<< entry <<" failed to hasdRljet "<< endl;
+	else if (not hasMET) cout <<" eventid "<< entry <<" failed to hasMET, met  " << met  << endl;
+	else cout <<"eventid "<<entry <<" failed to pass preselections due to some reason " << endl;
 	}
+     */
+    //if (runMMCok or preselections_gen or preselections) {
+    if (h2tohh) {
+	//	cout <<" fill tree " << endl;
+	evtree->Fill();
+    }
     //if (not(runMMC_) and (h2tohh or ttbar)) evtree->Fill();
     //evtree->Fill();
-  }
+  }//for(entry = nStarts_; entry < totalevents; ++entry)
   //if (runMMC_ and hasdRljet and hasMET and ((h2tohh and is_signal) || (ttbar and !is_signal))) delete thismmc;
   //MMCfile->Close();
   //delete MMCfile;
@@ -2199,13 +2337,13 @@ void DiHiggstoWWbb::fillbranches(){
     b1jet_btag = b1jet->BTag;
     b1jet_px = b1jet_p4.Px(); b1jet_py = b1jet_p4.Py(); b1jet_pz= b1jet_p4.Pz(); b1jet_energy = b1jet_p4.Energy();
     b1jet_eta = b1jet_p4.Eta(); b1jet_phi = b1jet_p4.Phi(); b1jet_pt = b1jet_p4.Pt();
-    if (htobb and not(simulation_))  dR_b1jet = (b1jet_p4.DeltaR(b1_p4)>b1jet_p4.DeltaR(b2_p4))? b1jet_p4.DeltaR(b2_p4):b1jet_p4.DeltaR(b1_p4);
+    //if (htobb and not(simulation_))  dR_b1jet = (b1jet_p4.DeltaR(b1_p4)>b1jet_p4.DeltaR(b2_p4))? b1jet_p4.DeltaR(b2_p4):b1jet_p4.DeltaR(b1_p4);
   }
   if (hasb2jet){
     b2jet_btag = b2jet->BTag;
     b2jet_px = b2jet_p4.Px(); b2jet_py = b2jet_p4.Py(); b2jet_pz= b2jet_p4.Pz(); b2jet_energy = b2jet_p4.Energy();
     b2jet_eta = b2jet_p4.Eta(); b2jet_phi = b2jet_p4.Phi(); b2jet_pt = b2jet_p4.Pt();
-    if (htobb and not(simulation_))  dR_b2jet = (b2jet_p4.DeltaR(b1_p4)>b2jet_p4.DeltaR(b2_p4))? b2jet_p4.DeltaR(b2_p4):b2jet_p4.DeltaR(b1_p4);
+    //if (htobb and not(simulation_))  dR_b2jet = (b2jet_p4.DeltaR(b1_p4)>b2jet_p4.DeltaR(b2_p4))? b2jet_p4.DeltaR(b2_p4):b2jet_p4.DeltaR(b1_p4);
   }
 
   if (hasMuon1){

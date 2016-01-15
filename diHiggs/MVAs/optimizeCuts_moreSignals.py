@@ -7,15 +7,15 @@ print "===> Optimizing cuts for selecting heavy Higgs vs tt."
 Signal = "B3"
 
 #Parameters
-signalFile           = ['../Output/delphes_B3_1M_PU0_Btag_noSim_noMMCnoMVA.root','../Output/delphes_B6_1M_PU0_Btag_noSim_noMMCnoMVA.root']
-backgroundFile       = ['../Output/delphes_tt_1M_PU0_Wtobmu_noSim_noMMCnoMVA.root','../Output/delphes_tt_1M_PU0_Wtobmu_noSim_noMMCnoMVA.root']
+signalFile           = ['../Output/delphes_B3_1M_PU0_Btag_Sim_noMMCnoMVA.root','../Output/delphes_B6_1M_PU0_Btag_Sim_noMMCnoMVA.root']
+backgroundFile       = ['../Output/delphes_tt_1M_PU0_Wtobmu_Sim_noMMCnoMVA.root','../Output/delphes_tt_1M_PU0_Wtobmu_Sim_noMMCnoMVA.root']
 signalFriendFile     = ""
 backgroundFriendFile = ""
 #presel        = '&& mass_b1b2<300 && dR_l1l2>0 && dR_l1l2<2.5 && dR_b1b2>1 && dR_bl>1. && mass_l1l2<90. && mass_b1b2>50. && hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons'
 presel        = 'hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons && dR_l1l2<2.49'
 cuts        = ['','']
-outputs     = ['TMVA_B3_DRl1l2_noSim.root','TMVA_B6_DRl1l2_noSim.root']
-weightDir = ['weights_B3_DRl1l2_noSim','weights_B6_DRl1l2_noSim']
+outputs     = ['TMVA_B3_DRl1l2_Sim.root','TMVA_B6_DRl1l2_Sim.root']
+weightDir = ['weights_B3_DRl1l2_Sim','weights_B6_DRl1l2_Sim']
 
 # Loop on the category to be optimized
 #for i in range(len(signalFile)):

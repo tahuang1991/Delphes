@@ -92,8 +92,8 @@ class DiHiggstoWWbb {
     void fetchttbarchain(TClonesArray *branchParticle);
     void getGenMET(TClonesArray *branchGenMET);
     void matchMuon2Gen(TClonesArray *branchMuonBefore,TClonesArray *branchMuon, GenParticle *genmu1, GenParticle *genmu2, float dR);
-    void matchBjets2Gen(TClonesArray *branchGenJetNoNu, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
     void checkBjets2Gen(TClonesArray *branchGenJetNoNu, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2, float dR);
+    void matchBjets2Gen(TClonesArray *branchGenJetNoNu, TClonesArray *branchJet, GenParticle *genb1, GenParticle *genb2);
     void matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticle *genb1, GenParticle *genb2, float dR);
     
     void SlideRescale();
@@ -109,7 +109,7 @@ class DiHiggstoWWbb {
     TClonesArray *branchGenMissingET;
 
     long allEntries;
-    std::vector<Jet*> allbjets;  //most energetic one at beginning 
+    std::vector<Jet*> alljets;  //most energetic one at beginning 
     std::vector<Muon*> allMuon1; //negative charge, most energetic one at beginning  
     std::vector<Muon*> allMuon2; 
     MissingET *Met;
@@ -124,7 +124,7 @@ class DiHiggstoWWbb {
     MissingET *genMet;
     Muon *muon1_beforeIso, *muon2_beforeIso;
     //Lorentz Vector
-    TLorentzVector Muon1_p4, Muon2_p4, b1jet_p4, b2jet_p4, Met_p4, totjets_lorentz;
+    TLorentzVector Muon1_p4, Muon2_p4, Muon1_beforeIso_p4, Muon2_beforeIso_p4, b1jet_p4, b2jet_p4, Met_p4, totjets_lorentz;
     //Gen Lorentz vector
     TLorentzVector genb1jet_p4, genb2jet_p4; 
     TLorentzVector mu1_p4, mu2_p4, nu1_p4, nu2_p4, b1_p4, b2_p4;
@@ -154,6 +154,7 @@ class DiHiggstoWWbb {
     float MVA_bdt;
     float MVA_bdt_B6fortt;
     float MT2;
+    float MT2_reco;
     float b1_px;
     float b1_py;
     float b1_pz;
@@ -193,6 +194,8 @@ class DiHiggstoWWbb {
     float dR_genb2jet;
     bool hasgenb1jet;
     bool hasgenb2jet;
+    float DE_partonGneJet1;
+    float DE_partonGneJet2;
 
     float genb1jet_withNu_px;
     float genb1jet_withNu_py;
@@ -241,10 +244,13 @@ class DiHiggstoWWbb {
     float b2jet_energy;
     unsigned int b2jet_btag;
     int energeticbjets;
+    bool hasRECOjet1;
+    bool hasRECOjet2;
     bool hasb1jet;
     bool hasb2jet;
     bool hasgenb1;
     bool hasgenb2;
+    bool bpartonsOK;
 
     float mu1_px;
     float mu1_py;
@@ -371,12 +377,27 @@ class DiHiggstoWWbb {
     float htoWW_mass;
 
     int numbjets;
+    int numjets;
+    int numGenJet;
     int numLeptons1;
     int numLeptons2;
     bool hasRecob1jet;
     bool hasRecob2jet;
+    bool hasRecob1jetCorr;
+    bool hasRecob2jetCorr;
+    bool hasRecob1jetPt;
+    bool hasRecob2jetPt;
+    bool hasRecob1jetPtCorr;
+    bool hasRecob2jetPtCorr;
+    bool hasRecob1b2jet_bTag;
+    bool hasRecob1b2jetPt_bTag;
+    float reconMassJet1_PtRes;
+    float reconMassJet2_PtRes;
+    float reconDRJet1_PtRes;
+    float reconDRJet2_PtRes;
     bool hasRecoMuon1;
     bool hasRecoMuon2;
+    float minMass;
     float dR_bl;
     float dR_b1l1;
     float dR_b1l2;
