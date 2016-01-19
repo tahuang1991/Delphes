@@ -242,13 +242,13 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     if (bjetrescale_>0)
 	*htoBB_lorentz = b1rescalefactor*(*mmc_b1jet_lorentz)+b2rescalefactor*(*mmc_b2jet_lorentz);
 
-    if ((metcorrection_-3)>0 and (metcorrection_ -3)== bjetrescale_) metCorrection();
-    else if ((metcorrection_-3) ==1){
+    if ((metcorrection_-3)>0 and  ((metcorrection_ -3)== bjetrescale_ or metcorrection_==bjetrescale_)) metCorrection();
+    else if ((metcorrection_-3) ==1 or metcorrection_==1){
 	b1rescalefactor = 125/mmc_bjets_lorentz->M();
 	b2rescalefactor = 125/mmc_bjets_lorentz->M();
 	metCorrection(); 
     }
-    else if ((metcorrection_-3) ==2){
+    else if ((metcorrection_-3) ==2 or metcorrection_==2){
 	rescalec1 = bjetrescalec1_hist->GetRandom();
 	bjetsCorrection();//calculate b1rescalefactor b2rescalefactor
 	metCorrection(); 
@@ -266,7 +266,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     //std::cout <<" met before smearing metpx_gen " << met_vec2->Px() <<" metpy_gen " << met_vec2->Py() <<std::endl;
     //std::cout <<" metpx_gen " << metpx_gen <<" metpy_gen " << metpy_gen <<std::endl;
     if (metcorrection_>3 and useMET_) *met_vec2 = *met_vec2+met_gen;
-    //std::cout <<" met after smearing metpx_gen " << met_vec2->Px() <<" metpy_gen " << met_vec2->Py() <<std::endl;
+    //std::cout <<" met for MMC px " << met_vec2->Px() <<" py " << met_vec2->Py() <<std::endl;
     if (bjetrescale_ == -1 and simulation)
 	*htoBB_lorentz = *htoBB_lorentz_true;
     if (metcorrection_ ==-1 and simulation)
@@ -364,7 +364,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	*htoWW_lorentz = *onshellW_lorentz+*offshellW_lorentz;
 	*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz;
 	if (h2tohh_lorentz->M()<250 or h2tohh_lorentz->M()>1000) {
-		std::cerr <<" MMC h2 mass is too large or too small,  M_h " <<h2tohh_lorentz->M() << std::endl;
+		//std::cerr <<" MMC h2 mass is too large or too small,  M_h " <<h2tohh_lorentz->M() << std::endl;
 		continue;
 	}
 	//*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz_true;
@@ -441,7 +441,8 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     }//end controls loop,(0,1,2,3)
     //mmctree->Fill();
   }//end of iteration
-  //std::cout <<"last iteration MMC input met  px "<<met_vec2->Px() << " py "<<met_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
+  std::cout <<"initial MMC input met  px "<<mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
+  std::cout <<"last iteration MMC input met  px "<<met_vec2->Px() << " py "<<met_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
   //std::cout <<"last iteration bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
   //std::cout <<"num of solutions " << MMC_h2Mass.GetEntries() << std::endl;
   delete generator;
@@ -1067,7 +1068,7 @@ MMC::weightfromonshellnupt(float nupt){
 //------------- method called to calculate pt of nuetrinos from on-shell W decay ------------
 float 
 MMC::nu1pt_onshellW(EtaPhi nu1_etaphi, TLorentzVector* mu1lorentz, float wMass){
-
+   
   float nu1_pt=0.0;
   //   TVector2 *numu_phi = new TVector(nu_etaphi.first(),mu1lorentz->eta());
   float deltaeta = nu1_etaphi.first - mu1lorentz->Eta();
