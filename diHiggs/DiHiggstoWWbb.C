@@ -1337,7 +1337,7 @@ void DiHiggstoWWbb::matchBjetswithNu2Gen(TClonesArray *branchGenJet,  GenParticl
 
 void DiHiggstoWWbb::checkBjets2Gen(TClonesArray *branchGenJet, TClonesArray *branchJet, GenParticle* genb1, GenParticle* genb2, float dR_){
   //loop all Gen jets 
-  if (not (hasb1jet and hasb2jet and h2tohh)) return;
+  if (not (hasRECOjet1 and hasRECOjet2 and h2tohh)) return;
 
   Jet *jet;
   jet=0;
@@ -2010,16 +2010,15 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	b2jet = alljets.at(b2at);
 	hasRECOjet1=true;
 	hasRECOjet2=true; 
+	b1jet_p4 = b1jet->P4();
+	b2jet_p4 = b2jet->P4();
 	if( ((b1jet->BTag)&2)<1 ) hasb1jet = false;
-	else{
+	else
 	  hasb1jet = true;
-	  b1jet_p4 = b1jet->P4();
-	}
 	if( ((b2jet->BTag)&2)<1 ) hasb2jet = false;
-	else{
+	else
 	  hasb2jet = true;
-	  b2jet_p4 = b2jet->P4();
-	}
+	
     }
 
     //check whether two jets are closest to b parton
