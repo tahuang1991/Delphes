@@ -183,6 +183,7 @@ class DiHiggstoWWbb {
     float genb1jet_phi;
     float genb1jet_pt;
     float genb1jet_energy;
+    float genb1jet_mass;
     float genb2jet_px;
     float genb2jet_py;
     float genb2jet_pz;
@@ -190,6 +191,7 @@ class DiHiggstoWWbb {
     float genb2jet_phi;
     float genb2jet_pt;
     float genb2jet_energy;
+    float genb2jet_mass;
     float dR_genb1jet;
     float dR_genb2jet;
     bool hasgenb1jet;
@@ -204,6 +206,7 @@ class DiHiggstoWWbb {
     float genb1jet_withNu_phi;
     float genb1jet_withNu_pt;
     float genb1jet_withNu_energy;
+    float genb1jet_withNu_mass;
     float genb2jet_withNu_px;
     float genb2jet_withNu_py;
     float genb2jet_withNu_pz;
@@ -211,6 +214,7 @@ class DiHiggstoWWbb {
     float genb2jet_withNu_phi;
     float genb2jet_withNu_pt;
     float genb2jet_withNu_energy;
+    float genb2jet_withNu_mass;
     float dR_genb1jet_withNu;
     float dR_genb2jet_withNu;
     bool hasgenb1jet_withNu;
@@ -234,6 +238,7 @@ class DiHiggstoWWbb {
     float b1jet_phi;
     float b1jet_pt;
     float b1jet_energy;
+    float b1jet_mass;
     unsigned int b1jet_btag;
     float b2jet_px;
     float b2jet_py;
@@ -243,6 +248,7 @@ class DiHiggstoWWbb {
     float b2jet_pt;
     float b2jet_energy;
     unsigned int b2jet_btag;
+    float b2jet_mass;
     int energeticbjets;
     bool hasRECOjet1;
     bool hasRECOjet2;

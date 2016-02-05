@@ -1,0 +1,27 @@
+#!/bin/bash
+#SBATCH -J runHerwig_BenchMark
+#SBATCH -p hepx 
+#SBATCH --time=24:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=2000
+#SBATCH -o runHerwig_BenchMark-%A-%a.out
+#SBATCH -e runHerwig_BenchMark-%A-%a.err
+#SBATCH --ntasks-per-core=1
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+
+#change to dir
+cd /home/taohuang/delphes/Herwig
+jobid=$SLURM_JOBID
+echo "job$jobid starts"
+Herwig++ read HH-bbWW-B$1-new-1227-leptonW.in
+cp HH-bbWW-B$1-1227-leptonW.run /fdata/hepx/store/user/taohuang/Hhh/
+cd /fdata/hepx/store/user/taohuang/Hhh
+sleep 10
+Herwig++ run HH-bbWW-B$1-1227-leptonW.run -N $2
+echo "job$jobid is done"
+
+
+exit 0
+

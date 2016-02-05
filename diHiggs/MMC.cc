@@ -29,11 +29,13 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    mmcmet_vec2 = new TVector2(met_lorentz->Px(),met_lorentz->Py());
 
    //std::cout <<" mu1 lorentz "; mu1_lorentz->Print();
-   //std::cout <<" b1 lorentz "; b1jet_lorentz->Print();
+   //std::cout <<" b1 jet lorentz "; b1jet_lorentz->Print();
+   //std::cout <<" b1 gen lorentz "; b_genp_lorentz->Print();
    simulation = simulation_;
+	
+   std::cout <<(simulation_? "in MMC simulation is true ":" in MMC simulation is false ")<< std::endl;	
    onshellMarker = onshellMarker_;
    if (simulation){
-	
 	nu1_lorentz_true = nu1_lorentz;
    	nu2_lorentz_true = nu2_lorentz;
         
@@ -109,7 +111,7 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    met_vec2 = new TVector2(mmcmet_vec2->Px(), mmcmet_vec2->Py());
    //printTrueLorentz(); 
    file = TFile::Open(RefPDFfile_.c_str(),"READ");
-   //std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
+   std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
 }
 
 MMC::MMC(){
@@ -238,9 +240,14 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	bjetsCorrection();
 	//*htoBB_lorentz = b1rescalefactor*b1lorentz+b2rescalefactor*b2lorentz; 
     } 
-    // std::cout <<" MMC bjetrescale b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
-    if (bjetrescale_>0)
+    if (bjetrescale_>0){
 	*htoBB_lorentz = b1rescalefactor*(*mmc_b1jet_lorentz)+b2rescalefactor*(*mmc_b2jet_lorentz);
+	if (b2rescalefactor<=0){
+		continue;
+        	std::cerr <<" MMC bjetrescale b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
+		std::cerr <<" htobb after correction mass "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
+	 }
+	}
 
     if ((metcorrection_-3)>0 and  ((metcorrection_ -3)== bjetrescale_ or metcorrection_==bjetrescale_)) metCorrection();
     else if ((metcorrection_-3) ==1 or metcorrection_==1){
@@ -364,7 +371,28 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	*htoWW_lorentz = *onshellW_lorentz+*offshellW_lorentz;
 	*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz;
 	if (h2tohh_lorentz->M()<250 or h2tohh_lorentz->M()>1000) {
-		//std::cerr <<" MMC h2 mass is too large or too small,  M_h " <<h2tohh_lorentz->M() << std::endl;
+		if (h2tohh_lorentz->M()<245) {
+			std::cerr <<" MMC h2 mass is too small,  M_h " <<h2tohh_lorentz->M() << std::endl;
+			std::cerr <<" gen nu eta "<< eta_gen <<" nu phi "<< phi_gen << std::endl;
+			std::cerr <<" from MMC mu_onshell "; mu_onshellW_lorentz->Print();
+			std::cerr <<" from MMC mu_offshell "; mu_offshellW_lorentz->Print();
+			std::cerr <<" from MMC nu_onshell "; nu_onshellW_lorentz->Print();
+			std::cerr <<" from MMC nu_offshell "; nu_offshellW_lorentz->Print();
+			std::cerr <<" from MMC htoBB, mass "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
+		        if (simulation){
+    std::cout <<"following is pure gen level infromation " << std::endl;
+    std::cout <<" nu1 px "<<nu1_lorentz_true->Px() << " py " <<nu1_lorentz_true->Py() << " pt "<< nu1_lorentz_true->Pt() 
+	<< " eta "<<nu1_lorentz_true->Eta() << " phi "<< nu1_lorentz_true->Phi() << std::endl;
+    std::cout <<" nu2 px "<<nu2_lorentz_true->Px() << " py " <<nu2_lorentz_true->Py() << " pt "<< nu2_lorentz_true->Pt() 
+	<< " eta "<<nu2_lorentz_true->Eta() << " phi "<< nu2_lorentz_true->Phi() << std::endl;
+    std::cout <<" onshellW mass "<< onshellW_lorentz_true->M(); onshellW_lorentz_true->Print();  
+    std::cout <<"offshellW mass " <<offshellW_lorentz_true->M(); offshellW_lorentz_true->Print();  
+    std::cout <<" htoWW mass "<< htoWW_lorentz_true->M(); htoWW_lorentz_true->Print();
+    std::cout <<" htoBB mass "<< htoBB_lorentz_true->M(); htoBB_lorentz_true->Print();
+    std::cout <<" h2tohh, pz " <<h2tohh_lorentz_true->Pz() << " Mass " << h2tohh_lorentz_true->M() << std::endl;
+   			}	
+		}
+		
 		continue;
 	}
 	//*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz_true;
@@ -1295,10 +1323,17 @@ MMC::bjetsCorrection(){
   float x1 = b2lorentz.M2();
   float x2 = 2*rescalec1*(b1lorentz*b2lorentz);
   float x3 = rescalec1*rescalec1*b1lorentz.M2()-125*125;
-  if (x2<0) std::cout <<"error bjets lorentzvector dot productor less than 0 " << std::endl;
+  if (x2<0) std::cerr <<"error bjets lorentzvector dot productor less than 0 " << std::endl;
   //std::cout <<"c2 solution1 " << (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<" solution2 "<<(-x2-std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<std::endl;
   //    std::cout <<"b1jet pt "<< mmc_b1jet_lorentz->Pt() <<" b2jet pt " << mmc_b2jet_lorentz->Pt() << std::endl;
+  //if ((x2*x2-4*x1*x3) <0 ) std::cout <<" error ! there is no soluations for bjetsCorrection "<< std::endl;
   rescalec2 = (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1);
+  /*if (rescalec2<=0){
+	std::cout <<" b1jet mass "<< b1lorentz.M(); b1lorentz.Print(); 
+	std::cout <<" b2jet mass "<< b2lorentz.M(); b2lorentz.Print(); 
+	std::cout <<" x1 "<< x1 <<" x2 "<< x2 <<" x3 "<< x3 << std::endl;
+  	std::cout <<"c2 solution1 " << (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<" solution2 "<<(-x2-std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<std::endl;
+	}*/
   if (mmc_b1jet_lorentz->Pt()> mmc_b2jet_lorentz->Pt()){
     b1rescalefactor = rescalec1;
     b2rescalefactor = rescalec2;
@@ -1307,8 +1342,9 @@ MMC::bjetsCorrection(){
     b2rescalefactor = rescalec1;
     b1rescalefactor = rescalec2;
   }
+  //TLorentzVector htobb_corr = b1rescalefactor*b1lorentz+ b2rescalefactor*b2lorentz;
   //finally b1rescalefactor->b1jet b2rescalefactor->b2jet;
-  //std::cout <<" htoBB true m_h"<< htoBB_lorentz_true->M(); htoBB_lorentz_true->Print();
+  //std::cout <<" htoBB m_h after correction "<< htobb_corr.M(); htobb_corr.Print();
   //std::cout <<" htoBB mmc m_h"<< htoBB_lorentz->M(); htoBB_lorentz->Print();
 
 }

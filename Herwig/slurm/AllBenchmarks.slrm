@@ -1,0 +1,36 @@
+#!/bin/bash
+#SBATCH -J ALLBenchMark
+#SBATCH -p hepx 
+#SBATCH --time=24:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=2000
+#SBATCH -o ALLBenchMark-%A-%a.out
+#SBATCH -e ALLBenchMark-%A-%a.err
+#SBATCH --ntasks-per-core=1
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+
+#change to dir
+#cd /home/taohuang/delphes/Herwig
+jobid=$SLURM_JOBID
+echo "job$jobid starts"
+Num=100000
+sbatch runHerwig_BenchMark.slrm 1 $Num
+sbatch runHerwig_BenchMark.slrm 2 $Num
+sbatch runHerwig_BenchMark.slrm 3 $Num
+sbatch runHerwig_BenchMark.slrm 4 $Num
+sbatch runHerwig_BenchMark.slrm 5 $Num
+sbatch runHerwig_BenchMark.slrm 6 $Num
+sbatch runHerwig_BenchMark.slrm 7 $Num
+sbatch runHerwig_BenchMark.slrm 8 $Num
+sbatch runHerwig_BenchMark.slrm 9 $Num
+sbatch runHerwig_BenchMark.slrm 10 $Num
+sbatch runHerwig_BenchMark.slrm 11 $Num
+sbatch runHerwig_BenchMark.slrm 12 $Num
+
+echo "job$jobid is done"
+
+
+exit 0
+
