@@ -209,8 +209,8 @@ def main():
     ##background.AddFriend( "eleIDdir/isoT1 = eleIDdir/T1", friendfnameBkg )
 
     # Global event weights (see below for setting event-wise weights)
-    signalWeight     = 1. #0.085082
-    backgroundWeight = 1. #3.230581
+    signalWeight     = 1.
+    backgroundWeight = 1.
 
 #I don't think there's a general answer to this. The safest 'default'
 #is to use the envent weight such that you have equal amounts of signal
