@@ -1871,14 +1871,17 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
     getGenMET(branchGenMissingET);
-    if (not(h2tohh) and not(ttbar)) continue;
+    //if (not(h2tohh) and not(ttbar)) continue;
 
     //no matter simulation is true or not, match reco to gen, simulation_ will decide whether matched object will go to MT2 and MMC or not
-    if( genb1->P4().Pt()>30. && fabs(genb1->P4().Eta())<2.4 && genb2->P4().Pt()>30. && fabs(genb2->P4().Eta())<2.4 ) bpartonsOK = true;	
-    matchBjetswithNu2Gen(branchGenJet_withNu, genb1, genb2, jetsDeltaR_); 
-    matchBjets2Gen(branchGenJet, branchJet, genb1, genb2); 
+    if (h2tohh or ttbar){
+    	if( genb1->P4().Pt()>30. && fabs(genb1->P4().Eta())<2.4 && genb2->P4().Pt()>30. && fabs(genb2->P4().Eta())<2.4 ) bpartonsOK = true;	
+    	matchBjetswithNu2Gen(branchGenJet_withNu, genb1, genb2, jetsDeltaR_); 
+    	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2); 
+
     //special case
-    matchMuon2Gen(branchMuonBeforeIso, branchMuon,genmu1, genmu2, leptonsDeltaR_); 
+    	matchMuon2Gen(branchMuonBeforeIso, branchMuon,genmu1, genmu2, leptonsDeltaR_); 
+    }
 
     if (simulation_){
 	//GENMET on Di-BJet Axis
@@ -1922,6 +1925,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  for (int j=k+1; j<int(alljets.size()); j++){ 
             TLorentzVector bjets_p4 = alljets[k]->P4()+alljets[j]->P4();
 	    if (fabs(bjets_p4.M()-125)>diff_higgsmass) continue;
+	    b1at = k;
+	    b2at = j;
+	    diff_higgsmass = fabs(bjets_p4.M()-125);
 	    b1at = k;
 	    b2at = j;
 	    diff_higgsmass = fabs(bjets_p4.M()-125);
@@ -2041,12 +2047,12 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	if (b1jet_p4.M()<0) {
 		cerr <<" b1 parton mass "<< b1_p4.M(); b1_p4.Print();
 		cerr <<" b1jet mass from p4 "<< b1jet_p4.M(); b1jet_p4.Print();
-		cerr <<" b1jet mass " << b1jet->Mass;
+		cerr <<" b1jet mass " << b1jet->Mass << endl;
 	}
 	if (b2jet_p4.M()<0) {
 		cerr <<" b2 parton mass "<< b2_p4.M(); b2_p4.Print();
 		cerr <<" b2jet mass from p4 "<< b2jet_p4.M(); b2jet_p4.Print();
-		cerr <<" b2jet mass " << b2jet->Mass;
+		cerr <<" b2jet mass " << b2jet->Mass << endl;;
 	}
     }
 
@@ -2291,6 +2297,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  bjet_pt1_lorentz = genb2jet_p4; bjet_pt2_lorentz = genb1jet_p4;
 	}
 
+	if (bjet_pt1_lorentz.M2()<0.00000001 or bjet_pt2_lorentz.M2()<0.00000001){
+		cerr <<" error!! b1jet or b2jet M2() is less 0.0001, b1jet "<<bjet_pt1_lorentz.M2() <<" b2jet "<< bjet_pt2_lorentz.M2()<< endl;
+		continue;
+	}
         //always take gen as inputs 
 	if (b1_p4.Pt()>b2_p4.Pt()) {
 	  bgenp_pt1_lorentz = b1_p4; bgenp_pt2_lorentz = b2_p4;
@@ -2318,19 +2328,21 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	else if (not(useRecoMET_) and simulation_) Met_lorentz = genmet_p4;
 
 	TLorentzVector h2tohh_genp_lorentz = TLorentzVector();
+
 	//always take the gen inputs for MMC
-	if (sample_==B3 || sample_==B6) h2tohh_genp_lorentz = genh2->P4();
-	else h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
+	if ((sample_==B3 || sample_==B6) and h2tohh) h2tohh_genp_lorentz = genh2->P4();
+	else if (sample_==tt and ttbar) h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
 
 	int onshellMarker_;
-	if (genW1->Mass > genW2->Mass) onshellMarker_=1;
-	else  onshellMarker_=2;
+	if (simulation_ and genW1->Mass > genW2->Mass) onshellMarker_=1;
+	else if (simulation_ and genW1->Mass < genW2->Mass) onshellMarker_=2;
+	else onshellMarker_=-1;
 	// Rescale bjets in MMC?????
 	//MMC *thismmc = new MMC();
 	if(debug_) cout<<"DEBUG::9"<<endl;
 	MMC *thismmc = new MMC(&lepton1_lorentz, &lepton2_lorentz, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_lorentz, 
 	    &nu1_p4, &nu2_p4, &bgenp_pt1_lorentz, &bgenp_pt2_lorentz, &h2tohh_genp_lorentz, 
-	    onshellMarker_, true, entry, weightfromonshellnupt_func_, weightfromonshellnupt_hist_, weightfromonoffshellWmass_hist_,
+	    onshellMarker_, simulation_, entry, weightfromonshellnupt_func_, weightfromonshellnupt_hist_, weightfromonoffshellWmass_hist_,
 	    iterations_, RefPDFfile_, useMET_, bjetrescaleAlgo_, metcorrection_);
 	runMMCok = thismmc->runMMC();
 	if (runMMCok) {
@@ -2371,8 +2383,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	}
      */
     //if (runMMCok or preselections_gen or preselections) {
-    if (h2tohh) {
-	//	cout <<" fill tree " << endl;
+    if (h2tohh or ttbar or objectsready) {
+    	if(debug_) cout<<"DEBUG::10"<<endl;
 	evtree->Fill();
     }
     //if (not(runMMC_) and (h2tohh or ttbar)) evtree->Fill();
@@ -2474,7 +2486,7 @@ void DiHiggstoWWbb::SlideRescale(){
   delete histo;
 }
 
-/*
+/*  
    bool DiHiggstoWWbb::checkEnergeticbjet(TClonesArray *branchJet){
    for (int i =0;  i<  branchJet->GetEntries(); i++){
    Jet *jet = (Jet*) branchJet->At(i);

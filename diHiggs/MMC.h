@@ -146,7 +146,7 @@ class MMC{
       float b2rescalefactor;
       float rescalec1;
       float rescalec2;
-   
+      bool MMCdebug;   
 
     private:
       TLorentzVector* mmc_mu1_lorentz;
