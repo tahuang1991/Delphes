@@ -49,7 +49,8 @@ DEFAULT_TREEBKG        = "evtree"
 #DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,BoostedFisher,HMatrix,FDA_GA,FDA_SA,FDA_MC,FDA_MT,FDA_GAMT,FDA_MCMT,MLP,MLPBFGS,MLPBNN,CFMlpANN,TMlpANN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
 #DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,HMatrix,MLP,MLPBFGS,MLPBNN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
 #DEFAULT_METHODS        = "CutsSA"
-DEFAULT_METHODS        = "LikelihoodD,LikelihoodMIX,LD,BoostedFisher,BDT,HMatrix,MLP"
+#DEFAULT_METHODS        = "LikelihoodD,LikelihoodMIX,BDT,MLP"
+DEFAULT_METHODS        = "BDT"
 
 # Print usage help
 def usage():
@@ -209,8 +210,8 @@ def main():
     ##background.AddFriend( "eleIDdir/isoT1 = eleIDdir/T1", friendfnameBkg )
 
     # Global event weights (see below for setting event-wise weights)
-    signalWeight     = 1. #0.085082
-    backgroundWeight = 1. #3.230581
+    signalWeight     = 1.
+    backgroundWeight = 1.
 
 #I don't think there's a general answer to this. The safest 'default'
 #is to use the envent weight such that you have equal amounts of signal
