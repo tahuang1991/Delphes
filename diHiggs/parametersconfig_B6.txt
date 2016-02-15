@@ -2,7 +2,7 @@
 nEvents		-1
 nStarts		0
 sample		2 #0 = tt, B3 = 1, B6 = 2
-simulation	true
+simulation	false
 jetsPt 		20
 jetsEta		2.4
 bjetsPt 	20

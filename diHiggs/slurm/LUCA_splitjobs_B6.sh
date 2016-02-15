@@ -2,11 +2,11 @@
 
 Curdir=`pwd`
 parentdir="$(dirname "$Curdir")"
-outputdir=/home/lpernie/HeavyHiggs/delphes/diHiggs/Output/
+outputdir=/home/lpernie/Hhh/delphes/diHiggs/Output/
 outputsuffix=.root
 outputprefix=delphes_B6_1M_PU0_Btag_bis
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_B6_1M_PU0_1119_Btag_leptonW_antik4_9252331.root
-parafile=/home/lpernie/HeavyHiggs/delphes/diHiggs/parametersconfig_B6.txt
+parafile=/home/lpernie/Hhh/delphes/diHiggs/parametersconfig_B6.txt
 totalevents=1000000
 numjobs=10
 batchjob=Delphes_splitjobs_Ana.slrm

@@ -155,6 +155,12 @@ class DiHiggstoWWbb {
     float MVA_bdt_B6fortt;
     float MT2;
     float MT2_reco;
+    float MT2_noMU;
+    float MT2_noMUv2;
+    float MT2_noMUv3;
+    float MT2_noMU_reco;
+    float MT2_noMU_recov2;
+    float MT2_noMU_recov3;
     float b1_px;
     float b1_py;
     float b1_pz;

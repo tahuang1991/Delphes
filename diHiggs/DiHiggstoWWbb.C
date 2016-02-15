@@ -233,6 +233,12 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("MVA_bdt_B6fortt",&MVA_bdt_B6fortt, "MVA_bdt_B6fortt/F");
   evtree->Branch("MT2",&MT2, "MT2/F");
   evtree->Branch("MT2_reco",&MT2_reco, "MT2_reco/F");
+  evtree->Branch("MT2_noMU",&MT2_noMU, "MT2_noMU/F");
+  evtree->Branch("MT2_noMUv2",&MT2_noMUv2, "MT2_noMUv2/F");
+  evtree->Branch("MT2_noMUv3",&MT2_noMUv3, "MT2_noMUv3/F");
+  evtree->Branch("MT2_noMU_reco",&MT2_noMU_reco, "MT2_noMU_reco/F");
+  evtree->Branch("MT2_noMU_recov2",&MT2_noMU_recov2, "MT2_noMU_recov2/F");
+  evtree->Branch("MT2_noMU_recov3",&MT2_noMU_recov3, "MT2_noMU_recov3/F");
   evtree->Branch("b1_px",&b1_px, "b1_px/F");
   evtree->Branch("b1_py",&b1_py, "b1_py/F");
   evtree->Branch("b1_pz",&b1_pz, "b1_pz/F");
@@ -1159,7 +1165,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
   	for (int i =0;  i < branchGenJet->GetEntries(); i++){
     		genjet = (Jet*) branchGenJet->At(i);
     		TLorentzVector genjet_p4 = genjet->P4();
-		cout <<" dR(jet,b1) "<<genjet_p4.DeltaR(genb1->P4())<<" deltaE "<<(genb1->E-genjet_p4.Energy())<<" dR(jet,b2) "<<genjet_p4.DeltaR(genb2->P4())<<" deltaE "<<(genb2->E-genjet_p4.Energy())<< endl;
+		cout <<" dR(jet,b1) "<<genjet_p4.DeltaR(genb1->P4())<<" deltaE "<<(genb1->E-genjet_p4.Energy())<<" dR(jet,b2)"<<genjet_p4.DeltaR(genb2->P4())<<" deltaE "<<(genb2->E-genjet_p4.Energy())<< endl;
 		printJet(genjet);
 	}
 	
@@ -1521,6 +1527,12 @@ void DiHiggstoWWbb::initBranches(){
   MVA_bdt_B6fortt = -999.;
   MT2 = -999.;
   MT2_reco = -999.;
+  MT2_noMU = -999.;
+  MT2_noMUv2 = -999.;
+  MT2_noMUv3 = -999.;
+  MT2_noMU_reco = -999.;
+  MT2_noMU_recov2 = -999.;
+  MT2_noMU_recov3 = -999.;
   b1_px =0;
   b1_py =0;
   b1_pz =0;
@@ -1871,15 +1883,16 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar);
     getGenMET(branchGenMissingET);
-    if (not(h2tohh) and not(ttbar)) continue;
+    //if (not(h2tohh) and not(ttbar)) continue;
 
     //no matter simulation is true or not, match reco to gen, simulation_ will decide whether matched object will go to MT2 and MMC or not
-    if( genb1->P4().Pt()>30. && fabs(genb1->P4().Eta())<2.4 && genb2->P4().Pt()>30. && fabs(genb2->P4().Eta())<2.4 ) bpartonsOK = true;	
+    if (h2tohh or ttbar){
+    if( genb1->P4().Pt()>30. && fabs(genb1->P4().Eta())<2.4 && genb2->P4().Pt()>30. && fabs(genb2->P4().Eta())<2.4 ) bpartonsOK = true;
     matchBjetswithNu2Gen(branchGenJet_withNu, genb1, genb2, jetsDeltaR_); 
     matchBjets2Gen(branchGenJet, branchJet, genb1, genb2); 
     //special case
     matchMuon2Gen(branchMuonBeforeIso, branchMuon,genmu1, genmu2, leptonsDeltaR_); 
-
+    }
     if (simulation_){
 	//GENMET on Di-BJet Axis
 	if( hasgenb1jet and hasgenb2jet ){
@@ -2041,12 +2054,12 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	if (b1jet_p4.M()<0) {
 		cerr <<" b1 parton mass "<< b1_p4.M(); b1_p4.Print();
 		cerr <<" b1jet mass from p4 "<< b1jet_p4.M(); b1jet_p4.Print();
-		cerr <<" b1jet mass " << b1jet->Mass;
+		cerr <<" b1jet mass " << b1jet->Mass << endl;
 	}
 	if (b2jet_p4.M()<0) {
 		cerr <<" b2 parton mass "<< b2_p4.M(); b2_p4.Print();
 		cerr <<" b2jet mass from p4 "<< b2jet_p4.M(); b2jet_p4.Print();
-		cerr <<" b2jet mass " << b2jet->Mass;
+		cerr <<" b2jet mass " << b2jet->Mass << endl;
 	}
     }
 
@@ -2168,7 +2181,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	//whose Kinematics is to be fed into the MT2 variable.
 	//There are two possible Lepton-Bquark pairings. We compute MT2 for both and pick the smallest value.
 	// Simulation=false: only 0 = RECO jets.
-	// Simulation=true: 0 = DR jets, 1 = RECO jets.
+	// Simulation=true: 0 = RECO jets, 1 = MATCHED jets.
 	for(int i=0; i<2; i++){
 	  TLorentzVector B1_mt2,B2_mt2;
 	  if(i==0){
@@ -2235,6 +2248,47 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	    float MT2_2 = mt2_event2.get_mt2();
 	    if(i==0) MT2 = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
 	    if(i==1) MT2_reco = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
+	    //NOW WITHOUT MUONS
+	    //-Invariant mass for "Particle A"
+	    sumesBl1_1=(Bj_1.E())*(Bj_1.E());
+	    sumpxsBl1_1=(Bj_1.Px())*(Bj_1.Px());
+	    sumpysBl1_1=(Bj_1.Py())*(Bj_1.Py());
+	    sumpzsBl1_1=(Bj_1.Pz())*(Bj_1.Pz());
+	    M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
+	    Pxa_1 = Bj_1.Px();
+	    Pya_1 = Bj_1.Py();
+	    // Invariant mass for "Particle B"
+	    sumesBl2_1=(Bj_2.E())*(Bj_2.E());
+	    sumpxsBl2_1=(Bj_2.Px())*(Bj_2.Px());
+	    sumpysBl2_1=(Bj_2.Py())*(Bj_2.Py());
+	    sumpzsBl2_1=(Bj_2.Pz())*(Bj_2.Pz());
+	    M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
+	    Pxb_1 = Bj_2.Px();
+	    Pyb_1 = Bj_2.Py();
+	    // computation
+	    double pa1_nomu[3] = { M_Bl1_1, Pxa_1, Pya_1 };
+	    double pb1_nomu[3] = { M_Bl2_1, Pxb_1, Pyb_1 };
+	    double pmiss_nomu[3]   = { 0,                              Met_p4.Px()+Muon1_p4.Px()+Muon2_p4.Px(), Met_p4.Py()+Muon1_p4.Py()+Muon2_p4.Py() };
+	    double pmiss_nomuv2[3] = { (Muon1_p4+Muon2_p4).M(),        Met_p4.Px()+Muon1_p4.Px()+Muon2_p4.Px(), Met_p4.Py()+Muon1_p4.Py()+Muon2_p4.Py() };
+	    double pmiss_nomuv3[3] = { (Met_p4+Muon1_p4+Muon2_p4).M(), Met_p4.Px()+Muon1_p4.Px()+Muon2_p4.Px(), Met_p4.Py()+Muon1_p4.Py()+Muon2_p4.Py() };
+	    mt2_bisect::mt2 mt2_event1_nomu;
+	    mt2_event1_nomu.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomu);
+	    mt2_event1_nomu.set_mn(0.);
+	    float MT2_1_nomu = mt2_event1_nomu.get_mt2();
+	    mt2_bisect::mt2 mt2_event1_nomuv2;
+	    mt2_event1_nomuv2.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomuv2);
+	    mt2_event1_nomuv2.set_mn((Muon1_p4+Muon2_p4).M());
+	    float MT2_1_nomuv2 = mt2_event1_nomuv2.get_mt2();
+	    mt2_bisect::mt2 mt2_event1_nomuv3;
+	    mt2_event1_nomuv3.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomuv3);
+	    mt2_event1_nomuv3.set_mn((Met_p4+Muon1_p4+Muon2_p4).M());
+	    float MT2_1_nomuv3 = mt2_event1_nomuv3.get_mt2();
+	    if(i==0) MT2_noMU = MT2_1_nomu;
+	    if(i==0) MT2_noMUv2= MT2_1_nomuv2;
+	    if(i==0) MT2_noMUv3 = MT2_1_nomuv3;
+	    if(i==1) MT2_noMU_reco = MT2_1_nomu;
+	    if(i==1) MT2_noMU_recov2 = MT2_1_nomuv2;
+	    if(i==1) MT2_noMU_recov3 = MT2_1_nomuv3;
 	  }
 	}
 	//MVA
@@ -2262,7 +2316,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	Muon *muon = (Muon*) branchMuon->At(i);
 	cout <<" Reco Muon eta "<< muon->Eta <<" phi "<< muon->Phi <<" pt "<< muon->PT <<" charge sign "<< muon->Charge << endl;
 	}
-
     }*/
     //-------- MMC --------
     preselections = (hasRECOjet1 and hasRECOjet1 and hasMET and hastwomuons and hasdRljet);
@@ -2291,6 +2344,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  bjet_pt1_lorentz = genb2jet_p4; bjet_pt2_lorentz = genb1jet_p4;
 	}
 
+	if (bjet_pt1_lorentz.M2()<0.00000001 or bjet_pt2_lorentz.M2()<0.00000001){
+		cerr <<" error!! b1jet or b2jet M2() is less 0.0001, b1jet "<<bjet_pt1_lorentz.M2() <<" b2jet "<< bjet_pt2_lorentz.M2()<< endl;
+		continue;
+	}
         //always take gen as inputs 
 	if (b1_p4.Pt()>b2_p4.Pt()) {
 	  bgenp_pt1_lorentz = b1_p4; bgenp_pt2_lorentz = b2_p4;
@@ -2319,18 +2376,19 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 
 	TLorentzVector h2tohh_genp_lorentz = TLorentzVector();
 	//always take the gen inputs for MMC
-	if (sample_==B3 || sample_==B6) h2tohh_genp_lorentz = genh2->P4();
-	else h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
+	if ((sample_==B3 || sample_==B6) and h2tohh) h2tohh_genp_lorentz = genh2->P4();
+	else if (sample_==tt and ttbar) h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
 
 	int onshellMarker_;
-	if (genW1->Mass > genW2->Mass) onshellMarker_=1;
-	else  onshellMarker_=2;
+	if (simulation_ and genW1->Mass > genW2->Mass) onshellMarker_=1;
+	else if (simulation_ and genW1->Mass < genW2->Mass) onshellMarker_=2;
+	else onshellMarker_=-1;
 	// Rescale bjets in MMC?????
 	//MMC *thismmc = new MMC();
 	if(debug_) cout<<"DEBUG::9"<<endl;
 	MMC *thismmc = new MMC(&lepton1_lorentz, &lepton2_lorentz, &bjet_pt1_lorentz, &bjet_pt2_lorentz, &totjets_lorentz, &Met_lorentz, 
 	    &nu1_p4, &nu2_p4, &bgenp_pt1_lorentz, &bgenp_pt2_lorentz, &h2tohh_genp_lorentz, 
-	    onshellMarker_, true, entry, weightfromonshellnupt_func_, weightfromonshellnupt_hist_, weightfromonoffshellWmass_hist_,
+	    onshellMarker_, simulation_, entry, weightfromonshellnupt_func_, weightfromonshellnupt_hist_, weightfromonoffshellWmass_hist_,
 	    iterations_, RefPDFfile_, useMET_, bjetrescaleAlgo_, metcorrection_);
 	runMMCok = thismmc->runMMC();
 	if (runMMCok) {
@@ -2371,8 +2429,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	}
      */
     //if (runMMCok or preselections_gen or preselections) {
-    if (h2tohh) {
-	//	cout <<" fill tree " << endl;
+    if (h2tohh or ttbar or objectsready) {
+    if(debug_) cout<<"DEBUG::10"<<endl;
 	evtree->Fill();
     }
     //if (not(runMMC_) and (h2tohh or ttbar)) evtree->Fill();
