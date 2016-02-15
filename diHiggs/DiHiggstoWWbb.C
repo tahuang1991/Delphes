@@ -1893,6 +1893,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     //special case
     matchMuon2Gen(branchMuonBeforeIso, branchMuon,genmu1, genmu2, leptonsDeltaR_); 
     }
+
     if (simulation_){
 	//GENMET on Di-BJet Axis
 	if( hasgenb1jet and hasgenb2jet ){
@@ -1935,6 +1936,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  for (int j=k+1; j<int(alljets.size()); j++){ 
             TLorentzVector bjets_p4 = alljets[k]->P4()+alljets[j]->P4();
 	    if (fabs(bjets_p4.M()-125)>diff_higgsmass) continue;
+	    b1at = k;
+	    b2at = j;
+	    diff_higgsmass = fabs(bjets_p4.M()-125);
 	    b1at = k;
 	    b2at = j;
 	    diff_higgsmass = fabs(bjets_p4.M()-125);
@@ -2375,6 +2379,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	else if (not(useRecoMET_) and simulation_) Met_lorentz = genmet_p4;
 
 	TLorentzVector h2tohh_genp_lorentz = TLorentzVector();
+
 	//always take the gen inputs for MMC
 	if ((sample_==B3 || sample_==B6) and h2tohh) h2tohh_genp_lorentz = genh2->P4();
 	else if (sample_==tt and ttbar) h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
@@ -2532,7 +2537,7 @@ void DiHiggstoWWbb::SlideRescale(){
   delete histo;
 }
 
-/*
+/*  
    bool DiHiggstoWWbb::checkEnergeticbjet(TClonesArray *branchJet){
    for (int i =0;  i<  branchJet->GetEntries(); i++){
    Jet *jet = (Jet*) branchJet->At(i);

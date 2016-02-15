@@ -20,6 +20,9 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
 	)
 {
 
+
+   MMCdebug=false;
+   if (MMCdebug) std::cout <<" MMC::Debug::1 "<< std::endl;
    mmc_mu1_lorentz = mu1_lorentz;
    mmc_mu2_lorentz = mu2_lorentz;
    mmc_b1jet_lorentz = b1jet_lorentz;
@@ -111,7 +114,7 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    met_vec2 = new TVector2(mmcmet_vec2->Px(), mmcmet_vec2->Py());
    //printTrueLorentz(); 
    file = TFile::Open(RefPDFfile_.c_str(),"READ");
-   std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
+   if (MMCdebug) std::cout <<" MMC::Debug::2 "<< std::endl;
 }
 
 MMC::MMC(){
@@ -185,7 +188,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
   //TF1* wmasspdf = new TF1("wmasspdf","exp(x*7.87e-3+1.69)+603.47*exp(-0.5*((x-80.1)/2.0)**2)",50,90);
 
 
-   std::cout <<" start runMMC() in MMC class "  << std::endl; 
+   if (MMCdebug) std::cout <<" MMC::Debug::3  start runMMC() in MMC class "  << std::endl; 
    float nu_onshellW_pt =0;
    wmass_gen = 80.3;// initial value
    float step,random01;
@@ -273,7 +276,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     //std::cout <<" met before smearing metpx_gen " << met_vec2->Px() <<" metpy_gen " << met_vec2->Py() <<std::endl;
     //std::cout <<" metpx_gen " << metpx_gen <<" metpy_gen " << metpy_gen <<std::endl;
     if (metcorrection_>3 and useMET_) *met_vec2 = *met_vec2+met_gen;
-    //std::cout <<" met for MMC px " << met_vec2->Px() <<" py " << met_vec2->Py() <<std::endl;
+    if (MMCdebug) std::cout <<" MMC::Debug::4 in MMC loop met for MMC px " << met_vec2->Px() <<" py " << met_vec2->Py() <<std::endl;
     if (bjetrescale_ == -1 and simulation)
 	*htoBB_lorentz = *htoBB_lorentz_true;
     if (metcorrection_ ==-1 and simulation)
@@ -370,7 +373,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	*offshellW_lorentz = *mu_offshellW_lorentz+*nu_offshellW_lorentz;
 	*htoWW_lorentz = *onshellW_lorentz+*offshellW_lorentz;
 	*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz;
-	if (h2tohh_lorentz->M()<250 or h2tohh_lorentz->M()>1000) {
+	if (h2tohh_lorentz->M()<245 or h2tohh_lorentz->M()>1000) {
 		if (h2tohh_lorentz->M()<245) {
 			std::cerr <<" MMC h2 mass is too small,  M_h " <<h2tohh_lorentz->M() << std::endl;
 			std::cerr <<" gen nu eta "<< eta_gen <<" nu phi "<< phi_gen << std::endl;
@@ -401,10 +404,10 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	//				nu_onshellW_lorentz->Py()+nu_offshellW_lorentz->Py());
 	if (fabs(hmass_gen-htoWW_lorentz->M()) > 2) {
 	  std::cout << "  hmass_gen " << hmass_gen << " Higgs mass from MMC " << htoWW_lorentz->M() <<std::endl;
-	  verbose = 2;
+	  verbose = 4;
 	}
 
-	if (verbose > 1){
+	if (verbose > 3){
 	  std::cout << " onshell W mass "<< onshellW_lorentz->M();   onshellW_lorentz->Print();
 	  std::cout << " offshell W mass "<< offshellW_lorentz->M(); offshellW_lorentz->Print();
 	  std::cout << " htoWW mass "<< htoWW_lorentz->M(); htoWW_lorentz->Print();
@@ -412,7 +415,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	  std::cout << " htoBB mass "<< htoBB_lorentz_true->M(); htoBB_lorentz_true->Print();
 	  verbose = 0;
 	}
-	if (verbose > 1 && (h2tohh_lorentz->Pt()/h2tohh_lorentz->E())>0.0000001) {
+	if (verbose > 3 && (h2tohh_lorentz->Pt()/h2tohh_lorentz->E())>0.0000001) {
 	  std::cout << " h2tohh mass "<< h2tohh_lorentz->M() <<" pt " << h2tohh_lorentz->Pt();
 	  h2tohh_lorentz->Print();
 	}
@@ -469,7 +472,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     }//end controls loop,(0,1,2,3)
     //mmctree->Fill();
   }//end of iteration
-  std::cout <<"initial MMC input met  px "<<mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
+  std::cout <<"initial MMC input met  px "<<mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
   std::cout <<"last iteration MMC input met  px "<<met_vec2->Px() << " py "<<met_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
   //std::cout <<"last iteration bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
   //std::cout <<"num of solutions " << MMC_h2Mass.GetEntries() << std::endl;
@@ -1324,9 +1327,12 @@ MMC::bjetsCorrection(){
   float x2 = 2*rescalec1*(b1lorentz*b2lorentz);
   float x3 = rescalec1*rescalec1*b1lorentz.M2()-125*125;
   if (x2<0) std::cerr <<"error bjets lorentzvector dot productor less than 0 " << std::endl;
-  //std::cout <<"c2 solution1 " << (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<" solution2 "<<(-x2-std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<std::endl;
-  //    std::cout <<"b1jet pt "<< mmc_b1jet_lorentz->Pt() <<" b2jet pt " << mmc_b2jet_lorentz->Pt() << std::endl;
-  //if ((x2*x2-4*x1*x3) <0 ) std::cout <<" error ! there is no soluations for bjetsCorrection "<< std::endl;
+  /*std::cout <<" b2lorentz mass "<<  b2lorentz.M2();  b2lorentz.Print();
+  std::cout <<" rescale1  "<< rescalec1 <<" x1 "<< x1 <<" x2 " << x2 << " x3 "<< x3 << std::endl;
+  std::cout <<"c2 solution1 " << (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<" solution2 "<<(-x2-std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<std::endl;
+  std::cout <<"b1jet pt "<< mmc_b1jet_lorentz->Pt() <<" b2jet pt " << mmc_b2jet_lorentz->Pt() << std::endl;
+   */
+  if ((x2*x2-4*x1*x3) <0 ) std::cout <<" error ! there is no soluations for bjetsCorrection "<< std::endl;
   rescalec2 = (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1);
   /*if (rescalec2<=0){
 	std::cout <<" b1jet mass "<< b1lorentz.M(); b1lorentz.Print(); 
@@ -1352,10 +1358,12 @@ MMC::bjetsCorrection(){
 //--------------------------- MET correction  ----------------------------------------------------------
 void 
 MMC::metCorrection(){
+  //std::cout <<" b1rescalefactor " << b1rescalefactor << " b2rescalefactor " << b2rescalefactor << std::endl;
   float metpx_correction = mmcmet_vec2->Px()-(b1rescalefactor-1)*mmc_b1jet_lorentz->Px()-(b2rescalefactor-1)*mmc_b2jet_lorentz->Px();
   float metpy_correction = mmcmet_vec2->Py()-(b1rescalefactor-1)*mmc_b1jet_lorentz->Py()-(b2rescalefactor-1)*mmc_b2jet_lorentz->Py();
   *met_vec2 = TVector2(metpx_correction, metpy_correction);
 
+  //std::cout <<" metCorrection metpx_correction " <<  metpx_correction <<" metpy_correction " << metpy_correction << std::endl;
 }
 
 //--------------------------- retrun MMC result ----------------------------------------------------------
