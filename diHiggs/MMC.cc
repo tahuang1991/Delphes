@@ -240,16 +240,23 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     if (bjetrescale_ ==2){
 	rescalec1 = bjetrescalec1_hist->GetRandom();
 	//std::cout <<" rescale c1 " << rescalec1 << std::endl;
-	bjetsCorrection();
+	bool hascorrection =  bjetsCorrection();
+	if (not hascorrection) continue;
 	//*htoBB_lorentz = b1rescalefactor*b1lorentz+b2rescalefactor*b2lorentz; 
     } 
     if (bjetrescale_>0){
 	*htoBB_lorentz = b1rescalefactor*(*mmc_b1jet_lorentz)+b2rescalefactor*(*mmc_b2jet_lorentz);
-	if (b2rescalefactor<=0){
-		continue;
+	/*if (b2rescalefactor > 4 or b2rescalefactor < 0.1){
+		//continue;
         	std::cerr <<" MMC bjetrescale b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
-		std::cerr <<" htobb after correction mass "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
+		//std::cerr <<" htobb after correction mass "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
+	 }*/
+        if (fabs(htoBB_lorentz->M()-125)>1){
+		continue;
+		std::cerr <<" error the htobb mass is not close 125, htobb_mass "<< htoBB_lorentz->M() << std::endl;
+        	std::cerr <<" MMC bjetrescale b1 "<< b1rescalefactor << " b2 "<< b2rescalefactor << std::endl;
 	 }
+		
 	}
 
     if ((metcorrection_-3)>0 and  ((metcorrection_ -3)== bjetrescale_ or metcorrection_==bjetrescale_)) metCorrection();
@@ -260,16 +267,17 @@ MMC::runMMC(){//should not include any gen level information here in final versi
     }
     else if ((metcorrection_-3) ==2 or metcorrection_==2){
 	rescalec1 = bjetrescalec1_hist->GetRandom();
-	bjetsCorrection();//calculate b1rescalefactor b2rescalefactor
+	bool hascorrection = bjetsCorrection();//calculate b1rescalefactor b2rescalefactor
+	if (not hascorrection) continue;
 	metCorrection(); 
     }
-    else if ((metcorrection_-3) ==3){
+    /*else if ((metcorrection_-3) ==3){
 	rescalec1 = bjetrescalec1_hist->GetRandom();
 	rescalec2 = bjetrescalec2_hist->GetRandom();
         b1rescalefactor = rescalec1; b2rescalefactor=rescalec2;
 	//bjetsCorrection();
 	metCorrection(); 
-    }
+    }*/
     
 
     //std::cout <<" Met input px "<< mmcmet_vec2->Px() << " py "<< mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
@@ -1308,7 +1316,7 @@ MMC::nulorentz_offshellW(TVector2* met,
 
 //--------------------------- bjets correction, based on c1, calculate c2 here  ----------------------------------------------------------
 //use rescalec1, rescalec2 to correct bjets
-void 
+bool 
 MMC::bjetsCorrection(){
   //c1rescale taken from pdf
   TLorentzVector b1lorentz;
@@ -1332,7 +1340,10 @@ MMC::bjetsCorrection(){
   std::cout <<"c2 solution1 " << (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<" solution2 "<<(-x2-std::sqrt(x2*x2-4*x1*x3))/(2*x1)<<std::endl;
   std::cout <<"b1jet pt "<< mmc_b1jet_lorentz->Pt() <<" b2jet pt " << mmc_b2jet_lorentz->Pt() << std::endl;
    */
-  if ((x2*x2-4*x1*x3) <0 ) std::cout <<" error ! there is no soluations for bjetsCorrection "<< std::endl;
+  if ((x2*x2-4*x1*x3) <0 or x1==0){
+	return false;
+	std::cout <<" error ! there is no soluations for bjetsCorrection "<< std::endl;
+  }
   rescalec2 = (-x2+std::sqrt(x2*x2-4*x1*x3))/(2*x1);
   /*if (rescalec2<=0){
 	std::cout <<" b1jet mass "<< b1lorentz.M(); b1lorentz.Print(); 
@@ -1352,6 +1363,7 @@ MMC::bjetsCorrection(){
   //finally b1rescalefactor->b1jet b2rescalefactor->b2jet;
   //std::cout <<" htoBB m_h after correction "<< htobb_corr.M(); htobb_corr.Print();
   //std::cout <<" htoBB mmc m_h"<< htoBB_lorentz->M(); htoBB_lorentz->Print();
+  return true;
 
 }
 

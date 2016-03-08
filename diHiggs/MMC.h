@@ -76,7 +76,7 @@ class MMC{
       //TH1F* getMMCNeutrio_offshell2();
    private:
       void metCorrection();
-      void bjetsCorrection();
+      bool bjetsCorrection();
 
    private:
       void initTree(TTree* mmctree);
