@@ -14,12 +14,24 @@ source ~/.bashrc
 #change to dir
 cd /home/taohuang/delphes/Herwig
 jobid=$SLURM_JOBID
-echo "job$jobid starts"
+date=20160217
+prefix=HH-bbWW-B$1-$date-leptonW-$2
+echo "job$jobid starts, prefix: $prefix"
+echo "in card for herwig , before change "
+cat HH-bbWW-B$1-new-1227-leptonW.in
+
+sed -i "s/HH-bbWW-B$1-[0-9]*-leptonW-[0-9]*/HH-bbWW-B$1-$date-leptonW-$2/g" HH-bbWW-B$1-new-1227-leptonW.in
+
+echo "in card for herwig , after change "
+cat HH-bbWW-B$1-new-1227-leptonW.in
+
 Herwig++ read HH-bbWW-B$1-new-1227-leptonW.in
-cp HH-bbWW-B$1-1227-leptonW.run /fdata/hepx/store/user/taohuang/Hhh/
+cp $prefix.run /fdata/hepx/store/user/taohuang/Hhh/
 cd /fdata/hepx/store/user/taohuang/Hhh
 sleep 10
-Herwig++ run HH-bbWW-B$1-1227-leptonW.run -N $2
+Herwig++ run $prefix.run -N $2
+
+#mv $prefix.hepmc $prefix-new.root
 echo "job$jobid is done"
 
 

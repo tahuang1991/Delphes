@@ -24,7 +24,7 @@ class DiHiggstoWWbb {
 
   public:
     DiHiggstoWWbb();
-    DiHiggstoWWbb(TString input_file, TString output_file, std::ifstream& configfile);
+    DiHiggstoWWbb(std::vector<TString> input_file, TString output_file, std::ifstream& configfile);
     ~DiHiggstoWWbb();
 
     TTree *evtree;
@@ -36,7 +36,7 @@ class DiHiggstoWWbb {
 
 
   private:
-    TString inputFile;
+    std::vector<TString> inputFile;
     TString outputFile;
     int nEvents_;      //Number of events to analyze
     int nStarts_;
@@ -45,10 +45,19 @@ class DiHiggstoWWbb {
     enum {tt = 0, B3 = 1, B6 = 2};
 
     //Parameters in config file
+    std::string Particlename_;
+    std::string Muonname_;
+    std::string MuonBeforeIsoname_;
+    std::string GenJetNoNuname_;
+    std::string GenJetname_;
+    std::string Jetname_;
+    std::string GenMETname_;
+    std::string METname_;
     double jetsPt_;
     double jetsEta_;
     double bjetsPt_;
     double bjetsEta_;
+    bool PUSample_;
     bool energeticbjets_;
     double jetsDeltaR_;//deltaR matching
     double jetleptonDeltaR_;
@@ -107,6 +116,7 @@ class DiHiggstoWWbb {
     TClonesArray *branchGenJet_withNu;
     TClonesArray *branchMissingET;
     TClonesArray *branchGenMissingET;
+    TClonesArray *branchVertex;
 
     long allEntries;
     std::vector<Jet*> alljets;  //most energetic one at beginning 
@@ -119,6 +129,7 @@ class DiHiggstoWWbb {
     // Gen 
     GenParticle *genh2, *genhiggs1, *genhiggs2, *genhtobb, *genhtoWW;
     GenParticle *genb1, *genb2;
+    GenParticle *genfinalb1, *genfinalb2;
     GenParticle *genW1, *genW2, *genmu1, *genmu2, *gennu1, *gennu2;
     GenParticle *gent1, *gent2;
     MissingET *genMet;
@@ -134,6 +145,7 @@ class DiHiggstoWWbb {
     TLorentzVector genb1jet_withNu_p4, genb2jet_withNu_p4; 
     
     void printGenParticle(GenParticle *genP);
+    void printDecendantsParticles(GenParticle* genp, TClonesArray *branchParticle);
     void printJet(Jet *jet);
     void getFinalState(GenParticle* &genp, TClonesArray *branchParticle);
     void getQuarkFinalState(GenParticle* &genp, TClonesArray *branchParticle);
@@ -141,6 +153,7 @@ class DiHiggstoWWbb {
     TLorentzVector findNeutrinosfromJet(TRefArray particles);
     //tree branches
     int event_n;
+    int vertices;
     float Thisweight;
     float weight;
     TMVA::Reader *reader;
@@ -181,6 +194,14 @@ class DiHiggstoWWbb {
     float htobb_energy;
     float htobb_mass;
     bool htobb; 
+    float finalb1_eta;
+    float finalb1_phi;
+    float finalb1_pt;
+    float finalb1_energy;
+    float finalb2_eta;
+    float finalb2_phi;
+    float finalb2_pt;
+    float finalb2_energy;
 
     float genb1jet_px;
     float genb1jet_py;
@@ -200,6 +221,8 @@ class DiHiggstoWWbb {
     float genb2jet_mass;
     float dR_genb1jet;
     float dR_genb2jet;
+    float dR_genb1jet_finalb;
+    float dR_genb2jet_finalb;
     bool hasgenb1jet;
     bool hasgenb2jet;
     float DE_partonGneJet1;
@@ -223,6 +246,8 @@ class DiHiggstoWWbb {
     float genb2jet_withNu_mass;
     float dR_genb1jet_withNu;
     float dR_genb2jet_withNu;
+    float dR_genb1jet_withNu_finalb;
+    float dR_genb2jet_withNu_finalb;
     bool hasgenb1jet_withNu;
     bool hasgenb2jet_withNu;
    
@@ -340,6 +365,7 @@ class DiHiggstoWWbb {
     float Muon1_beforeIso_phi;
     float Muon1_beforeIso_pt;
     float Muon1_beforeIso_energy;
+    float Muon1_beforeIso_IsoVar;
     float Muon2_beforeIso_px;
     float Muon2_beforeIso_py;
     float Muon2_beforeIso_pz;
@@ -347,6 +373,7 @@ class DiHiggstoWWbb {
     float Muon2_beforeIso_phi;
     float Muon2_beforeIso_pt;
     float Muon2_beforeIso_energy;
+    float Muon2_beforeIso_IsoVar;
     float dR_mu1_beforeIso;
     float dR_mu2_beforeIso;
 

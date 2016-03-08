@@ -165,4 +165,4 @@ set /Herwig/Analysis/HepMCFile:Units GeV_mm
 ##################################################
 # Save run for later usage with 'Herwig++ run'
 ##################################################
-saverun HH-bbWW-B3-1227-leptonW LHCGenerator
+saverun HH-bbWW-B3-20160217-leptonW-1000000 LHCGenerator

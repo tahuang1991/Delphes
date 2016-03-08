@@ -39,18 +39,23 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   gROOT->SetBatch();
-  TString inputFile;
+  //TString inputFile;
+  std::vector<TString> inputFiles;
   TString outputFile;
   std::ifstream configfile;
   std::ifstream infile;
-  bool input_good =false;
+  bool input_good =true;
 
   // Loading parameter (path of the program is stored in argv[0], this is why we start at 1)
   for (int i = 1; i < argc; i++) { 
     if (i + 1 != argc){ // Check that we haven't finished parsing already
 	if (string(argv[i]) == "-i" or string(argv[i]) == "-inputfile") {
-	  inputFile = TString(argv[i+1]);
-	  infile.open(argv[i+1]);
+	  std::stringstream ss(argv[i+1]);
+	  std::string tmp;
+	  while(std::getline(ss, tmp, ',')) {
+      	    //std::cout <<" inputfilename " <<tmp << '\n';
+	    inputFiles.push_back(TString(tmp));
+	  }
 	} else if (string(argv[i]) == "-o" or string(argv[i])=="-outputfile") {
 	  outputFile = TString(argv[i+1]);
 	} else if (string(argv[i]) == "-config" or string(argv[i])=="-Config"){
@@ -58,19 +63,32 @@ int main(int argc, char *argv[]) {
 	}  
     }
   }
-  input_good = (infile.good() and configfile.good());
+
+  for (unsigned int i=0; i<inputFiles.size(); i++){
+	 infile.open(inputFiles.at(i));
+	 if (infile.good()){
+		std::cout <<" this inputfile is good, ith "<<i<<" "<< inputFiles.at(i) << std::endl;
+	 }else {
+		std::cout <<" this inputfile is NOT good, ith "<< i <<" "<< inputFiles.at(i) << std::endl;
+		input_good = false;
+		break;
+	 }
+         infile.close();
+  }
+
+  input_good = (input_good and configfile.good());
   if (input_good){
-    cout <<" inputfile " << inputFile <<endl;
+    cout <<" inputfile0 " << inputFiles.at(0) <<endl;
     cout <<" outputfile " << outputFile << endl;
     cout <<" configfile "<< configfile << endl;
   } else{
-    cout <<" failed to find input file or outputfile " << endl;
+    cout <<" failed to find input file or config file" << endl;
     return 0;
   }
   infile.close();
 
   // Here you create the class of the analyzer
-  DiHiggstoWWbb *diHiggsValidate = new DiHiggstoWWbb(inputFile, outputFile, configfile);
+  DiHiggstoWWbb *diHiggsValidate = new DiHiggstoWWbb(inputFiles, outputFile, configfile);
   // Here you call the main method of the Analyzer
   diHiggsValidate->DiHiggstoWWbbrun();
   diHiggsValidate->writeTree();
