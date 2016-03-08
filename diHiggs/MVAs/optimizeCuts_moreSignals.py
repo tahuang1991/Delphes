@@ -7,15 +7,18 @@ print "===> Optimizing cuts for selecting Heavy Higgs vs tt."
 Signal = "B3"
 
 #Parameters
-signalFile           = ['DiHiggs_WWbb_1M_B3_allReco_25_MMC1M_btaginvariantmass_0207_combined.root','DiHiggs_WWbb_1M_B6_allReco_25_MMC1M_btaginvariantmass_0207_combined.root']
-backgroundFile       = ['TTbar_Wtobmu_allReco_25_20160207_combined.root','TTbar_Wtobmu_allReco_25_20160207_combined.root']
+#signalFile           = ['DiHiggs_WWbb_1M_B3_allReco_25_MMC1M_btaginvariantmass_0207_combined.root','DiHiggs_WWbb_1M_B6_allReco_25_MMC1M_btaginvariantmass_0207_combined.root']
+#backgroundFile       = ['TTbar_Wtobmu_allReco_25_20160207_combined.root','TTbar_Wtobmu_allReco_25_20160207_combined.root']
+signalFile           = ['../Output/delphes_B3_1M_PU0_Btag_Nosim.root','../Output/delphes_B6_1M_PU0_Btag_Nosim.root']
+backgroundFile       = ['../Output/delphes_ttbar_1M_PU0_Wtobmu_Nosim.root','../Output/delphes_ttbar_1M_PU0_Wtobmu_Nosim.root']
 signalFriendFile     = ""
 backgroundFriendFile = ""
-#presel    = 'hasb1jet && hasb2jet && hasMET && hasdRljet && hastwomuons'
-presel    = '(hasb1jet || hasb2jet) && hasMET && hasdRljet && hastwomuons'
+
+#presel    = 'preselections && (hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_b1b2<3.3&& TMath::Abs(dphi_l1l2b1b2)>1.&& mass_l1l2<75 && mass_b1b2<200 && mass_b1b2>50'
+presel    = 'preselections && (hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_b1b2<3.3&& TMath::Abs(dphi_l1l2b1b2)>1.&& mass_l1l2<75 && mass_b1b2<200 && mass_b1b2>50 && mass_l1l2>5. && dR_l1l2>0.07'
 cuts      = ['','']
-outputs   = ['TMVA_B3_NoSim_1btag','TMVA_B6_NoSim_1btag']
-weightDir = ['weights_B3_Nosim_1btag','weights_B6_Nosim_1btag']
+outputs   = ['TMVA_B3_NoSim_1btag_noMU_cutMasdr','TMVA_B6_NoSim_1btag_noMU_cutMasdr']
+weightDir = ['weights_B3_Nosim_1btag_noMU_cutMasdr','weights_B6_Nosim_1btag_noMU_cutMasdr']
 MVAS      = ['Likelihood','LikelihoodMIX','LikelihoodD','BDT','MLP','RuleFit','HMatrix']
 
 # Loop on the category to be optimized
@@ -42,14 +45,10 @@ for i in range(len(signalFile)):
         signalWeight =  hW.GetMean()
         treeB.Draw("weight>>hW",fullcut,"goff")
         backgroundWeight = hW.GetMean()
-        if( i==1 ) :
-           signalWeight = 0.00158119490325
         print "---> Signal: " + str(NEntries_S*signalWeight) + " the weight used is: " + str(signalWeight)
         print "---> Backgr: " + str(NEntries_B*backgroundWeight) + " the weight used is: " + str(backgroundWeight)
         #Now the MVA
         print "Now starting serious things..."
-        if( MVAS[iM]=='MLP' or MVAS=='RuleFit' ):
-          fullcut += ' && event_n%3!=0'
         os.system('python CutsOptimization.py -a "' + fullcut + '" -o ' + OutPut + ' -i ' + signalFile[i] + ' -j ' + backgroundFile[i] + ' -f ' + signalFriendFile+' -g ' + backgroundFriendFile+' -m ' + MVAS[iM] )
         os.system('rm -rf ' + Weight)
         os.system('mv weights ' + Weight)

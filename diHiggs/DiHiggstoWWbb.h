@@ -416,6 +416,8 @@ class DiHiggstoWWbb {
     float dR_b2l1;
     float dR_b2l2;
     float dR_l1l2;
+    float dR_l1l2b1b2;
+    float dphi_l1l2b1b2;
     float dR_b1b2;
     float dR_minbl;
     float dR_genl1l2;

@@ -497,6 +497,8 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("dR_b2l2",&dR_b2l2, "dR_b2l2/F");
   evtree->Branch("dR_b1b2",&dR_b1b2, "dR_b1b2/F");
   evtree->Branch("dR_l1l2",&dR_l1l2, "dR_l1l2/F");
+  evtree->Branch("dR_l1l2b1b2",&dR_l1l2b1b2, "dR_l1l2b1b2/F");
+  evtree->Branch("dphi_l1l2b1b2",&dphi_l1l2b1b2, "dphi_l1l2b1b2/F");
   evtree->Branch("dR_minbl",&dR_minbl, "dR_minbl/F");
   evtree->Branch("dR_genl1l2",&dR_genl1l2, "dR_genl1l2/F");
   evtree->Branch("mass_b1b2",&mass_b1b2, "mass_b1b2/F");
@@ -960,7 +962,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
   if (Wtomu1nu1 and Wtomu2nu2){
     if (((genmu1->PT > muonPt1_ && genmu2->PT > muonPt2_) || (genmu1->PT > muonPt2_ && genmu2->PT > muonPt1_)) 
 	  && fabs(genmu1->Eta)<muonsEta_ && fabs(genmu2->Eta)< muonsEta_) hastwogenmuons =true;
-	  cout <<" chech whether has two genmuons " <<(hastwogenmuons?" yes ":" no ") <<endl;
+	  //cout <<" chech whether has two genmuons " <<(hastwogenmuons?" yes ":" no ") <<endl;
 
 	}
 }
@@ -1783,6 +1785,8 @@ void DiHiggstoWWbb::initBranches(){
   dR_b2l1=-1.0;
   dR_b2l2=-1.0;
   dR_l1l2=-1.0;
+  dR_l1l2b1b2=-1.0;
+  dphi_l1l2b1b2=-1.0;
   dR_b1b2=-1.0;
   dR_minbl = -1.0;
   dR_genl1l2 = -1;
@@ -2055,16 +2059,16 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	else
 	  hasb2jet = true;
 	
-	if (b1jet_p4.M()<0) {
-		cerr <<" b1 parton mass "<< b1_p4.M(); b1_p4.Print();
-		cerr <<" b1jet mass from p4 "<< b1jet_p4.M(); b1jet_p4.Print();
-		cerr <<" b1jet mass " << b1jet->Mass << endl;
-	}
-	if (b2jet_p4.M()<0) {
-		cerr <<" b2 parton mass "<< b2_p4.M(); b2_p4.Print();
-		cerr <<" b2jet mass from p4 "<< b2jet_p4.M(); b2jet_p4.Print();
-		cerr <<" b2jet mass " << b2jet->Mass << endl;
-	}
+//	if (b1jet_p4.M()<0) {
+//		cerr <<" b1 parton mass "<< b1_p4.M(); b1_p4.Print();
+//		cerr <<" b1jet mass from p4 "<< b1jet_p4.M(); b1jet_p4.Print();
+//		cerr <<" b1jet mass " << b1jet->Mass << endl;
+//	}
+//	if (b2jet_p4.M()<0) {
+//		cerr <<" b2 parton mass "<< b2_p4.M(); b2_p4.Print();
+//		cerr <<" b2jet mass from p4 "<< b2jet_p4.M(); b2jet_p4.Print();
+//		cerr <<" b2jet mass " << b2jet->Mass << endl;
+//	}
     }
 
     //check whether two jets are closest to b parton
@@ -2171,6 +2175,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	dR_b2l2 = b2jet_p4.DeltaR(Muon2_p4);
 	dR_b1b2 = b1jet_p4.DeltaR(b2jet_p4);
 	dR_l1l2 = Muon1_p4.DeltaR(Muon2_p4);
+	dR_l1l2b1b2 = (Muon1_p4+Muon2_p4).DeltaR(b1jet_p4+b2jet_p4);
+	dphi_l1l2b1b2 = TVector2::Phi_mpi_pi( (Muon1_p4+Muon2_p4).Phi()-(b1jet_p4+b2jet_p4).Phi() );
 	TLorentzVector ll_p4 = Muon1_p4+Muon2_p4;
 	TLorentzVector bjets_p4 = b1jet_p4+b2jet_p4;
 	dR_minbl = min(min(dR_b1l1,dR_b1l2),min(dR_b2l1,dR_b2l2));
@@ -2254,27 +2260,27 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	    if(i==1) MT2_reco = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
 	    //NOW WITHOUT MUONS
 	    //-Invariant mass for "Particle A"
-	    sumesBl1_1=(Bj_1.E())*(Bj_1.E());
-	    sumpxsBl1_1=(Bj_1.Px())*(Bj_1.Px());
-	    sumpysBl1_1=(Bj_1.Py())*(Bj_1.Py());
-	    sumpzsBl1_1=(Bj_1.Pz())*(Bj_1.Pz());
-	    M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
-	    Pxa_1 = Bj_1.Px();
-	    Pya_1 = Bj_1.Py();
-	    // Invariant mass for "Particle B"
-	    sumesBl2_1=(Bj_2.E())*(Bj_2.E());
-	    sumpxsBl2_1=(Bj_2.Px())*(Bj_2.Px());
-	    sumpysBl2_1=(Bj_2.Py())*(Bj_2.Py());
-	    sumpzsBl2_1=(Bj_2.Pz())*(Bj_2.Pz());
-	    M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
-	    Pxb_1 = Bj_2.Px();
-	    Pyb_1 = Bj_2.Py();
+	    //sumesBl1_1=(Bj_1.E())*(Bj_1.E());
+	    //sumpxsBl1_1=(Bj_1.Px())*(Bj_1.Px());
+	    //sumpysBl1_1=(Bj_1.Py())*(Bj_1.Py());
+	    //sumpzsBl1_1=(Bj_1.Pz())*(Bj_1.Pz());
+	    //M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
+	    //Pxa_1 = Bj_1.Px();
+	    //Pya_1 = Bj_1.Py();
+	    //// Invariant mass for "Particle B"
+	    //sumesBl2_1=(Bj_2.E())*(Bj_2.E());
+	    //sumpxsBl2_1=(Bj_2.Px())*(Bj_2.Px());
+	    //sumpysBl2_1=(Bj_2.Py())*(Bj_2.Py());
+	    //sumpzsBl2_1=(Bj_2.Pz())*(Bj_2.Pz());
+	    //M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
+	    //Pxb_1 = Bj_2.Px();
+	    //Pyb_1 = Bj_2.Py();
 	    // computation
-	    double pa1_nomu[3] = { M_Bl1_1, Pxa_1, Pya_1 };
-	    double pb1_nomu[3] = { M_Bl2_1, Pxb_1, Pyb_1 };
-	    double pmiss_nomu[3]   = { 0,                              Met_p4.Px()+Muon1_p4.Px()+Muon2_p4.Px(), Met_p4.Py()+Muon1_p4.Py()+Muon2_p4.Py() };
-	    double pmiss_nomuv2[3] = { (Muon1_p4+Muon2_p4).M(),        Met_p4.Px()+Muon1_p4.Px()+Muon2_p4.Px(), Met_p4.Py()+Muon1_p4.Py()+Muon2_p4.Py() };
-	    double pmiss_nomuv3[3] = { (Met_p4+Muon1_p4+Muon2_p4).M(), Met_p4.Px()+Muon1_p4.Px()+Muon2_p4.Px(), Met_p4.Py()+Muon1_p4.Py()+Muon2_p4.Py() };
+	    double pa1_nomu[3] = { 0., Bj_1.Px(), Bj_1.Py() };
+	    double pb1_nomu[3] = { 0., Bj_2.Px(), Bj_2.Py() };
+	    double pmiss_nomu[3]   = { 0,                      Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
+	    double pmiss_nomuv2[3] = { (MU_1+MU_2).M(),        Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
+	    double pmiss_nomuv3[3] = { (Met_p4+MU_1+MU_2).M(), Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
 	    mt2_bisect::mt2 mt2_event1_nomu;
 	    mt2_event1_nomu.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomu);
 	    mt2_event1_nomu.set_mn(0.);

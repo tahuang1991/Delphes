@@ -182,9 +182,14 @@ def main():
     factory.AddVariable( "dR_l1l2", "dR_l1l2", "", 'F' )
     factory.AddVariable( "dR_b1b2", "dR_b1b2", "", 'F' )
     factory.AddVariable( "dR_bl", "dR_bl", "", 'F' )
+    factory.AddVariable( "dR_l1l2b1b2", "dR_l1l2b1b2", "", 'F' )
+    factory.AddVariable( "dR_b1l1*(dR_b1l1<dR_b1l2 && dR_b1l1<dR_b2l1 && dR_b1l1<dR_b2l2) + dR_b2l1*(dR_b2l1<dR_b2l2 && dR_b2l1<dR_b1l1 && dR_b2l1<dR_b1l2) + dR_b1l2*(dR_b1l2<dR_b1l1 && dR_b1l2<dR_b2l1 && dR_b1l2<dR_b2l2) + dR_b2l2*(dR_b2l2<dR_b1l1 && dR_b2l2<dR_b1l2 && dR_b2l2<dR_b2l1)", "MINdR_bl", "", 'F' )
+    factory.AddVariable( "TMath::Abs(dphi_l1l2b1b2)", "dphi_l1l2b1b2", "", 'F' )
     factory.AddVariable( "mass_l1l2", "mass_l1l2", "", 'F' )
     factory.AddVariable( "mass_b1b2", "mass_b1b2", "", 'F' )
+    factory.AddVariable( "mass_trans", "mass_trans", "", 'F' )
     factory.AddVariable( "MT2", "MT2", "", 'F' )
+    factory.AddVariable( "pt_b1b2", "pt_b1b2", "", 'F' )
     #factory.AddVariable( "MMC_h2massweight1_prob", "MMC_h2massweight1_prob", "", 'F' )
 
     # You can add so-called "Spectator variables", which are not used in the MVA training, 

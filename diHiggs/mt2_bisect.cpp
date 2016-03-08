@@ -53,7 +53,6 @@ double mt2::get_mt2()
        cout <<" Please set momenta first!" << endl;
        return 0;
    }
-        
    if (!solved) mt2_bisect();
    return mt2_b*scale;
 }
@@ -280,7 +279,6 @@ int mt2::nsols_massless(double Dsq)
   d2    = d21*delta+d20;
   e2    = e21*delta+e20;
   f2    = f22*delta*delta+f21*delta+f20;
-  
   double a,b;
   if (pax > 0) a = Ea/Dsq;
   else         a = -Ea/Dsq;
@@ -334,7 +332,6 @@ int mt2::nsols_massless(double Dsq)
 void mt2::mt2_bisect()
 {
   
-   
    solved = true;
    cout.precision(11);
 

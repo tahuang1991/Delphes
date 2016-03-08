@@ -23,35 +23,40 @@ void CopyDir( TFile * thisfile, TFile * outFile, TString CommonDir );
 
 //.x MergeFiles.C+
 void MergeFiles(){
+  bool isB3 = false;
+  TString BaseName = "NoSim_1btag_noMU_cutMasdr";
+  TString Sig = isB3 ? "B3" : "B6";
+  bool is_RuleFit=true, is_MLP=true;
+  TString OutName = "TMVA_" + Sig  + "_" + BaseName + "_ALL.root";
   std::vector<TString> FilesToMerge;
   FilesToMerge.clear();
-  FilesToMerge.push_back("TMVA_B6_NoSim_1btag_Likelihood.root");
-  FilesToMerge.push_back("TMVA_B6_NoSim_1btag_LikelihoodD.root");
-  FilesToMerge.push_back("TMVA_B6_NoSim_1btag_LikelihoodMIX.root");
-  FilesToMerge.push_back("TMVA_B6_NoSim_1btag_BDT.root");
-//  FilesToMerge.push_back("TMVA_B6_NoSim_1btag_MLP.root");
-//  FilesToMerge.push_back("TMVA_B6_NoSim_1btag_RuleFit.root");
-  FilesToMerge.push_back("TMVA_B6_NoSim_1btag_HMatrix.root");
-  TFile *outFile=TFile::Open("TMVA_B6_NoSim_1btag_ALL.root", "recreate");
+  FilesToMerge.push_back("TMVA_" + Sig + "_" + BaseName + "_Likelihood.root");
+  FilesToMerge.push_back("TMVA_" + Sig + "_" + BaseName + "_LikelihoodD.root");
+  FilesToMerge.push_back("TMVA_" + Sig + "_" + BaseName + "_LikelihoodMIX.root");
+  FilesToMerge.push_back("TMVA_" + Sig + "_" + BaseName + "_BDT.root");
+  FilesToMerge.push_back("TMVA_" + Sig + "_" + BaseName + "_HMatrix.root");
+  if(is_RuleFit) FilesToMerge.push_back("TMVA_" + Sig + "_" + BaseName + "_RuleFit.root");
+  if(is_MLP)     FilesToMerge.push_back("TMVA_" + Sig + "_" + BaseName + "_MLP.root");
+  TFile *outFile=TFile::Open(OutName.Data(), "recreate");
   TTree TestTree("TestTree","TestTree");
   TTree TrainTree("TrainTree","TrainTree");
   TTree t1("t1","a simple Tree with simple variables");
-  map< int, std::pair<TString,TString> > NamesDir; NamesDir.clear();
+  std::vector< std::pair<TString,TString> > NamesDir; NamesDir.clear();
   std::pair<TString,TString> Pair;
   Pair.first = "Method_Likelihood"; Pair.second = "Likelihood";
-  NamesDir[0] = Pair; 
+  NamesDir.push_back(Pair); 
   Pair.first = "Method_Likelihood"; Pair.second = "LikelihoodD";
-  NamesDir[1] = Pair;
+  NamesDir.push_back(Pair);
   Pair.first = "Method_Likelihood"; Pair.second = "LikelihoodMIX";
-  NamesDir[2] = Pair;
+  NamesDir.push_back(Pair);
   Pair.first = "Method_BDT"; Pair.second = "BDT";
-  NamesDir[3] = Pair;
-  //Pair.first = "Method_MLP"; Pair.second = "MLP";
-  //NamesDir[4] = Pair;
-  //Pair.first = "Method_RuleFit"; Pair.second = "RuleFit";
-  //NamesDir[5] = Pair;
+  NamesDir.push_back(Pair);
   Pair.first = "Method_HMatrix"; Pair.second = "HMatrix";
-  NamesDir[4] = Pair;
+  NamesDir.push_back(Pair);
+  Pair.first = "Method_RuleFit"; Pair.second = "RuleFit";
+  if(is_RuleFit) NamesDir.push_back(Pair);
+  Pair.first = "Method_MLP"; Pair.second = "MLP";
+  if(is_MLP) NamesDir.push_back(Pair);
 
   //Copy common files
   TFile *f = TFile::Open( FilesToMerge[0].Data() );
@@ -110,7 +115,7 @@ void MergeFiles(){
 	char className, className2;
 	float dR_l1l2, dR_b1b2, dR_bl, mass_l1l2, mass_b1b2, MT2, weight;
 	float dR_l1l22, dR_b1b22, dR_bl2, mass_l1l22, mass_b1b22, MT22, weight2;
-	float Likelihood2, LikelihoodD2, LikelihoodMIX2, BDT2, HMatrix2;
+	float Likelihood2, LikelihoodD2, LikelihoodMIX2, BDT2, HMatrix2, RuleFit2, MLP2;
 	Tte->SetBranchAddress("classID", &classID);
 	Tte->SetBranchAddress("className", &className);
 	Tte->SetBranchAddress("dR_l1l2", &dR_l1l2);
@@ -134,11 +139,13 @@ void MergeFiles(){
 	TestTree.Branch("LikelihoodMIX", &LikelihoodMIX2,"LikelihoodMIX/F");
 	TestTree.Branch("BDT", &BDT2,"BDT/F");
 	TestTree.Branch("HMatrix", &HMatrix2,"HMatrix/F");
+	if(is_RuleFit) TestTree.Branch("RuleFit", &RuleFit2,"RuleFit/F");
+	if(is_MLP)     TestTree.Branch("MLP", &MLP2,"MLP/F");
 	int TclassID, TclassID2;
 	char TclassName, TclassName2;
 	float TdR_l1l2, TdR_b1b2, TdR_bl, Tmass_l1l2, Tmass_b1b2, TMT2, Tweight;
 	float TdR_l1l22, TdR_b1b22, TdR_bl2, Tmass_l1l22, Tmass_b1b22, TMT22, Tweight2;
-	float TLikelihood2, TLikelihoodD2, TLikelihoodMIX2, TBDT2, THMatrix2;
+	float TLikelihood2, TLikelihoodD2, TLikelihoodMIX2, TBDT2, THMatrix2, TRuleFit2, TMLP2;
 	Ttt->SetBranchAddress("classID", &TclassID);
 	Ttt->SetBranchAddress("className", &TclassName);
 	Ttt->SetBranchAddress("dR_l1l2", &TdR_l1l2);
@@ -157,11 +164,13 @@ void MergeFiles(){
 	TrainTree.Branch("mass_b1b2", &Tmass_b1b22,"mass_b1b2/F");
 	TrainTree.Branch("MT2", &TMT22,"MT2/F");
 	TrainTree.Branch("weight", &Tweight2,"weight/F");
-	TestTree.Branch("Likelihood", &TLikelihood2,"Likelihood/F");
-	TestTree.Branch("LikelihoodD", &TLikelihoodD2,"LikelihoodD/F");
-	TestTree.Branch("LikelihoodMIX", &TLikelihoodMIX2,"LikelihoodMIX/F");
-	TestTree.Branch("BDT", &TBDT2,"BDT/F");
-	TestTree.Branch("HMatrix", &THMatrix2,"HMatrix/F");
+	TrainTree.Branch("Likelihood", &TLikelihood2,"Likelihood/F");
+	TrainTree.Branch("LikelihoodD", &TLikelihoodD2,"LikelihoodD/F");
+	TrainTree.Branch("LikelihoodMIX", &TLikelihoodMIX2,"LikelihoodMIX/F");
+	TrainTree.Branch("BDT", &TBDT2,"BDT/F");
+	TrainTree.Branch("HMatrix", &THMatrix2,"HMatrix/F");
+	if(is_RuleFit) TestTree.Branch("RuleFit", &TRuleFit2,"RuleFit/F");
+	if(is_MLP)     TestTree.Branch("MLP", &TMLP2,"MLP/F");
 	Int_t nentries = (Int_t)Tte->GetEntries();
 	for (Int_t iT=0; iT<nentries; iT++) {
 	  Tte->GetEntry(iT);
@@ -179,6 +188,8 @@ void MergeFiles(){
 	  LikelihoodMIX2 = MyTest[2][iT];
 	  BDT2 = MyTest[3][iT];
 	  HMatrix2 = MyTest[4][iT];
+	  if(is_RuleFit) RuleFit2 = MyTest[5][iT];
+	  if(is_MLP)     MLP2 = MyTest[is_RuleFit ? 6:5][iT];
 	  TestTree.Fill();
 	}
 	nentries = (Int_t)Ttt->GetEntries();
@@ -198,6 +209,8 @@ void MergeFiles(){
 	  TLikelihoodMIX2 = MyTrain[2][iT];
 	  TBDT2 = MyTrain[3][iT];
 	  THMatrix2 = MyTrain[4][iT];
+	  if(is_RuleFit) TRuleFit2 = MyTrain[5][iT];
+	  if(is_MLP)     TMLP2 = MyTrain[is_RuleFit ? 6:5][iT];
 	  TrainTree.Fill();
 	}
     }//i==Last

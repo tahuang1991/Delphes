@@ -28,7 +28,7 @@ void Make2Plot(TTree * TS, TTree * TB, TString Var, TString Sel, TString Tag, TS
 float GetMax(TH1F *h);
 int GetHigherH(TH1F *h1, TH1F *h2);
 
-void Plotter_DiHiggs( TString folder="Plots_B6", TString File_S="Output/delphes_B6_1M_PU0_Btag.root", TString File_B="Output/delphes_ttbar_1M_PU0_Wtobmu.root"){
+void Plotter_DiHiggs( TString folder="Plots_B6", TString File_S="Output/delphes_B6_1M_PU0_Btag_Nosim.root", TString File_B="Output/delphes_ttbar_1M_PU0_Wtobmu_Nosim.root"){
   gROOT->Reset(); 
   // Topology
   int Topology =- 1;
@@ -96,8 +96,28 @@ void Plotter_DiHiggs( TString folder="Plots_B6", TString File_S="Output/delphes_
   // Here you can add plots
   // Order: n_Sel = 0, n_Tag = 1, n_nBin = 2, n_nBinMin = 3, n_nBinMax = 4, n_Norm1 = 5, n_Topo = 6, n_gSty = 7
   // Mi-Max Pt
-//  selectionTag = InitVec(Min_Muon_PtReco + ">0","Muon_PtReco_Min","50.","0.","100.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
-//  ListPlots[Min_Muon_PtReco] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec(Preselection,"dR_l1l2","50.","0.","4.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
+  ListPlots["dR_l1l2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec(Preselection,"dR_b1b2","50.","0.","4.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
+  ListPlots["dR_b1b2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec(Preselection,"dRmin_bl","50.","0.","4.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
+  ListPlots["dR_b1l1*(dR_b1l1<dR_b1l2 && dR_b1l1<dR_b2l1 && dR_b1l1<dR_b2l2) + dR_b2l1*(dR_b2l1<dR_b2l2 && dR_b2l1<dR_b1l1 && dR_b2l1<dR_b1l2) + dR_b1l2*(dR_b1l2<dR_b1l1 && dR_b1l2<dR_b2l1 && dR_b1l2<dR_b2l2) + dR_b2l2*(dR_b2l2<dR_b1l1 && dR_b2l2<dR_b1l2 && dR_b2l2<dR_b2l1)"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec(Preselection,"mass_l1l2","100.","0.","300.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
+  ListPlots["mass_l1l2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec(Preselection,"mass_b1b2","100.","0.","300.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
+  ListPlots["mass_b1b2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( Preselection, "dR_l1l2b1b2","100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  ListPlots["dR_l1l2b1b2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( Preselection, "dphi_l1l2b1b2","100.", "-3.15", "3.15", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  ListPlots["dphi_l1l2b1b2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( Preselection, "pt_b1b2","100.", "0.", "300", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  ListPlots["pt_b1b2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( Preselection, "pt_l1l2","100.", "0.", "300", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  ListPlots["pt_l1l2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( Preselection, "mass_trans","100.", "0.", "300", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  ListPlots["mass_trans"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  selectionTag = InitVec( Preselection, "dR_bl","50.", "0.", "4.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  ListPlots["dR_bl"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
 //  selectionTag = InitVec(Max_Muon_PtReco + ">0","Muon_PtReco_Max","50.","0.","100.","true","S_and_B","0"); selectionsTags.push_back(selectionTag);
 //  ListPlots[Max_Muon_PtReco] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
 //  // Met Reso
@@ -127,21 +147,9 @@ void Plotter_DiHiggs( TString folder="Plots_B6", TString File_S="Output/delphes_
 //  ListPlots["nu1and2_diBaxis_p-met_diBaxis_c1_p"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
 //  selectionTag = InitVec( "nu1and2_diBaxis_t>-900 && met_diBaxis_c1_t>-900", "MetDiBt_c1_Reso_nuFromW", "100.", "-150.", "150.", "true", "Only_S", "111111" ); selectionsTags.push_back(selectionTag);
 //  ListPlots["nu1and2_diBaxis_t-met_diBaxis_c1_t"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-//  //DR(l1,b1)
-//  selectionTag = InitVec( Preselection, "DR_MuB", "100.", "0.", "5.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-//  ListPlots["(dR_bl)"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
   //MT2
-  selectionTag = InitVec( Preselection, "MT2", "100.", "0.", "400.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-  ListPlots["MT2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  //MT2_noNu
-  selectionTag = InitVec( Preselection, "MT2_noMU", "100.", "0.", "400.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-  ListPlots["MT2_noMU"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  //MT2_noNu
-  selectionTag = InitVec( Preselection, "MT2_noMUv2", "100.", "0.", "400.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-  ListPlots["MT2_noMUv2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
-  //MT2_noNu
-  selectionTag = InitVec( Preselection, "MT2_noMUv3", "100.", "0.", "400.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
-  ListPlots["MT2_noMUv3"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
+  //selectionTag = InitVec( Preselection, "MT2", "100.", "0.", "400.", "true", "S_and_B", "0" ); selectionsTags.push_back(selectionTag);
+  //ListPlots["MT2"] = selectionsTags; selectionsTags.clear(); selectionTag.clear();
 
   // Loop over the Map
   typedef map< TString,vector< vector<TString> > >::iterator it_map;
