@@ -3,10 +3,10 @@ debug		true
 nEvents		10000
 nStarts		0
 sample		1
-PUSample 	false
+PUSample 	true
 simulation	true
-#Jetname		RecoJetPileUpID
-#METname		RecoMissingET
+Jetname		RecoJetPileUpID
+METname		RecoMissingET
 jetsPt 		30
 jetsEta		2.50
 bjetsPt 	30

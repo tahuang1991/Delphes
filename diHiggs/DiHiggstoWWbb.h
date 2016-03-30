@@ -436,6 +436,32 @@ class DiHiggstoWWbb {
     float reconDRJet2_PtRes;
     bool hasRecoMuon1;
     bool hasRecoMuon2;
+
+
+    float dR_genbl;
+    float dR_genb1l1;
+    float dR_genb1l2;
+    float dR_genb2l1;
+    float dR_genb2l2;
+    float dR_genl1l2;
+    float dR_genl1l2b1b2;
+    float dphi_genl1l2b1b2;
+    float dR_genb1b2;
+    float dR_genminbl;
+    float mass_genl1l2;
+    float energy_genl1l2;
+    float pt_genl1l2;
+    float phi_genl1l2;
+    float eta_genl1l2;
+    float mass_genb1b2;
+    float energy_genb1b2;
+    float pt_genb1b2;
+    float phi_genb1b2;
+    float eta_genb1b2;
+    float dphi_genllbb;
+    float dphi_genllmet;
+    float mass_gentrans;
+
     float minMass;
     float dR_bl;
     float dR_b1l1;
@@ -447,7 +473,6 @@ class DiHiggstoWWbb {
     float dphi_l1l2b1b2;
     float dR_b1b2;
     float dR_minbl;
-    float dR_genl1l2;
     float mass_l1l2;
     float energy_l1l2;
     float pt_l1l2;

@@ -15,7 +15,7 @@
 MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVector* b1jet_lorentz, TLorentzVector* b2jet_lorentz,
 	TLorentzVector* totjets_lorentz,TLorentzVector* met_lorentz, TLorentzVector* nu1_lorentz, TLorentzVector* nu2_lorentz,
 	TLorentzVector* b_genp_lorentz,TLorentzVector* bbar_genp_lorentz, TLorentzVector* h2_lorentz, int onshellMarker_,// simulation only
-         bool simulation_, int ievent, bool weightfromonshellnupt_func, bool weightfromonshellnupt_hist, bool weightfromonoffshellWmass_hist,
+         bool simulation_, bool PUsample_, int ievent, bool weightfromonshellnupt_func, bool weightfromonshellnupt_hist, bool weightfromonoffshellWmass_hist,
         int iterations, std::string RefPDFfile, bool useMET, int bjetrescaleAlgo, int metcorrection, int verbose_
 	)
 {
@@ -35,6 +35,7 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    //std::cout <<" b1 jet lorentz "; b1jet_lorentz->Print();
    //std::cout <<" b1 gen lorentz "; b_genp_lorentz->Print();
    simulation = simulation_;
+   PUsample = PUsample_;
 	
    std::cout <<(simulation_? "in MMC simulation is true ":" in MMC simulation is false ")<< std::endl;	
    onshellMarker = onshellMarker_;
@@ -175,7 +176,9 @@ MMC::runMMC(){//should not include any gen level information here in final versi
   // genetated (eta,phi) pair
   eta_gen = 0;
   phi_gen = 0;
-  float met_sigma = 14.8;
+  //PU0:14.8,  PU40:25.2
+  float met_sigma = (PUsample? 25.2:14.8);
+  std::cout <<(PUsample?" PUsample ":"Not PUsample ")<< " met_sigma "<< met_sigma << std::endl;
   //mmctree->SetDebug(100,0,9999999);
   //int count = 100000;
 
