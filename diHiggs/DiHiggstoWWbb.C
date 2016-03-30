@@ -1262,6 +1262,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 
 
   if (not (hasgenb1jet and hasgenb2jet)) return;
+  cout <<" genb1jet pt "<< genb1jet->PT <<" eta "<< genb1jet->Eta<<" phi "<<genb1jet->Phi <<" dR "<<dR_genb1jet <<" genb2jet pt "<< genb2jet->PT <<" eta "<< genb2jet->Eta <<" phi "<< genb2jet->Phi <<" dR "<< dR_genb2jet << endl;
   DE_partonGneJet1 = genb1->P4().E()-genb1jet_energy; 
   DE_partonGneJet2 = genb2->P4().E()-genb2jet_energy; 
   //loop all reco jets 
@@ -1325,11 +1326,12 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
     }
     else if (dR_b1jet == dR_b2jet) cerr<<" error dR_b1jet = dR_b2jet " << endl;
   }
-  /*if ((dR_b1jet>0.5 or dR_b2jet >0.5 ) and dR_b1jet<5 and dR_b2jet<5 and bpartonsOK) {
-        std::cout <<" b1 eta  "<< genb1->Eta <<" pt "<< genb1->PT <<" b2 eta "<< genb2->Eta <<" pt "<< genb2->PT << std::endl;
-	std::cout <<" genb1jet pt "<< genb1jet->PT <<" dR_genb1jet "<< dR_genb1jet <<" genb2jet pt "<< genb2jet->PT <<" dR_genb2jet "<< dR_genb2jet << std::endl;
-	std::cout <<" warning! dR_b1jet "<< dR_b1jet <<" dR_b2jet "<< dR_b2jet << std::endl;
-  }*/
+  if (hasRECOjet1 and hasRECOjet2 and (dR_b1jet>0.15 or dR_b2jet >0.15 ) and dR_b1jet<5 and dR_b2jet<5 and bpartonsOK) {
+        //std::cout <<" b1 eta  "<< genb1->Eta <<" pt "<< genb1->PT <<" b2 eta "<< genb2->Eta <<" pt "<< genb2->PT << std::endl;
+	//std::cout <<" genb1jet pt "<< genb1jet->PT <<" dR_genb1jet "<< dR_genb1jet <<" genb2jet pt "<< genb2jet->PT <<" dR_genb2jet "<< dR_genb2jet << std::endl;
+	std::cout <<" warning! jet1 pt "<< b1jet->PT <<" eta "<< b1jet->Eta <<" dR_b1jet "<< dR_b1jet 
+		<<" jet2 pt "<< b2jet->PT <<" eta "<< b2jet->Eta <<" dR_b2jet "<< dR_b2jet << std::endl;
+  }
   //Now Btag
   if(hasRECOjet1 && !((b1jet->BTag)&2)<1 )  hasb1jet = true;
   if(hasRECOjet2 && !((b2jet->BTag)&2)<1 )  hasb2jet = true;
@@ -2046,8 +2048,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     ttbar  = (ttoWb and tbartoWbbar);
     getGenMET(branchGenMissingET);
     //if (not(h2tohh) and not(ttbar)) continue;
-    //if ((h2tohh or ttbar) and simulation_){
-    if (h2tohh or ttbar){
+    if ((h2tohh or ttbar) and simulation_){
+    //if (h2tohh or ttbar){
 	//printDecendantsParticles(genb1, branchParticle);
 	//printDecendantsParticles(genb2, branchParticle);
 	GenParticle *genptmp1, *genptmp2;
@@ -2541,7 +2543,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
     if(debug_) cout<<"DEBUG::5"<<endl;
     fillbranches();
-    if (h2tohh or ttbar){
+    if ((h2tohh or ttbar) and debug_){
 	cout <<"parton informatin b1 pt "<< b1_pt <<" b1 eta "<< b1_eta <<" b2 pt "<< b2_pt <<" b2 eta "<< b2_eta << endl;
 	cout <<"genjet genb1jet pt "<< genb1jet_pt <<" eta "<< genb1jet_eta <<" dR "<< dR_genb1jet <<" genb2jet pt "<< genb2jet_pt <<" eta "<< genb2jet_eta <<" dR "<< dR_genb2jet << endl;
 	cout <<"jet b1jet pt "<< b1jet_pt <<" eta "<< b1jet_eta <<" dR "<< dR_b1jet <<" b2jet pt "<< b2jet_pt <<" eta "<< b2jet_eta <<" dR "<< dR_b2jet << endl;
