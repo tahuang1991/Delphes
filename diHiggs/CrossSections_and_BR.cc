@@ -17,8 +17,18 @@ using namespace std;
 CrossSections_and_BR::CrossSections_and_BR(){
 
   Xsec_tt = 953;
-  Xsec_B3 = 1.15 * 0.685;
-  Xsec_B6 = 0.26 * 0.12;
+  Xsec_B1 = 1.19 * 0.504;
+  Xsec_B2 = 0.59 * 0.740;
+  Xsec_B3 = 0.443 * 0.755;
+  Xsec_B4 = 0.363 * 0.327;
+  Xsec_B5 = 0.262 * 0.307;
+  Xsec_B6 = 0.151 * 0.236;
+  Xsec_B7 = 0.088 * 0.233;
+  Xsec_B8 = 0.045 * 0.3023;
+  Xsec_B9 = 0.023 * 0.328;
+  Xsec_B10 = 0.0168 * 0.199;
+  Xsec_B11 = 0.008 * 0.223;
+  Xsec_B12 = 0.0068 * 0.079;
   BR_h_bb = 0.577;
   BR_h_WW = 0.215;
   BR_W_lnu = 0.3272;

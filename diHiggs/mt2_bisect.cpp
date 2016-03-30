@@ -53,6 +53,7 @@ double mt2::get_mt2()
        cout <<" Please set momenta first!" << endl;
        return 0;
    }
+        
    if (!solved) mt2_bisect();
    return mt2_b*scale;
 }
@@ -236,7 +237,7 @@ void mt2::mt2_massless()
       if(foundhigh==0) 
       {
        
-	cout<<"Deltasq_high not found at event " << nevt <<endl;
+	cout<<"2Deltasq_high not found at event " << nevt <<endl;
         
        
          mt2_b = (double)sqrt(Deltasq_low+mnsq);
@@ -279,6 +280,7 @@ int mt2::nsols_massless(double Dsq)
   d2    = d21*delta+d20;
   e2    = e21*delta+e20;
   f2    = f22*delta*delta+f21*delta+f20;
+  
   double a,b;
   if (pax > 0) a = Ea/Dsq;
   else         a = -Ea/Dsq;
@@ -331,7 +333,8 @@ int mt2::nsols_massless(double Dsq)
 
 void mt2::mt2_bisect()
 {
-  
+
+   
    solved = true;
    cout.precision(11);
 
@@ -449,7 +452,7 @@ void mt2::mt2_bisect()
       foundhigh = find_high(Deltasq_high);
       if(foundhigh == 0) 
       {
- 	 cout << "Deltasq_high not found at event " << nevt << endl;
+ 	 cout << "1Deltasq_high not found at event " << nevt << endl;
          mt2_b = sqrt( Deltasq_low + mnsq );
          return;
       }
@@ -524,10 +527,11 @@ int mt2::scan_high(double & Deltasq_high)
    int foundhigh = 0 ;
    int nsols_high;
 
+   
+    
    double tempmass, maxmass;
    tempmass = mn + ma;
    maxmass  = sqrt(mnsq + Deltasq_high);
-   if (nevt == 32334) cout << "Deltasq_high = " << Deltasq_high << endl;
    for(double mass = tempmass + SCANSTEP; mass < maxmass; mass += SCANSTEP)
    {
       Deltasq_high = mass*mass - mnsq;

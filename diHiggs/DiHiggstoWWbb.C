@@ -135,9 +135,9 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   getstringpara(strs,"MuonBeforeIsoname", MuonBeforeIsoname_, "MuonBeforeIso");
   getstringpara(strs,"GenJetNoNuname", GenJetNoNuname_, "GenJetNoNu");
   getstringpara(strs,"GenJetname", GenJetname_, "GenJet");
-  getstringpara(strs,"Jetname", Jetname_, "Jet");
+  getstringpara(strs,"Jetname", Jetname_, "RecoJetPileUpID");//#
   getstringpara(strs,"GenMETname", GenMETname_, "GenMissingET");
-  getstringpara(strs,"METname", METname_, "MissingET");
+  getstringpara(strs,"METname", METname_, "RecoMissingET");//#
   getdoublepara(strs,"jetsPt", jetsPt_, 20.0);
   getdoublepara(strs,"jetsEta", jetsEta_, 5.0);
   getdoublepara(strs,"bjetsPt", bjetsPt_, 30.0);
@@ -2393,47 +2393,47 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	    float MT2_2 = mt2_event2.get_mt2();
 	    if(i==0) MT2 = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
 	    if(i==1) MT2_reco = (MT2_1 < MT2_2) ? MT2_1 : MT2_2;
-	    //NOW WITHOUT MUONS
-	    //-Invariant mass for "Particle A"
-	    //sumesBl1_1=(Bj_1.E())*(Bj_1.E());
-	    //sumpxsBl1_1=(Bj_1.Px())*(Bj_1.Px());
-	    //sumpysBl1_1=(Bj_1.Py())*(Bj_1.Py());
-	    //sumpzsBl1_1=(Bj_1.Pz())*(Bj_1.Pz());
-	    //M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
-	    //Pxa_1 = Bj_1.Px();
-	    //Pya_1 = Bj_1.Py();
-	    //// Invariant mass for "Particle B"
-	    //sumesBl2_1=(Bj_2.E())*(Bj_2.E());
-	    //sumpxsBl2_1=(Bj_2.Px())*(Bj_2.Px());
-	    //sumpysBl2_1=(Bj_2.Py())*(Bj_2.Py());
-	    //sumpzsBl2_1=(Bj_2.Pz())*(Bj_2.Pz());
-	    //M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
-	    //Pxb_1 = Bj_2.Px();
-	    //Pyb_1 = Bj_2.Py();
-	    // computation
-	    double pa1_nomu[3] = { 0., Bj_1.Px(), Bj_1.Py() };
-	    double pb1_nomu[3] = { 0., Bj_2.Px(), Bj_2.Py() };
-	    double pmiss_nomu[3]   = { 0,                      Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
-	    double pmiss_nomuv2[3] = { (MU_1+MU_2).M(),        Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
-	    double pmiss_nomuv3[3] = { (Met_p4+MU_1+MU_2).M(), Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
-	    mt2_bisect::mt2 mt2_event1_nomu;
-	    mt2_event1_nomu.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomu);
-	    mt2_event1_nomu.set_mn(0.);
-	    float MT2_1_nomu = mt2_event1_nomu.get_mt2();
-	    mt2_bisect::mt2 mt2_event1_nomuv2;
-	    mt2_event1_nomuv2.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomuv2);
-	    mt2_event1_nomuv2.set_mn((Muon1_p4+Muon2_p4).M());
-	    float MT2_1_nomuv2 = mt2_event1_nomuv2.get_mt2();
-	    mt2_bisect::mt2 mt2_event1_nomuv3;
-	    mt2_event1_nomuv3.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomuv3);
-	    mt2_event1_nomuv3.set_mn((Met_p4+Muon1_p4+Muon2_p4).M());
-	    float MT2_1_nomuv3 = mt2_event1_nomuv3.get_mt2();
-	    if(i==0) MT2_noMU = MT2_1_nomu;
-	    if(i==0) MT2_noMUv2= MT2_1_nomuv2;
-	    if(i==0) MT2_noMUv3 = MT2_1_nomuv3;
-	    if(i==1) MT2_noMU_reco = MT2_1_nomu;
-	    if(i==1) MT2_noMU_recov2 = MT2_1_nomuv2;
-	    if(i==1) MT2_noMU_recov3 = MT2_1_nomuv3;
+//	    //NOW WITHOUT MUONS
+//	    //-Invariant mass for "Particle A"
+//	    //sumesBl1_1=(Bj_1.E())*(Bj_1.E());
+//	    //sumpxsBl1_1=(Bj_1.Px())*(Bj_1.Px());
+//	    //sumpysBl1_1=(Bj_1.Py())*(Bj_1.Py());
+//	    //sumpzsBl1_1=(Bj_1.Pz())*(Bj_1.Pz());
+//	    //M_Bl1_1=sqrt(sumesBl1_1-(sumpxsBl1_1+sumpysBl1_1+sumpzsBl1_1));
+//	    //Pxa_1 = Bj_1.Px();
+//	    //Pya_1 = Bj_1.Py();
+//	    //// Invariant mass for "Particle B"
+//	    //sumesBl2_1=(Bj_2.E())*(Bj_2.E());
+//	    //sumpxsBl2_1=(Bj_2.Px())*(Bj_2.Px());
+//	    //sumpysBl2_1=(Bj_2.Py())*(Bj_2.Py());
+//	    //sumpzsBl2_1=(Bj_2.Pz())*(Bj_2.Pz());
+//	    //M_Bl2_1=sqrt(sumesBl2_1-(sumpxsBl2_1+sumpysBl2_1+sumpzsBl2_1));
+//	    //Pxb_1 = Bj_2.Px();
+//	    //Pyb_1 = Bj_2.Py();
+//	    // computation
+//	    double pa1_nomu[3] = { 0., Bj_1.Px(), Bj_1.Py() };
+//	    double pb1_nomu[3] = { 0., Bj_2.Px(), Bj_2.Py() };
+//	    double pmiss_nomu[3]   = { 0,                      Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
+//	    double pmiss_nomuv2[3] = { (MU_1+MU_2).M(),        Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
+//	    double pmiss_nomuv3[3] = { (Met_p4+MU_1+MU_2).M(), Met_p4.Px()+MU_1.Px()+MU_2.Px(), Met_p4.Py()+MU_1.Py()+MU_2.Py() };
+//	    mt2_bisect::mt2 mt2_event1_nomu;
+//	    mt2_event1_nomu.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomu);
+//	    mt2_event1_nomu.set_mn(0.);
+//	    float MT2_1_nomu = mt2_event1_nomu.get_mt2();
+//	    mt2_bisect::mt2 mt2_event1_nomuv2;
+//	    mt2_event1_nomuv2.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomuv2);
+//	    mt2_event1_nomuv2.set_mn((Muon1_p4+Muon2_p4).M());
+//	    float MT2_1_nomuv2 = mt2_event1_nomuv2.get_mt2();
+//	    mt2_bisect::mt2 mt2_event1_nomuv3;
+//	    mt2_event1_nomuv3.set_momenta(pa1_nomu,pb1_nomu,pmiss_nomuv3);
+//	    mt2_event1_nomuv3.set_mn((Met_p4+Muon1_p4+Muon2_p4).M());
+//	    float MT2_1_nomuv3 = mt2_event1_nomuv3.get_mt2();
+//	    if(i==0) MT2_noMU = MT2_1_nomu;
+//	    if(i==0) MT2_noMUv2= MT2_1_nomuv2;
+//	    if(i==0) MT2_noMUv3 = MT2_1_nomuv3;
+//	    if(i==1) MT2_noMU_reco = MT2_1_nomu;
+//	    if(i==1) MT2_noMU_recov2 = MT2_1_nomuv2;
+//	    if(i==1) MT2_noMU_recov3 = MT2_1_nomuv3;
 	  }
 	}
 	//MVA

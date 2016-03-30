@@ -1,11 +1,11 @@
 #parameters value 
 debug		false
-nEvents		-1
+nEvents		200000
 nStarts		0
-sample		2 #0 = tt, B3 = 1, B6 = 2
+sample		1 #0 = tt, B3 = 1, B6 = 2
 simulation	false
-Jetname		Jet
-METname		MissingET
+#Jetname		PuppiJetPileUpID
+#METname		PuppiMissingET
 jetsPt 		20
 jetsEta		5.0
 bjetsPt 	30
