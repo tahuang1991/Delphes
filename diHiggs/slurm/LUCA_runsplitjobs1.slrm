@@ -2,7 +2,7 @@
 #SBATCH -J runsplit
 #SBATCH -p hepx
 #SBATCH -n1
-#SBATCH --mem-per-cpu=6000
+#SBATCH --mem-per-cpu=2000
 #SBATCH -o batchjobs_runsplit-%A-%a.out
 #SBATCH -e batchjobs_runsplit-%A-%a.err
 #SBATCH --ntasks-per-core=1
@@ -16,12 +16,14 @@ echo "current dir is $Curdir, parentdir is $parentdir"
 jobid=$SLURM_JOBID
 echo "job$jobid starts, `date`"
 
-python optimizeCuts_moreSignals.py
+./LUCA_splitjobs_B3PU1.sh
+#./LUCA_splitjobs_B6.sh
+./LUCA_splitjobs_ttbarPU1.sh
 
 echo "job$jobid is done, `date`"
 #-p hepx 
 #-p mpi-core8
 #--time=72:00:00
 
-exit 0
 
+exit 0

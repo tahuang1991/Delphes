@@ -153,7 +153,7 @@ def main():
     
     # Logon not automatically loaded through PyROOT (logon loads TMVA library) load also GUI
     gROOT.SetMacroPath( "./" )
-    gROOT.Macro       ( "./TMVAlogon.C" )    
+## SO I TAKE DEFAULT FORM ROOT#    gROOT.Macro       ( "./TMVAlogon.C" )    
     gROOT.LoadMacro   ( "./TMVAGui.C" )
     
     # Import TMVA classes from ROOT

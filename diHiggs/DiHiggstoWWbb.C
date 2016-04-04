@@ -2299,7 +2299,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if ( not(simulation_) and b1at!=-1 and b2at!=-1){
     //if ( !simulation_ and Ptb1at!=-1 and Ptb2at!=-1){
 	
-	cout<<"NOT simulation and take jets from invariant mass selectin "<<endl;
+	//cout<<"NOT simulation and take jets from invariant mass selectin "<<endl;
 	b1jet = alljets.at(b1at);
 	b2jet = alljets.at(b2at);
 	//b1jet = alljets.at(Ptb1at);

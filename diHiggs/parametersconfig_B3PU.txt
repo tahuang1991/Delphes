@@ -1,13 +1,14 @@
 #parameters value 
 debug		false
-nEvents		200000
+nEvents		-1
 nStarts		0
 sample		1 #0 = tt, B3 = 1, B6 = 2
+PUSample 	true
 simulation	false
-#Jetname		PuppiJetPileUpID
-#METname		PuppiMissingET
-jetsPt 		20
-jetsEta		5.0
+Jetname		RecoJetPileUpID
+METname		RecoMissingET
+jetsPt 		30
+jetsEta		2.50
 bjetsPt 	30
 bjetsEta	2.50
 energeticbjets	false
@@ -30,4 +31,4 @@ weightfromonshellnupt_hist  true
 weightfromonoffshellWmass_hist	true 
 useMET 		true
 bjetrescaleAlgo	2
-metcorrection	2
+metcorrection	5
