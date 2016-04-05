@@ -5,17 +5,18 @@ from optparse import OptionParser
 print "===> Optimizing cuts for selecting Heavy Higgs vs tt."
 
 signalFile           = ['../Output/delphes_B3_1M_PU40_ALL.root','../Output/delphes_B6_1M_PU40_ALL.root']
-backgroundFile       = ['../Output/delphes_ttbar_1M_PU40_Wtobmu_ALL.root','../Output/delphes_ttbar_1M_PU40_Wtobmu_ALL.root']
+backgroundFile       = ['../Output/delphes_ttbar_1M_PU40_Wtobl_ALL.root','../Output/delphes_ttbar_1M_PU40_Wtobl_ALL.root']
+#backgroundFile       = ['../Output/delphes_ttbar_1M_PU40_Wtobmu_ALL.root','../Output/delphes_ttbar_1M_PU40_Wtobmu_ALL.root']
 signalFriendFile     = ""
 backgroundFriendFile = ""
 
 #presel    = 'preselections && (hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_b1b2<3.3&& TMath::Abs(dphi_l1l2b1b2)>1.&& mass_l1l2<75 && mass_b1b2<200 && mass_b1b2>50'
 presel    = 'preselections && (hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_b1b2<3.3&& TMath::Abs(dphi_l1l2b1b2)>1.&& mass_l1l2<75 && mass_b1b2<200 && mass_b1b2>50 && mass_l1l2>5. && dR_l1l2>0.07'
 cuts      = ['','']
-outputs   = ['TMVA_B3_RECO_1btag_40PU','TMVA_B6_RECO_1btag_40PU']
-weightDir = ['weights_B3_RECO_1btag_40PU','weights_B6_RECO_1btag_40PU']
+outputs   = ['TMVA_B3_RECO_1btag_40PU_ttall_rename','TMVA_B6_RECO_1btag_40PU_ttall_rename']
+weightDir = ['weights_B3_RECO_1btag_40PU_ttall_rename','weights_B6_RECO_1btag_40PU_ttall_rename']
 #MVAS      = ['Likelihood','LikelihoodMIX','LikelihoodD','BDT','MLP','RuleFit','HMatrix']
-MVAS      = ['MLPBFGS','MLPBNN']
+MVAS      = ['ALL']
 
 # Loop on the category to be optimized
 #for i in range(len(signalFile)):
@@ -46,7 +47,12 @@ for i in range(1):
         print "---> Backgr: " + str(NEntries_B*backgroundWeight) + " the weight used is: " + str(backgroundWeight)
         #Now the MVA
         print "Now starting serious things..."
-        os.system('python CutsOptimization.py -a "' + fullcut + '" -o ' + OutPut + ' -i ' + signalFile[i] + ' -j ' + backgroundFile[i] + ' -f ' + signalFriendFile+' -g ' + backgroundFriendFile+' -m ' + MVAS[iM] )
+        if( MVAS[iM]=="ALL" and len(MVAS)==1 ):
+            os.system('python CutsOptimization.py -a "' + fullcut + '" -o ' + OutPut + ' -i ' + signalFile[i] + ' -j ' + backgroundFile[i] + ' -f ' + signalFriendFile+' -g ' + backgroundFriendFile )
+        elif( MVAS[iM]=="ALL" and len(MVAS)!=1 ):
+            print "WARNING:: you want to run an all method and you have len(MVAS)!=1"; exit;
+        else:
+            os.system('python CutsOptimization.py -a "' + fullcut + '" -o ' + OutPut + ' -i ' + signalFile[i] + ' -j ' + backgroundFile[i] + ' -f ' + signalFriendFile+' -g ' + backgroundFriendFile+' -m ' + MVAS[iM] )
         os.system('rm -rf ' + Weight)
         os.system('mv weights ' + Weight)
 print "DONE!!\n \n"

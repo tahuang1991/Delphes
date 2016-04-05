@@ -161,11 +161,16 @@ class DiHiggstoWWbb {
     float MVA_dR_l1l2;
     float MVA_dR_b1b2;
     float MVA_dR_bl;
+    float MVA_dR_l1l2b1b2;
+    float MVA_MINdR_bl;
+    float MVA_dphi_l1l2b1b2;
     float MVA_mass_l1l2;
     float MVA_mass_b1b2;
+    float MVA_mass_trans;
     float MVA_MT2;
-    float MVA_bdt;
-    float MVA_bdt_B6fortt;
+    float MVA_pt_b1b2;
+    float MVA_value;
+    float MVA_value_B6fortt;
     float MT2;
     float MT2_reco;
     float MT2_noMU;
@@ -468,6 +473,7 @@ class DiHiggstoWWbb {
     float dR_b1l2;
     float dR_b2l1;
     float dR_b2l2;
+    float MINdR_bl;
     float dR_l1l2;
     float dR_l1l2b1b2;
     float dphi_l1l2b1b2;

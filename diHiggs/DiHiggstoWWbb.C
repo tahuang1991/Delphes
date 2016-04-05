@@ -90,25 +90,27 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   reader_ttB6 = new TMVA::Reader( "V:Color:Silent" );
   if(runMVA_){
     TString nameWeight = "";
-    if(sample_==B3) nameWeight = "MVAs/weights_B3_DRl1l2/TMVAClassification_BDT.weights.xml";
-    if(sample_==B6) nameWeight = "MVAs/weights_B6_DRl1l2/TMVAClassification_BDT.weights.xml";
-    if(sample_==tt) nameWeight = "MVAs/weights_B3_DRl1l2/TMVAClassification_BDT.weights.xml";
-    reader->AddVariable("dR_l1l2",&MVA_dR_l1l2);
-    reader->AddVariable("dR_b1b2",&MVA_dR_b1b2);
-    reader->AddVariable("dR_bl",&MVA_dR_bl);
-    reader->AddVariable("mass_l1l2",&MVA_mass_l1l2);
-    reader->AddVariable("mass_b1b2",&MVA_mass_b1b2);
-    reader->AddVariable("MT2",&MVA_MT2);
-    reader->BookMVA( "BDT method", nameWeight.Data() );   
+    if(sample_==B3) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
+    if(sample_==B6) nameWeight = "MVAs/weights_B6_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
+    if(sample_==tt) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
+cout<<"AAA "<<nameWeight<<endl;
+    reader->AddVariable( "dR_l1l2",     &MVA_dR_l1l2);
+    reader->AddVariable( "dR_b1b2",     &MVA_dR_b1b2);
+    reader->AddVariable( "dR_bl",       &MVA_dR_bl);
+    reader->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2);
+    reader->AddVariable( "MINdR_bl", &MVA_MINdR_bl);
+    reader->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2);
+    reader->AddVariable( "mass_l1l2",   &MVA_mass_l1l2);
+    reader->AddVariable( "mass_b1b2",   &MVA_mass_b1b2);
+    reader->AddVariable( "mass_trans",  &MVA_mass_trans);
+    reader->AddVariable( "MT2",         &MVA_MT2);
+    reader->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+cout<<"BBB "<<endl;
+    reader->BookMVA( "MLP method", nameWeight.Data() );
+cout<<"CCC "<<endl;
     if(sample_==tt){
-	reader_ttB6->AddVariable("dR_l1l2",&MVA_dR_l1l2);
-	reader_ttB6->AddVariable("dR_b1b2",&MVA_dR_b1b2);
-	reader_ttB6->AddVariable("dR_bl",&MVA_dR_bl);
-	reader_ttB6->AddVariable("mass_l1l2",&MVA_mass_l1l2);
-	reader_ttB6->AddVariable("mass_b1b2",&MVA_mass_b1b2);
-	reader_ttB6->AddVariable("MT2",&MVA_MT2);
-	nameWeight = "MVAs/weights_B6_DRl1l2/TMVAClassification_BDT.weights.xml";
-	reader_ttB6->BookMVA( "BDT method", nameWeight.Data() );
+	//nameWeight = "MVAs/weights_B6_DRl1l2/TMVAClassification_BDT.weights.xml";
+	//reader_ttB6->BookMVA( "BDT method", nameWeight.Data() );
     }
   }
 
@@ -249,8 +251,8 @@ void DiHiggstoWWbb::init(){
   evtree = new TTree("evtree","event tree");
   evtree->Branch("event_n",&event_n, "event_n/I");
   evtree->Branch("weight",&weight, "weight/F");
-  evtree->Branch("MVA_bdt",&MVA_bdt, "MVA_bdt/F");
-  evtree->Branch("MVA_bdt_B6fortt",&MVA_bdt_B6fortt, "MVA_bdt_B6fortt/F");
+  evtree->Branch("MVA_value",&MVA_value, "MVA_value/F");
+  evtree->Branch("MVA_value_B6fortt",&MVA_value_B6fortt, "MVA_value_B6fortt/F");
   evtree->Branch("MT2",&MT2, "MT2/F");
   evtree->Branch("MT2_reco",&MT2_reco, "MT2_reco/F");
   evtree->Branch("MT2_noMU",&MT2_noMU, "MT2_noMU/F");
@@ -556,6 +558,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("dR_b2l1",&dR_b2l1, "dR_b2l1/F");
   evtree->Branch("dR_b2l2",&dR_b2l2, "dR_b2l2/F");
   evtree->Branch("dR_b1b2",&dR_b1b2, "dR_b1b2/F");
+  evtree->Branch("MINdR_bl",&MINdR_bl, "MINdR_bl/F");
   evtree->Branch("dR_l1l2",&dR_l1l2, "dR_l1l2/F");
   evtree->Branch("dR_l1l2b1b2",&dR_l1l2b1b2, "dR_l1l2b1b2/F");
   evtree->Branch("dphi_l1l2b1b2",&dphi_l1l2b1b2, "dphi_l1l2b1b2/F");
@@ -1639,8 +1642,8 @@ void DiHiggstoWWbb::initBranches(){
   event_n = -999;
   weight = 0.;
   vertices = 0;
-  MVA_bdt = -999.;
-  MVA_bdt_B6fortt = -999.;
+  MVA_value = -999.;
+  MVA_value_B6fortt = -999.;
   MT2 = -999.;
   MT2_reco = -999.;
   MT2_noMU = -999.;
@@ -1933,6 +1936,7 @@ void DiHiggstoWWbb::initBranches(){
   dR_b1l2=-1.0;
   dR_b2l1=-1.0;
   dR_b2l2=-1.0;
+  MINdR_bl=-1.0;
   dR_l1l2=-1.0;
   dR_l1l2b1b2=-1.0;
   dphi_l1l2b1b2=-1.0;
@@ -2406,7 +2410,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	dR_b1b2 = b1jet_p4.DeltaR(b2jet_p4);
 	dR_l1l2 = Muon1_p4.DeltaR(Muon2_p4);
 	dR_l1l2b1b2 = (Muon1_p4+Muon2_p4).DeltaR(b1jet_p4+b2jet_p4);
-	dphi_l1l2b1b2 = TVector2::Phi_mpi_pi( (Muon1_p4+Muon2_p4).Phi()-(b1jet_p4+b2jet_p4).Phi() );
+	dphi_l1l2b1b2 = fabs(TVector2::Phi_mpi_pi( (Muon1_p4+Muon2_p4).Phi()-(b1jet_p4+b2jet_p4).Phi() ));
 	TLorentzVector ll_p4 = Muon1_p4+Muon2_p4;
 	TLorentzVector bjets_p4 = b1jet_p4+b2jet_p4;
 	dR_minbl = min(min(dR_b1l1,dR_b1l2),min(dR_b2l1,dR_b2l2));
@@ -2416,6 +2420,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	mass_b1b2 = bjets_p4.M(); energy_b1b2 = bjets_p4.Energy(); pt_b1b2 = bjets_p4.Pt(); eta_b1b2 = bjets_p4.Eta(); phi_b1b2 = bjets_p4.Phi();
 	mass_trans = sqrt(2*ll_p4.Pt()*met*(1-cos(dphi_llmet)));
 	if (dR_b1l1 > jetleptonDeltaR_ and dR_b1l2 > jetleptonDeltaR_ and dR_b2l1 > jetleptonDeltaR_ and dR_b2l2 > jetleptonDeltaR_) hasdRljet =true;
+	MINdR_bl = dR_b1l1*(dR_b1l1<dR_b1l2 && dR_b1l1<dR_b2l1 && dR_b1l1<dR_b2l2) + dR_b2l1*(dR_b2l1<dR_b2l2 && dR_b2l1<dR_b1l1 && dR_b2l1<dR_b1l2) + dR_b1l2*(dR_b1l2<dR_b1l1 && dR_b1l2<dR_b2l1 && dR_b1l2<dR_b2l2) + dR_b2l2*(dR_b2l2<dR_b1l1 && dR_b2l2<dR_b1l2 && dR_b2l2<dR_b2l1);
 	//MT2: In order to construct MT2 for either the t tbar -> bW bW system or our signal H -> h h -> bb WW,
 	//we group each pair b_jet-lepton into an object: we then get "Particle A" and "Particle B" (each one given by a b_jet-lepton object),
 	//whose Kinematics is to be fed into the MT2 variable.
@@ -2533,11 +2538,11 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	}
 	//MVA
 	if(runMVA_){
-	  MVA_dR_l1l2 = dR_l1l2; MVA_dR_b1b2=dR_b1b2; MVA_dR_bl=dR_bl; MVA_mass_l1l2=mass_l1l2; MVA_mass_b1b2=mass_b1b2; MVA_MT2=MT2;
-	  MVA_bdt = reader->EvaluateMVA("BDT method");
+	  MVA_dR_l1l2 = dR_l1l2; MVA_dR_b1b2=dR_b1b2; MVA_dR_bl=dR_bl; MVA_dR_l1l2b1b2 = dR_l1l2b1b2; MVA_MINdR_bl = MINdR_bl; MVA_dphi_l1l2b1b2 = dphi_l1l2b1b2; MVA_mass_l1l2=mass_l1l2; MVA_mass_b1b2=mass_b1b2; MVA_mass_trans = mass_trans;  MVA_MT2 = MT2; MVA_pt_b1b2 = pt_b1b2;
+	  MVA_value = reader->EvaluateMVA("MLP method");
 	  //Using also B6 MVA
 	  if(sample_==tt){
-	    MVA_bdt_B6fortt = reader_ttB6->EvaluateMVA("BDT method");
+	  //  MVA_value_B6fortt = reader_ttB6->EvaluateMVA("BDT method");
 	  }
 	}
     }
