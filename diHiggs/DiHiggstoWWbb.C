@@ -444,6 +444,10 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("w2_pt",&w2_pt, "w2_pt/F");
   evtree->Branch("w2_eta",&w2_eta, "w2_eta/F");
   evtree->Branch("w2_phi",&w2_phi, "w2_phi/F");
+  evtree->Branch("w1_child_id",&w1_child_id, "w1_child_id/I");
+  evtree->Branch("w2_child_id",&w2_child_id, "w2_child_id/I");
+  evtree->Branch("tau1_child_id",&tau1_child_id, "tau1_child_id/I");
+  evtree->Branch("tau2_child_id",&tau2_child_id, "tau2_child_id/I");
 
   evtree->Branch("htoWW_energy",&htoWW_energy);
   evtree->Branch("htoWW_px",&htoWW_px,"htoWW_px/F");
@@ -649,8 +653,8 @@ void DiHiggstoWWbb::fetchHhhWWWWchain(TClonesArray *branchParticle){
   }
   //printGenParticle(genP);
   if (genh2->PID != 99926 and genh2->PID != 99927) {
-    cout <<" first genparticle is not 99926 nor 99927 " << endl; 
-    printGenParticle(genh2);
+    //cout <<"in HhhWWWW first genparticle is not 99926 nor 99927 " << endl; 
+    //printGenParticle(genh2);
     return;
   }
   genhiggs1 =  (GenParticle*) branchParticle->At(genh2->D1); 
@@ -822,6 +826,8 @@ void DiHiggstoWWbb::fetchHhhchain(TClonesArray *branchParticle){
     htobb_px = genhtobb->Px; htobb_py= genhtobb->Py; htobb_pz = genhtobb->Pz; htobb_energy = genhtobb->E;
     htobb_mass = genhtobb->Mass;
   }
+ 
+  GenParticle *w1_child,*w2_child; 
   if (htoWW){
     if (((GenParticle*)branchParticle->At(genhtoWW->D1))->PID == -24){ //W
 	genW1 = (GenParticle*)branchParticle->At(genhtoWW->D1);  //to muon(13)
@@ -841,6 +847,21 @@ void DiHiggstoWWbb::fetchHhhchain(TClonesArray *branchParticle){
     w2_eta = genW2->Eta; w2_phi = genW2->Phi;
     htoWW_px = genhtoWW->Px; htoWW_py = genhtoWW->Py; htoWW_pz = genhtoWW->Pz; htoWW_energy = genhtoWW->E;
     htoWW_mass = genhtoWW->Mass;
+
+    if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID)%2 == 1){
+		w1_child_id = ((GenParticle*)branchParticle->At(genW1->D1))->PID;
+		w1_child = (GenParticle*)branchParticle->At(genW1->D1);
+    }else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID)%2 == 1){
+		w1_child_id = ((GenParticle*)branchParticle->At(genW1->D2))->PID;
+		w1_child = (GenParticle*)branchParticle->At(genW1->D2);
+    }
+    if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID)%2 == 1){
+		w2_child_id = ((GenParticle*)branchParticle->At(genW2->D1))->PID;
+		w2_child = (GenParticle*)branchParticle->At(genW2->D1);
+    }else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID)%2 == 1){
+		w2_child_id = ((GenParticle*)branchParticle->At(genW2->D2))->PID;
+		w2_child = (GenParticle*)branchParticle->At(genW2->D2);
+    }
 
     if (genW1->D1>0 && ((GenParticle*)branchParticle->At(genW1->D1))->PID == 13){
 	genmu1 = (GenParticle*)branchParticle->At(genW1->D1);
@@ -885,6 +906,25 @@ void DiHiggstoWWbb::fetchHhhchain(TClonesArray *branchParticle){
    if (debug_) cout << "mu2 from W, W mass "<<genW2->Mass <<" mu2_pt "<< mu2_pt<<" eta"<< mu2_eta <<endl;
   }
    
+  if (abs(w1_child_id)==15){
+     getFinalState(w1_child, branchParticle);
+     //cout <<" w1_child id "<< w1_child_id <<" and its children: "<< endl;
+     for (int i= w1_child->D1; i<= w1_child->D2; i++){
+	//cout <<"	tau1 child, i "<< i <<" pid "<<  ((GenParticle*)branchParticle->At(i))->PID << endl;
+	if (abs(((GenParticle*)branchParticle->At(i))->PID)==11 or abs(((GenParticle*)branchParticle->At(i))->PID)==13)
+		tau1_child_id = ((GenParticle*)branchParticle->At(i))->PID;
+	}
+   }
+  if (abs(w2_child_id)==15){
+     getFinalState(w2_child, branchParticle);
+     //cout <<" w2_child id "<< w2_child_id <<" and its children: "<< endl;
+     for (int i= w2_child->D1; i<= w2_child->D2; i++){
+	//cout <<"	tau2 child, i "<< i <<" pid "<<  ((GenParticle*)branchParticle->At(i))->PID << endl;
+	if (abs(((GenParticle*)branchParticle->At(i))->PID)==11 or abs(((GenParticle*)branchParticle->At(i))->PID)==13)
+		tau2_child_id = ((GenParticle*)branchParticle->At(i))->PID;
+	}
+   }
+  //cout <<" tau1_child_id "<< tau1_child_id <<" tau2_child_id "<< tau2_child_id << endl;
   if (Wtomu1nu1 and Wtomu2nu2){
 	//cout <<" both two Ws decay into muons "<< endl;
     if (((genmu1->PT > muonPt1_ && genmu2->PT > muonPt2_) || (genmu1->PT > muonPt2_ && genmu2->PT > muonPt1_)) 
@@ -973,6 +1013,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
     cout <<"t's child "; printGenParticle((GenParticle*)branchParticle->At(gent2->D2));
     }*/
 
+  GenParticle *w1_child,*w2_child; 
   if (tbartoWbbar and ttoWb){
     //move on to "final state" bquarks
     t1_px = gent1->Px; t1_py = gent1->Py; t1_pz = gent1->Pz; t1_mass = gent1->Mass; t1_energy = gent1->E;
@@ -993,6 +1034,21 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
     w1_eta = genW1->Eta; w1_phi = genW1->Phi;
     w2_mass = genW2->Mass; w2_px = genW2->Px; w2_py = genW2->Py; w2_pz = genW2->Pz; w2_energy = genW2->E;
     w2_eta = genW2->Eta; w2_phi = genW2->Phi;
+
+    if (genW1->D1>0 && abs(((GenParticle*)branchParticle->At(genW1->D1))->PID)%2 == 1){
+		w1_child_id = ((GenParticle*)branchParticle->At(genW1->D1))->PID;
+		w1_child = (GenParticle*)branchParticle->At(genW1->D1);
+    }else if (genW1->D2>0 && abs(((GenParticle*)branchParticle->At(genW1->D2))->PID)%2 == 1){
+		w1_child_id = ((GenParticle*)branchParticle->At(genW1->D2))->PID;
+		w1_child = (GenParticle*)branchParticle->At(genW1->D2);
+    }
+    if (genW2->D1>0 && abs(((GenParticle*)branchParticle->At(genW2->D1))->PID)%2 == 1){
+		w2_child_id = ((GenParticle*)branchParticle->At(genW2->D1))->PID;
+		w2_child = (GenParticle*)branchParticle->At(genW2->D1);
+    }else if (genW2->D2>0 && abs(((GenParticle*)branchParticle->At(genW2->D2))->PID)%2 == 1){
+		w2_child_id = ((GenParticle*)branchParticle->At(genW2->D2))->PID;
+		w2_child = (GenParticle*)branchParticle->At(genW2->D2);
+    }
 
     if (genW1->D1>0 && ((GenParticle*)branchParticle->At(genW1->D1))->PID == 13){
 	genmu1 = (GenParticle*)branchParticle->At(genW1->D1);
@@ -1024,7 +1080,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
     nu1_p4 = gennu1->P4();
     nu1_px = gennu1->Px; nu1_py = gennu1->Py; nu1_pz = gennu1->Pz; nu1_energy = gennu1->E;
     nu1_eta = gennu1->Eta; nu1_phi = gennu1->Phi; nu1_pt = gennu1->PT;
-    //	cout << "mu1 from W "; printGenParticle(genmu1);
+    if (debug_) cout << "mu1 from W, W mass "<< genW1->Mass <<" mu1_pt "<< mu1_pt <<" eta "<< mu1_eta << endl;
   }
   if (Wtomu2nu2){
     getFinalState(genmu2, branchParticle);
@@ -1035,8 +1091,28 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
     nu2_p4 = gennu2->P4();
     nu2_px = gennu2->Px; nu2_py = gennu2->Py; nu2_pz = gennu2->Pz; nu2_energy = gennu2->E;
     nu2_eta = gennu2->Eta; nu2_phi = gennu2->Phi; nu2_pt = gennu2->PT;
-    //   cout << "mu2 from W "; printGenParticle(genmu2);
+   if (debug_) cout << "mu2 from W, W mass "<<genW2->Mass <<" mu2_pt "<< mu2_pt<<" eta"<< mu2_eta <<endl;
   }
+
+  if (abs(w1_child_id)==15){
+     getFinalState(w1_child, branchParticle);
+     //cout <<" w1_child id "<< w1_child_id <<" and its children: "<< endl;
+     for (int i= w1_child->D1; i<= w1_child->D2; i++){
+	//cout <<"	tau1 child, i "<< i <<" pid "<<  ((GenParticle*)branchParticle->At(i))->PID << endl;
+	if (abs(((GenParticle*)branchParticle->At(i))->PID)==11 or abs(((GenParticle*)branchParticle->At(i))->PID)==13)
+		tau1_child_id = ((GenParticle*)branchParticle->At(i))->PID;
+	}
+   }
+  if (abs(w2_child_id)==15){
+     getFinalState(w2_child, branchParticle);
+     //cout <<" w2_child id "<< w2_child_id <<" and its children: "<< endl;
+     for (int i= w2_child->D1; i<= w2_child->D2; i++){
+	//cout <<"	tau2 child, i "<< i <<" pid "<<  ((GenParticle*)branchParticle->At(i))->PID << endl;
+	if (abs(((GenParticle*)branchParticle->At(i))->PID)==11 or abs(((GenParticle*)branchParticle->At(i))->PID)==13)
+		tau2_child_id = ((GenParticle*)branchParticle->At(i))->PID;
+	}
+   }
+  //cout <<" tau1_child_id "<< tau1_child_id <<" tau2_child_id "<< tau2_child_id << endl;
 
   if (Wtomu1nu1 and Wtomu2nu2){
     if (((genmu1->PT > muonPt1_ && genmu2->PT > muonPt2_) || (genmu1->PT > muonPt2_ && genmu2->PT > muonPt1_)) 
@@ -1332,7 +1408,7 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
   if (hasRECOjet1 and hasRECOjet2 and (dR_b1jet>0.15 or dR_b2jet >0.15 ) and dR_b1jet<5 and dR_b2jet<5 and bpartonsOK) {
         //std::cout <<" b1 eta  "<< genb1->Eta <<" pt "<< genb1->PT <<" b2 eta "<< genb2->Eta <<" pt "<< genb2->PT << std::endl;
 	//std::cout <<" genb1jet pt "<< genb1jet->PT <<" dR_genb1jet "<< dR_genb1jet <<" genb2jet pt "<< genb2jet->PT <<" dR_genb2jet "<< dR_genb2jet << std::endl;
-	std::cout <<" warning! jet1 pt "<< b1jet->PT <<" eta "<< b1jet->Eta <<" dR_b1jet "<< dR_b1jet 
+	std::cout <<" jet1 pt "<< b1jet->PT <<" eta "<< b1jet->Eta <<" dR_b1jet "<< dR_b1jet 
 		<<" jet2 pt "<< b2jet->PT <<" eta "<< b2jet->Eta <<" dR_b2jet "<< dR_b2jet << std::endl;
   }
   //Now Btag
@@ -1807,7 +1883,11 @@ void DiHiggstoWWbb::initBranches(){
   w2_eta = 0.0;
   w2_phi = 0.0;
   w2_pt = 0.0;
-
+  
+  w1_child_id = -1;
+  w2_child_id = -1;
+  tau1_child_id = -1;
+  tau2_child_id = -1;
 
   Wtomu2nu2=false;
   Wtomu1nu1=false;
@@ -2049,7 +2129,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if (sample_ == B3 || sample_ == B6) fetchHhhchain(branchParticle); 
     else if (sample_ == tt) fetchttbarchain(branchParticle);
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
-    ttbar  = (ttoWb and tbartoWbbar);
+    ttbar  = (ttoWb and tbartoWbbar and Wtomu1nu1 and Wtomu2nu2);
     getGenMET(branchGenMissingET);
     //if (not(h2tohh) and not(ttbar)) continue;
     if ((h2tohh or ttbar) and simulation_){
@@ -2553,8 +2633,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	cout <<"genjet genb1jet pt "<< genb1jet_pt <<" eta "<< genb1jet_eta <<" dR "<< dR_genb1jet <<" genb2jet pt "<< genb2jet_pt <<" eta "<< genb2jet_eta <<" dR "<< dR_genb2jet << endl;
 	cout <<"jet b1jet pt "<< b1jet_pt <<" eta "<< b1jet_eta <<" dR "<< dR_b1jet <<" b2jet pt "<< b2jet_pt <<" eta "<< b2jet_eta <<" dR "<< dR_b2jet << endl;
 	cout <<"gen muon muon1 pt "<< mu1_pt <<" eta "<< mu1_eta <<" muon2 pt "<< mu2_pt <<" eta "<< mu2_eta << endl;
-	cout <<"reco muon muon1 pt" <<Muon1_pt <<" eta "<< Muon1_eta <<" dR "<< dR_mu1 <<" muon2 pt "<< Muon2_pt <<" eta "<< Muon2_eta <<" dR "<< dR_mu2 << endl;
-	cout <<"dR_genminbl "<< dR_genminbl <<" dR_minbl "<< dR_minbl << endl;
+	cout <<"reco muon muon1 pt" <<Muon1_pt <<" eta "<< Muon1_eta<<" phi "<< Muon1_phi <<" dR "<< dR_mu1 <<" muon2 pt "<< Muon2_pt <<" eta "<< Muon2_eta <<" phi "<< Muon2_phi <<" dR "<< dR_mu2 << endl;
+	if (dR_genminbl>0.3 and dR_minbl>0 and dR_minbl<0.1)
+		cout <<"warning!!!! dR_genminbl "<< dR_genminbl <<" dR_minbl "<< dR_minbl << endl;
 	cout <<"numGenjet "<< numGenJet <<" numjet "<< numjets << endl;
 	}
 
@@ -2687,6 +2768,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
      */
     //if (runMMCok or preselections_gen or preselections) {
     if (h2tohh or ttbar or objectsready) {
+    //if (htobb) {
     	if(debug_) cout<<"DEBUG::10"<<endl;
 	evtree->Fill();
     }

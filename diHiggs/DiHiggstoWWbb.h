@@ -344,7 +344,12 @@ class DiHiggstoWWbb {
     float w2_eta;
     float w2_phi;
     float w2_pt;
-
+    
+    int w1_child_id;
+    int w2_child_id;
+    int tau1_child_id;
+    int tau2_child_id; 
+      
     bool Wtomu2nu2;
     bool Wtomu1nu1;
     bool htoWW;

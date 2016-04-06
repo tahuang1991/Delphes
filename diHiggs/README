@@ -13,3 +13,19 @@ to run real data after delphes, not including gen information
 4.ttbarAnalyzer
 run to ttbar real data after delphes, not including gen information
 
+
+
+B3,PU0 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_bbWW_20160326_PU0_leptonW_1M.root
+
+B3,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part1_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part2_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part3_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part4_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part5_PU40_20160316_UpdateBtag_leptonW_antik4.root
+
+ttbar, PU0 delphes sample:
+W decays into mu or tau, total number of events=4M
+inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part1_PU0_20160401_Btag_antik4_Wtomutau_11383680.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part2_PU0_20160401_Btag_antik4_Wtomutau_11383680.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part3_PU0_20160401_Btag_antik4_Wtomutau_11383680.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part4_PU0_20160401_Btag_antik4_Wtomutau_11383680.root
+
+
+ttbar, PU40 delphes sample:
+W decays into mu or tau
+coming soon
