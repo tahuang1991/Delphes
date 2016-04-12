@@ -178,7 +178,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
   phi_gen = 0;
   //PU0:14.8,  PU40:25.2
   float met_sigma = (PUsample? 25.2:14.8);
-  std::cout <<(PUsample?" PUsample ":"Not PUsample ")<< " met_sigma "<< met_sigma << std::endl;
+  //std::cout <<(PUsample?" PUsample ":"Not PUsample ")<< " met_sigma "<< met_sigma << std::endl;
   //mmctree->SetDebug(100,0,9999999);
   //int count = 100000;
 
@@ -916,7 +916,7 @@ MMC::readoutbjetrescalec1PDF(){
   //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
   //   TFile* file = TFile::Open(RefPDFfile_.c_str(), "READ");
   TH1F* bjetrescalec1pdf;
-  bjetrescalec1pdf = (TH1F*)file->Get("bjetrescalec1dR4pdf");
+  bjetrescalec1pdf = PUsample?(TH1F*)file->Get("recobjetrescalec1pdfPU40"):(TH1F*)file->Get("bjetrescalec1dR4pdf");
   //bjetrescalec1pdf = (TH1F*)file->Get("recobjetrescalec1pdf");
   //delete file;
   //file->Close();
@@ -932,7 +932,8 @@ MMC::readoutbjetrescalec2PDF(){
 
   //TFile* file = new TFile("/home/taohuang/work/CMSSW_7_3_1/src/DiHiggsWW/MMC/plugins/MMCRefPDF.ROOT");
   //TFile* file = new TFile(RefPDFfile_.c_str());
-  TH1F* bjetrescalec2pdf = (TH1F*)file->Get("bjetrescalec2dR4pdf");
+  TH1F* bjetrescalec2pdf;
+  bjetrescalec2pdf = PUsample?(TH1F*)file->Get("recobjetrescalec2pdfPU40"):(TH1F*)file->Get("bjetrescalec2dR4pdf");
   // std::cout <<" print c2 PDF " ; bjetrescalec2pdf->Print();
   //delete file;
   //file->Close();
