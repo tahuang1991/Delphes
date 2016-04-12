@@ -83,7 +83,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   cout <<" DiHiggstoWWbb gFile get options " << gFile->GetOption() << endl;
   //Compute weight
   CrossSections_and_BR *my_br = new CrossSections_and_BR();
-  Thisweight = my_br->GetWeight(300,InitEvents_,sample_);
+  Thisweight = my_br->GetWeight(300,allEntries,sample_);
   delete my_br;
   TMVA::Tools::Instance();
   reader      = new TMVA::Reader( "V:Color:Silent" );
@@ -126,7 +126,6 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   }
   getintpara(strs, "nEvents", nEvents_, -1);
   getintpara(strs, "nStarts", nStarts_, 0);
-  getintpara(strs, "InitEvents", InitEvents_, 0);
   getintpara(strs, "sample", sample_, B3);
   getboolpara(strs, "simulation", simulation_, true);
   getboolpara(strs, "PUSample", PUSample_, false);
