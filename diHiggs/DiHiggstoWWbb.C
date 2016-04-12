@@ -83,7 +83,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   cout <<" DiHiggstoWWbb gFile get options " << gFile->GetOption() << endl;
   //Compute weight
   CrossSections_and_BR *my_br = new CrossSections_and_BR();
-  Thisweight = my_br->GetWeight(300,1000000,sample_);
+  Thisweight = my_br->GetWeight(300,InitEvents_,sample_);
   delete my_br;
   TMVA::Tools::Instance();
   reader      = new TMVA::Reader( "V:Color:Silent" );
@@ -93,7 +93,6 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
     if(sample_==B3) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
     if(sample_==B6) nameWeight = "MVAs/weights_B6_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
     if(sample_==tt) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
-cout<<"AAA "<<nameWeight<<endl;
     reader->AddVariable( "dR_l1l2",     &MVA_dR_l1l2);
     reader->AddVariable( "dR_b1b2",     &MVA_dR_b1b2);
     reader->AddVariable( "dR_bl",       &MVA_dR_bl);
@@ -105,9 +104,7 @@ cout<<"AAA "<<nameWeight<<endl;
     reader->AddVariable( "mass_trans",  &MVA_mass_trans);
     reader->AddVariable( "MT2",         &MVA_MT2);
     reader->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
-cout<<"BBB "<<endl;
     reader->BookMVA( "MLP method", nameWeight.Data() );
-cout<<"CCC "<<endl;
     if(sample_==tt){
 	//nameWeight = "MVAs/weights_B6_DRl1l2/TMVAClassification_BDT.weights.xml";
 	//reader_ttB6->BookMVA( "BDT method", nameWeight.Data() );
@@ -129,6 +126,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   }
   getintpara(strs, "nEvents", nEvents_, -1);
   getintpara(strs, "nStarts", nStarts_, 0);
+  getintpara(strs, "InitEvents", InitEvents_, 0);
   getintpara(strs, "sample", sample_, B3);
   getboolpara(strs, "simulation", simulation_, true);
   getboolpara(strs, "PUSample", PUSample_, false);

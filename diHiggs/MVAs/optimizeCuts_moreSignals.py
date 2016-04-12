@@ -4,17 +4,16 @@ from ROOT import gSystem, gROOT, gApplication, TFile, TTree, TCut, TH1F
 from optparse import OptionParser
 print "===> Optimizing cuts for selecting Heavy Higgs vs tt."
 
-signalFile           = ['../Output/delphes_B3_1M_PU40_ALL.root','../Output/delphes_B6_1M_PU40_ALL.root']
-backgroundFile       = ['../Output/delphes_ttbar_1M_PU40_Wtobl_ALL.root','../Output/delphes_ttbar_1M_PU40_Wtobl_ALL.root']
-#backgroundFile       = ['../Output/delphes_ttbar_1M_PU40_Wtobmu_ALL.root','../Output/delphes_ttbar_1M_PU40_Wtobmu_ALL.root']
+signalFile           = ['../Output/delphes_B3_1M_PU40ALL.root','../Output/delphes_B6_1M_PU40_ALL.root']
+backgroundFile       = ['../Output/delphes_ttbar_1M_PU40_WtobtaumuALL.root','../Output/delphes_ttbar_1M_PU40_WtobtaumuALL.root']
 signalFriendFile     = ""
 backgroundFriendFile = ""
 
-#presel    = 'preselections && (hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_b1b2<3.3&& TMath::Abs(dphi_l1l2b1b2)>1.&& mass_l1l2<75 && mass_b1b2<200 && mass_b1b2>50'
-presel    = 'preselections && (hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_b1b2<3.3&& TMath::Abs(dphi_l1l2b1b2)>1.&& mass_l1l2<75 && mass_b1b2<200 && mass_b1b2>50 && mass_l1l2>5. && dR_l1l2>0.07'
+presel    = 'hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons &&(hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_l1l2>0.07 && dR_b1b2<5. && mass_l1l2<100 && mass_l1l2>5. && mass_b1b2>22'
+#cuts      = ['&& TMath::Abs(w1_child_id)==13 && TMath::Abs(w2_child_id)==13',' && TMath::Abs(w1_child_id)==13 && TMath::Abs(w2_child_id)==13']
 cuts      = ['','']
-outputs   = ['TMVA_B3_RECO_1btag_40PU_ttall_rename','TMVA_B6_RECO_1btag_40PU_ttall_rename']
-weightDir = ['weights_B3_RECO_1btag_40PU_ttall_rename','weights_B6_RECO_1btag_40PU_ttall_rename']
+outputs   = ['TMVA_B3_RECO_1btag_40PU','TMVA_B6_RECO_1btag_40PU']
+weightDir = ['weights_B3_RECO_1btag_40PU','weights_B6_RECO_1btag_40PU']
 #MVAS      = ['Likelihood','LikelihoodMIX','LikelihoodD','BDT','MLP','RuleFit','HMatrix']
 MVAS      = ['ALL']
 
@@ -35,8 +34,8 @@ for i in range(1):
         inputBkg = TFile.Open( backgroundFile[i] )
         treeS    = inputSig.Get("evtree")
         treeB    = inputBkg.Get("evtree")
-        NEntries_S = treeS.Draw("dR_l1l2>>hist",presel,"goff");
-        NEntries_B = treeB.Draw("dR_l1l2>>hist",presel,"goff");
+        NEntries_S = treeS.Draw("dR_l1l2>>hist",fullcut,"goff");
+        NEntries_B = treeB.Draw("dR_l1l2>>hist",fullcut,"goff");
         #Get the corresponding weights
         hW = TH1F("hW","", 1000, 0., 50.) 
         treeS.Draw("weight>>hW",fullcut,"goff")

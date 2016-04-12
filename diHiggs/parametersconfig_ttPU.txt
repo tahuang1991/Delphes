@@ -1,9 +1,9 @@
 #parameters value 
 debug		false
-InitEvents		1000000
+InitEvents		4000000
 nEvents		-1
 nStarts		0
-sample		1 #0 = tt, B3 = 1, B6 = 2
+sample		0 #0 = tt, B3 = 1, B6 = 2
 PUSample 	true
 simulation	false
 Jetname		RecoJetPileUpID
@@ -20,7 +20,7 @@ leptonIso	0.15
 muonPt1		10.0
 muonPt2		10.0
 muonsEta	2.4
-runMVA  	true
+runMVA  	false
 runMMC  	false
 useRecoBJet	true
 useRecoMuon	true

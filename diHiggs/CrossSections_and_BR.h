@@ -34,6 +34,7 @@ class CrossSections_and_BR{
     Float_t BR_h_WW;
     Float_t BR_W_lnu;
     Float_t BR_W_munu;
+    Float_t BR_W_munu_taunu;
     Float_t BR_t_Wb;
 
 };

@@ -31,7 +31,7 @@
 
 using namespace std;
 
-void EventFlow( TString Sig_name = "../Output/delphes_B3_1M_PU40_ALL.root", TString Bac_name = "../Output/delphes_ttbar_1M_PU40_Wtobl_ALL.root", TString Out="plots" ){
+void EventFlow( TString Sig_name = "../Output/delphes_B3_1M_PU40_ALL3.root", TString Bac_name = "../Output/delphes_ttbar_1M_PU40_Wtobl_ALL3.root", TString Out="plots" ){
 
   //Opening Inputs
   cout<<"Hello, I'm creating computing the EventFlow."<<endl;
@@ -54,12 +54,12 @@ void EventFlow( TString Sig_name = "../Output/delphes_B3_1M_PU40_ALL.root", TStr
   float weight_B = hW->GetMean();
   cout<<"Signal: "<<Sig_name<<" has: "<<NEntries_S<<" * "<<weight_S<<" events = "<<NEntries_S*weight_S<<endl;
   cout<<"Background: "<<Bac_name<<" has: "<<NEntries_B<<" * "<<weight_B<<" events = "<<NEntries_B*weight_B<<endl;
-  //Event Flow. (preselections = MVA_value","hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons && hasdRljet)
+  //Event Flow. (preselections = "hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons && hasdRljet)
   TCut selection = "";
   int nCuts = 7;
-  //TString B_tag = "(hasb1jet || hasb2jet)";
-  TString B_tag = "(((b1jet_btag&2)>0 && (b2jet_btag&3)>0) || ((b1jet_btag&3)>0 && (b 2jet_btag&2)>0))";
-  TString Cuts[]={"preselections",B_tag,"dR_l1l2<3.3 && dR_l1l2>0.07","dR_b1b2<3.3","TMath::Abs(dphi_l1l2b1b2)>1.","mass_l1l2<75 && mass_l1l2>5.","mass_b1b2>22"};
+  TString B_tag = "(hasb1jet || hasb2jet)";
+  //TString B_tag = "(((b1jet_btag&2)>0 && (b2jet_btag&3)>0) || ((b1jet_btag&3)>0 && (b 2jet_btag&2)>0))";
+  TString Cuts[]={"hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons",B_tag,"dR_l1l2<3.3 && dR_l1l2>0.07","dR_b1b2<5.","","mass_l1l2<100 && mass_l1l2>5.","mass_b1b2>22"};
   float nEv_S[7], nEv_B[7];
   for( int i=0; i<nCuts; i++){
      if( i==0 ) selection = Cuts[i];
