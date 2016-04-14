@@ -21,6 +21,12 @@ inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_bbWW_20160326_PU0_le
 B3,PU40 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part1_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part2_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part3_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part4_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part5_PU40_20160316_UpdateBtag_leptonW_antik4.root
 
+
+B6,PU0 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_bbWW_20160217_leptonW_1M.root
+B6,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_5.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_6.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_7.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_8.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_9.root
+
 ttbar, PU0 delphes sample:
 W decays into mu or tau, total number of events=4M
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part1_PU0_20160401_Btag_antik4_Wtomutau_11383680.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part2_PU0_20160401_Btag_antik4_Wtomutau_11383680.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part3_PU0_20160401_Btag_antik4_Wtomutau_11383680.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_ttbar_4M_part4_PU0_20160401_Btag_antik4_Wtomutau_11383680.root
