@@ -126,7 +126,6 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   }
   getintpara(strs, "nEvents", nEvents_, -1);
   getintpara(strs, "nStarts", nStarts_, 0);
-  //getintpara(strs, "InitEvents", InitEvents_, 0);
   getintpara(strs, "sample", sample_, B3);
   getboolpara(strs, "simulation", simulation_, true);
   getboolpara(strs, "PUSample", PUSample_, false);

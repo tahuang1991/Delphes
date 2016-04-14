@@ -40,7 +40,6 @@ class DiHiggstoWWbb {
     TString outputFile;
     int nEvents_;      //Number of events to analyze
     int nStarts_;
-    //int InitEvents_;
     bool simulation_;  //True if you have also GEN info
     int sample_;       //Signal or Background (see next enum)
     enum {tt = 0, B3 = 1, B6 = 2};
