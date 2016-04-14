@@ -47,7 +47,7 @@ DEFAULT_FRIENDNAMEBKG  = ""
 DEFAULT_TREESIG        = "evtree"
 DEFAULT_TREEBKG        = "evtree"
 #DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,BoostedFisher,HMatrix,FDA_GA,FDA_SA,FDA_MC,FDA_MT,FDA_GAMT,FDA_MCMT,MLP,MLPBFGS,MLPBNN,CFMlpANN,TMlpANN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
-DEFAULT_METHODS        = "Likelihood,LikelihoodMIX,LikelihoodD,BDT,MLP,RuleFit,HMatrix"
+DEFAULT_METHODS        = "Likelihood,LikelihoodMIX,KNN,MLP,MLPBFGS,BDT,BDTD"
 
 # Print usage help
 def usage():

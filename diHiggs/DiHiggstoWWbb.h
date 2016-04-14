@@ -155,7 +155,9 @@ class DiHiggstoWWbb {
     int event_n;
     int vertices;
     float Thisweight;
+    float Thisweight_pess;
     float weight;
+    float weight_pess;
     TMVA::Reader *reader;
     TMVA::Reader *reader_ttB6;
     float MVA_dR_l1l2;

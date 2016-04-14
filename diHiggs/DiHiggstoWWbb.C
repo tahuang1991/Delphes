@@ -83,7 +83,8 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   cout <<" DiHiggstoWWbb gFile get options " << gFile->GetOption() << endl;
   //Compute weight
   CrossSections_and_BR *my_br = new CrossSections_and_BR();
-  Thisweight = my_br->GetWeight(300,allEntries,sample_);
+  Thisweight = my_br->GetWeight(300,allEntries,sample_,true);
+  Thisweight_pess = my_br->GetWeight(300,allEntries,sample_,false);
   delete my_br;
   TMVA::Tools::Instance();
   reader      = new TMVA::Reader( "V:Color:Silent" );
@@ -248,6 +249,7 @@ void DiHiggstoWWbb::init(){
   evtree = new TTree("evtree","event tree");
   evtree->Branch("event_n",&event_n, "event_n/I");
   evtree->Branch("weight",&weight, "weight/F");
+  evtree->Branch("weight_pess",&weight_pess, "weight_pess/F");
   evtree->Branch("MVA_value",&MVA_value, "MVA_value/F");
   evtree->Branch("MVA_value_B6fortt",&MVA_value_B6fortt, "MVA_value_B6fortt/F");
   evtree->Branch("MT2",&MT2, "MT2/F");
@@ -1714,6 +1716,7 @@ void DiHiggstoWWbb::initBranches(){
   //create branches 
   event_n = -999;
   weight = 0.;
+  weight_pess = 0.;
   vertices = 0;
   MVA_value = -999.;
   MVA_value_B6fortt = -999.;
@@ -2103,6 +2106,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if(debug_) cout<<"DEBUG::1"<<endl;
     initBranches();
     weight = Thisweight;
+    weight_pess = Thisweight_pess;
     // Load selected branches with data from specified event
     bool readsuccess = treeReader->ReadEntry(entry);
     if (not readsuccess) {

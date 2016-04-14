@@ -18,7 +18,7 @@ echo "job$jobid starts, `date`"
 
 ./LUCA_splitjobs_B3PU.sh
 #./LUCA_splitjobs_B6.sh
-./LUCA_splitjobs_ttbarPU.sh
+#./LUCA_splitjobs_ttbarPU.sh
 
 echo "job$jobid is done, `date`"
 #-p hepx 

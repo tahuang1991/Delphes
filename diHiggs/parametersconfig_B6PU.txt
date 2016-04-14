@@ -3,6 +3,7 @@ debug		false
 nEvents		-1
 nStarts		0
 sample		2 #0 = tt, B3 = 1, B6 = 2
+PUSample	true
 simulation	false
 Jetname		RecoJetPileUpID
 METname		RecoMissingET

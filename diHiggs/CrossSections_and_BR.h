@@ -13,7 +13,7 @@ class CrossSections_and_BR{
   public:
     CrossSections_and_BR();
     ~CrossSections_and_BR();
-    float GetWeight(float Lumi, float InitEv, int proc); // Return Xsec * BR
+    float GetWeight(float Lumi, float InitEv, int proc, bool Optimistic); // Return Xsec * BR
 
   private:
     enum {tt = 0, B3 = 1, B6 = 2};
@@ -30,6 +30,18 @@ class CrossSections_and_BR{
     Float_t Xsec_B10;
     Float_t Xsec_B11;
     Float_t Xsec_B12;
+    Float_t Xsec_B1p;
+    Float_t Xsec_B2p;
+    Float_t Xsec_B3p;
+    Float_t Xsec_B4p;
+    Float_t Xsec_B5p;
+    Float_t Xsec_B6p;
+    Float_t Xsec_B7p;
+    Float_t Xsec_B8p;
+    Float_t Xsec_B9p;
+    Float_t Xsec_B10p;
+    Float_t Xsec_B11p;
+    Float_t Xsec_B12p;
     Float_t BR_h_bb;
     Float_t BR_h_WW;
     Float_t BR_W_lnu;
