@@ -158,6 +158,7 @@ class DiHiggstoWWbb {
     float Thisweight_pess;
     float weight;
     float weight_pess;
+    float reweighting;
     TMVA::Reader *reader;
     TMVA::Reader *reader_ttB6;
     float MVA_dR_l1l2;

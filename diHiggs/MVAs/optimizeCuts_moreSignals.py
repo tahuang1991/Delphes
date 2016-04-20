@@ -4,7 +4,7 @@ from ROOT import gSystem, gROOT, gApplication, TFile, TTree, TCut, TH1F
 from optparse import OptionParser
 print "===> Optimizing cuts for selecting Heavy Higgs vs tt."
 
-signalFile           = ['../Output/delphes_B3_1M_PU40ALL.root','../Output/delphes_B6_1M_PU40_ALL.root']
+signalFile           = ['../Output/delphes_B3_1M_PU40ALL.root','../Output/delphes_B6_1M_PU40ALL.root']
 backgroundFile       = ['../Output/delphes_ttbar_4M_PU40_WtobtaumuALL.root','../Output/delphes_ttbar_4M_PU40_WtobtaumuALL.root']
 signalFriendFile     = ""
 backgroundFriendFile = ""
@@ -19,7 +19,7 @@ MVAS      = ['ALL']
 
 # Loop on the category to be optimized
 #for i in range(len(signalFile)):
-for i in range(1):
+for i in range(1,2):
     print "DOING ITERATION NUMBER: " + str(i)
     if len(signalFile) != len(outputs) or len(signalFile) != len(cuts) or len(signalFile) != len(weightDir) :
         raise RuntimeError('ERROR::Problem in the lenght of your array!')

@@ -250,6 +250,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("event_n",&event_n, "event_n/I");
   evtree->Branch("weight",&weight, "weight/F");
   evtree->Branch("weight_pess",&weight_pess, "weight_pess/F");
+  evtree->Branch("reweighting",&reweighting, "reweighting/F");
   evtree->Branch("MVA_value",&MVA_value, "MVA_value/F");
   evtree->Branch("MVA_value_B6fortt",&MVA_value_B6fortt, "MVA_value_B6fortt/F");
   evtree->Branch("MT2",&MT2, "MT2/F");
@@ -1716,6 +1717,7 @@ void DiHiggstoWWbb::initBranches(){
   //create branches 
   event_n = -999;
   weight = 0.;
+  reweighting = 0;
   weight_pess = 0.;
   vertices = 0;
   MVA_value = -999.;
@@ -2107,6 +2109,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     initBranches();
     weight = Thisweight;
     weight_pess = Thisweight_pess;
+    reweighting = 1. * 1.;
     // Load selected branches with data from specified event
     bool readsuccess = treeReader->ReadEntry(entry);
     if (not readsuccess) {
@@ -2197,10 +2200,10 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     if(debug_) cout<<"DEBUG::2"<<endl;
 
     // Loop over all Muon in the event, reco muon
-    //for(int i = 0; i < branchMuon->GetEntriesFast(); ++i){
-    	//Muon *muon = (Muon*) branchMuon->At(i);
-    for(int i = 0; i < branchMuonBeforeIso->GetEntriesFast(); ++i){//now we use muon bfore Isolation
-	Muon *muon = (Muon*) branchMuonBeforeIso->At(i);
+    for(int i = 0; i < branchMuon->GetEntriesFast(); ++i){
+      Muon *muon = (Muon*) branchMuon->At(i);
+    //for(int i = 0; i < branchMuonBeforeIso->GetEntriesFast(); ++i){//now we use muon bfore Isolation
+//	Muon *muon = (Muon*) branchMuonBeforeIso->At(i);
 	if (muon->Charge<0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) 
 	  allMuon1.push_back(muon);
 	else if(muon->Charge>0 and abs(muon->Eta)<muonsEta_ and muon->PT >= muonPt1_) 

@@ -31,7 +31,7 @@
 
 using namespace std;
 
-void EventFlow( TString Sig_name = "../Output/delphes_B3_1M_PU40_ALL3.root", TString Bac_name = "../Output/delphes_ttbar_1M_PU40_Wtobl_ALL3.root", TString Out="plots" ){
+void EventFlow( TString Sig_name = "../Output/delphes_B6_1M_PU40ALL.root", TString Bac_name = "../Output/delphes_ttbar_4M_PU40_WtobtaumuALL.root", TString Out="plots" ){
 
   //Opening Inputs
   cout<<"Hello, I'm creating computing the EventFlow."<<endl;
