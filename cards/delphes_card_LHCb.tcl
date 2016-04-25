@@ -1,5 +1,6 @@
 #set MaxEvents 1000
 #set RandomSeed 123
+#set SkipEvents 1000
 
 
 #######################################

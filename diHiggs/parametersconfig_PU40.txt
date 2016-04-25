@@ -1,10 +1,10 @@
 #parameters value 
 debug		true
-nEvents		10000
+nEvents		100
 nStarts		0
 sample		1
 PUSample 	true
-simulation	true
+simulation	false
 Jetname		RecoJetPileUpID
 METname		RecoMissingET
 jetsPt 		30
@@ -24,8 +24,8 @@ runMMC  	false
 useRecoBJet	true
 useRecoMuon	true
 useRecoMET	true
-iterations 	100
-MMCRef		testpdf.root
+iterations 	1000
+MMCRef		testPDFPU40.root
 weightfromonshellnupt_func  false
 weightfromonshellnupt_hist  true
 weightfromonoffshellWmass_hist	true 

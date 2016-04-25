@@ -5,6 +5,7 @@ nStarts		0
 sample		2 #0 = tt, B3 = 1, B6 = 2
 PUSample	true
 simulation	false
+PUSample 	true
 Jetname		RecoJetPileUpID
 METname		RecoMissingET
 jetsPt 		30
@@ -19,13 +20,13 @@ leptonIso	0.15
 muonPt1		10.0
 muonPt2		10.0
 muonsEta	2.4
-runMVA  	false
-runMMC  	false
+runMVA  	true
+runMMC  	true
 useRecoBJet	true
 useRecoMuon	true
 useRecoMET	true
 iterations 	1000000
-MMCRef		MMCRefPDF.ROOT
+MMCRef		testPDFPU40.root
 weightfromonshellnupt_func  false
 weightfromonshellnupt_hist  true
 weightfromonoffshellWmass_hist	true 

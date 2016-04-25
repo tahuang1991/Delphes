@@ -1,12 +1,12 @@
 #parameters value 
-debug		true
-nEvents		10000
+debug		false
+nEvents		100000
 nStarts		0
 sample		1
 PUSample 	false
-simulation	true
-#Jetname		RecoJetPileUpID
-#METname		RecoMissingET
+simulation	false
+Jetname		Jet
+METname		MissingET
 jetsPt 		30
 jetsEta		2.50
 bjetsPt 	30

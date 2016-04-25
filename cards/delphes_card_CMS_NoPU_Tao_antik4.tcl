@@ -1,3 +1,6 @@
+set MaxEvents 1000
+set SkipEvents 1000
+
 #######################################
 # Order of execution of various modules
 #######################################
@@ -559,7 +562,7 @@ module FastJetFinder GenJetFinder {
   set JetAlgorithm 6
   set ParameterR 0.4
 
-  set JetPTMin 20.0
+  set JetPTMin 15.0
 }
 
 #####################
@@ -595,7 +598,7 @@ module FastJetFinder GenJetNoNuFinder {
   set JetAlgorithm 6
   set ParameterR 0.4
 
-  set JetPTMin 20.0
+  set JetPTMin 15.0
 }
 
 
@@ -614,7 +617,7 @@ module FastJetFinder FastJetFinder {
   set JetAlgorithm 6
   set ParameterR 0.4
 
-  set JetPTMin 20.0
+  set JetPTMin 10.0
 }
 
 ###########################
