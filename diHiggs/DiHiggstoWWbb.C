@@ -111,7 +111,12 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
 	//reader_ttB6->BookMVA( "BDT method", nameWeight.Data() );
     }
   }
-
+  
+  MuonRecoEff_hist = new TH2F(); 
+  MuonRecoEff_hist->SetNameTitle("muonrecoeff","muonrecoeff");
+  readoutMuonRecoEff(); 
+  std::cout <<" start to print Muon Reco eff "<< std::endl;
+  MuonRecoEff_hist->Print("ALL");
 }
 
 void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
@@ -2109,7 +2114,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     initBranches();
     weight = Thisweight;
     weight_pess = Thisweight_pess;
-    reweighting = 1. * 1.;
     // Load selected branches with data from specified event
     bool readsuccess = treeReader->ReadEntry(entry);
     if (not readsuccess) {
@@ -2257,7 +2261,11 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 		std::cout <<"ALL Reco Muon2 k "<<k<<" pt "<< allMuon2[k]->PT <<" eta "<< allMuon2[k]->Eta << std::endl;
 	}
     }*/
-
+    float muon1_weight =1.0;
+    float muon2_weight =1.0;
+    if (hasMuon1) muon1_weight =GetMuonRecoWeight(MuonRecoEff_hist, muon1->PT, fabs(muon1->Eta)); 
+    if (hasMuon2) muon2_weight =GetMuonRecoWeight(MuonRecoEff_hist, muon2->PT, fabs(muon2->Eta)); 
+    reweighting = muon1_weight * muon2_weight;
     //loop all reco jets 
     int NJet=0;
 //if (simulation_ and hasRECOjet1 and hasRECOjet2) cout<<"--------------"<<endl;
@@ -2826,6 +2834,52 @@ void DiHiggstoWWbb::fillbranches(){
   }
 
 }
+
+
+void DiHiggstoWWbb::readoutMuonRecoEff(){
+
+  TFile *f_tmp = TFile::Open(RefPDFfile_.c_str());
+  if (f_tmp->IsZombie()) cout << "Error opening file" << endl;
+  TH2F* muonrecoeff = (TH2F*)f_tmp->Get("muonrecoeffhist");
+  int nx = muonrecoeff->GetNbinsX();
+  int ny = muonrecoeff->GetNbinsY();
+  float x0 = muonrecoeff->GetXaxis()->GetBinCenter(1)-muonrecoeff->GetXaxis()->GetBinWidth(1)/2.;
+  float x1 = muonrecoeff->GetXaxis()->GetBinCenter(nx)+muonrecoeff->GetXaxis()->GetBinWidth(1)/2.;
+  float y0 = muonrecoeff->GetYaxis()->GetBinCenter(1)-muonrecoeff->GetYaxis()->GetBinWidth(1)/2.;
+  float y1 = muonrecoeff->GetYaxis()->GetBinCenter(ny)+muonrecoeff->GetYaxis()->GetBinWidth(1)/2.;
+  //std::cout <<"nx "<< nx<<" x0 "<<x0 <<" x1 "<< x1 <<" ny "<< ny <<" y0 "<< y0 <<" y1 "<< y1 << std::endl;
+  MuonRecoEff_hist->SetBins(nx,x0,x1,ny,y0,y1);
+  for (int i=0; i<nx; i++){
+	for(int j=0; j<ny; j++){
+		float content = muonrecoeff->GetBinContent(i,j);
+		//std::cout <<" i "<< i <<" j "<<j <<" content "<< content << std::endl;
+		MuonRecoEff_hist->SetBinContent(i,j,content);
+	}
+   } 
+  f_tmp->Close();
+
+}
+
+float DiHiggstoWWbb::GetMuonRecoWeight(TH2F *hist, float pt, float eta){
+  
+
+  float weight = 0.0;
+  if (eta<0) eta = eta*(-1.0);
+  int bin1 = hist->GetXaxis()->FindBin(eta);
+  int bin2 = hist->GetYaxis()->FindBin(pt);
+  //first make sure that x is within range
+  if (bin1 == 0 || bin1 == hist->GetNbinsX()+1) return weight=0;
+  if (bin2 == 0 || bin2 == hist->GetNbinsY()+1) return weight=0;
+  
+  float delphesEff = hist->GetBinContent(bin1, bin2);
+  float CMSEff = .960;
+  if(delphesEff == float(0)) weight =1.0;
+  else 
+  	weight = CMSEff/delphesEff; 
+  cout <<"Muon pt "<< pt <<" eta "<< eta <<" delphesEff "<< delphesEff <<" CMSEff "<< CMSEff <<" final weight "<<weight <<endl;
+  return weight;
+}
+
 
 void DiHiggstoWWbb::GetPDFc1(){
   v_bjetrescalec1pdf.clear();

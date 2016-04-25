@@ -118,6 +118,13 @@ class DiHiggstoWWbb {
     TClonesArray *branchGenMissingET;
     TClonesArray *branchVertex;
 
+
+  private:
+    TH2F *MuonRecoEff_hist;
+    void readoutMuonRecoEff();
+    float GetMuonRecoWeight(TH2F *hist, float pt, float eta);
+ 
+  private:
     long allEntries;
     std::vector<Jet*> alljets;  //most energetic one at beginning 
     std::vector<Muon*> allMuon1; //negative charge, most energetic one at beginning  
