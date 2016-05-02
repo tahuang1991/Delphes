@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+#include <math.h>
 
 #include "TTree.h"
 #include "TROOT.h"
@@ -115,8 +116,10 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   MuonRecoEff_hist = new TH2F(); 
   MuonRecoEff_hist->SetNameTitle("muonrecoeff","muonrecoeff");
   readoutMuonRecoEff(); 
-  std::cout <<" start to print Muon Reco eff "<< std::endl;
-  MuonRecoEff_hist->Print("ALL");
+  if(debug_){
+  	std::cout <<" start to print Muon Reco eff "<< std::endl;
+  	MuonRecoEff_hist->Print("ALL");
+   }
 }
 
 void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
@@ -1182,8 +1185,8 @@ void DiHiggstoWWbb::matchMuon2Gen(TClonesArray *branchMuonBeforeIso, TClonesArra
 	if (particle == genmu2) Muon2_beforeIso_hasgenMu = true;
     }
   }
-    //if (hasMuon1_beforeIso) std::cout <<" has reco Muon1 before Iso , dR " << dR_mu1_beforeIso <<" IsolationVar "<< muon1_beforeIso->IsolationVar << " pt "<< muon1_beforeIso->PT << std::endl;
-    //if (hasMuon2_beforeIso) std::cout <<" has reco Muon2 before Iso , dR " << dR_mu2_beforeIso <<" IsolationVar "<< muon2_beforeIso->IsolationVar << " pt "<< muon2_beforeIso->PT << std::endl;
+    if (hasMuon1_beforeIso and dR_mu1_beforeIso<0.1 and debug_) std::cout <<" has reco Muon1 before Iso , dR " << dR_mu1_beforeIso <<" IsolationVar "<< muon1_beforeIso->IsolationVar << " pt "<< muon1_beforeIso->PT << " eta "<<muon1_beforeIso->Eta <<std::endl;
+    if (hasMuon2_beforeIso and dR_mu2_beforeIso<0.1 and debug_) std::cout <<" has reco Muon2 before Iso , dR " << dR_mu2_beforeIso <<" IsolationVar "<< muon2_beforeIso->IsolationVar << " pt "<< muon2_beforeIso->PT << " eta "<<muon2_beforeIso->Eta <<std::endl;
 
 
 
@@ -1346,7 +1349,8 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
 
 
   if (not (hasgenb1jet and hasgenb2jet)) return;
-  cout <<" genb1jet pt "<< genb1jet->PT <<" eta "<< genb1jet->Eta<<" phi "<<genb1jet->Phi <<" dR "<<dR_genb1jet <<" genb2jet pt "<< genb2jet->PT <<" eta "<< genb2jet->Eta <<" phi "<< genb2jet->Phi <<" dR "<< dR_genb2jet << endl;
+  if (debug_)
+  	cout <<" genb1jet pt "<< genb1jet->PT <<" eta "<< genb1jet->Eta<<" phi "<<genb1jet->Phi <<" dR "<<dR_genb1jet <<" genb2jet pt "<< genb2jet->PT <<" eta "<< genb2jet->Eta <<" phi "<< genb2jet->Phi <<" dR "<< dR_genb2jet << endl;
   DE_partonGneJet1 = genb1->P4().E()-genb1jet_energy; 
   DE_partonGneJet2 = genb2->P4().E()-genb2jet_energy; 
   //loop all reco jets 
@@ -1354,7 +1358,8 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
   {
     jet = (Jet*) branchJet->At(i);
     TLorentzVector jet_p4 = jet->P4();
-    cout <<" jet i "<< i<<" btag "<<jet->BTag <<" pt "<< jet->PT<<" eta "<< jet->Eta <<" phi "<< jet->Phi <<" dR1 "<< jet_p4.DeltaR(genb1jet_p4) <<" dR2 "<<jet_p4.DeltaR(genb2jet_p4) << std::endl;
+    if (debug_)
+    	cout <<"debug in matchBjet2Gen jet i "<< i<<" btag "<<jet->BTag <<" pt "<< jet->PT<<" eta "<< jet->Eta <<" phi "<< jet->Phi <<" dR1 "<< jet_p4.DeltaR(genb1jet_p4) <<" dR2 "<<jet_p4.DeltaR(genb2jet_p4) << std::endl;
     //if (((jet->BTag)&2)<1 || jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
     if (jet->PT < bjetsPt_ || abs(jet->Eta)> bjetsEta_) continue;
     if (hasgenb1jet && jet_p4.DeltaR(genb1jet_p4) < dR_b1jet) {
@@ -1410,10 +1415,10 @@ void DiHiggstoWWbb::matchBjets2Gen(TClonesArray *branchGenJet, TClonesArray *bra
     }
     else if (dR_b1jet == dR_b2jet) cerr<<" error dR_b1jet = dR_b2jet " << endl;
   }
-  if (hasRECOjet1 and hasRECOjet2 and (dR_b1jet>0.15 or dR_b2jet >0.15 ) and dR_b1jet<5 and dR_b2jet<5 and bpartonsOK) {
+  if (hasRECOjet1 and hasRECOjet2 and (dR_b1jet>0.15 or dR_b2jet >0.15 ) and dR_b1jet<5 and dR_b2jet<5 and bpartonsOK and debug_) {
         //std::cout <<" b1 eta  "<< genb1->Eta <<" pt "<< genb1->PT <<" b2 eta "<< genb2->Eta <<" pt "<< genb2->PT << std::endl;
 	//std::cout <<" genb1jet pt "<< genb1jet->PT <<" dR_genb1jet "<< dR_genb1jet <<" genb2jet pt "<< genb2jet->PT <<" dR_genb2jet "<< dR_genb2jet << std::endl;
-	std::cout <<" jet1 pt "<< b1jet->PT <<" eta "<< b1jet->Eta <<" dR_b1jet "<< dR_b1jet 
+	std::cout <<"debug in matchBjet2Gen jet1 pt "<< b1jet->PT <<" eta "<< b1jet->Eta <<" dR_b1jet "<< dR_b1jet 
 		<<" jet2 pt "<< b2jet->PT <<" eta "<< b2jet->Eta <<" dR_b2jet "<< dR_b2jet << std::endl;
   }
   //Now Btag
@@ -2181,7 +2186,6 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     	matchBjetswithNu2Gen(branchGenJet_withNu, genb1, genb2, jetsDeltaR_); 
     	matchBjets2Gen(branchGenJet, branchJet, genb1, genb2); 
     }
-
     if (simulation_){
 	//GENMET on Di-BJet Axis
 	if( hasgenb1jet and hasgenb2jet ){
@@ -2223,44 +2227,45 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     }
 
     //special case, choose two reco muons without matching
-    if (not(simulation_) and allMuon1.size()>0 and allMuon2.size()>0){
-	
-    //if (allMuon1.size()>0 and allMuon2.size()>0){
+    if (not(simulation_) and allMuon1.size()>0){
 	//cout<<"NOT simulation and take Reco Muon from Pt selection "<<endl;
 	if (hasMuon1 and muon1==allMuon1.at(0)) hasRecoMuon1=true;
 	else{
+		
+		//cout <<"Not hasRecoMuon1 "<<(hasMuon1?" But hasMuon1 ":" Not hasMuon1 ")<<(muon1==allMuon1.at(0)?"muon1==allMuon1.at(0)":"muon1!=allMuon1.at(0)")<< endl;
 		hasMuon1=true;
 		hasRecoMuon1=false;//this muon is different from the one found by dR association
 		muon1=allMuon1.at(0);
+        	if(hasMuon1_beforeIso and Muon1_beforeIso_IsoVar<0.15 and dR_mu1_beforeIso<0.1 and debug_){ 
+        	cout <<" has reco Muon1 before Iso , dR " << dR_mu1_beforeIso <<" IsolationVar "<< muon1_beforeIso->IsolationVar << " pt "<< muon1_beforeIso->PT << " eta "<<muon1_beforeIso->Eta <<" charge "<<muon1_beforeIso->Charge <<endl;
+		cout <<"muon1 Pt "<< muon1->PT <<" eta "<< muon1->Eta <<" IsoVar "<< muon1->IsolationVar<<" charge "<<muon1->Charge << endl;
+		}
 	}
-
+	Muon1_p4 = muon1->P4();
+    }else if (not(simulation_) and allMuon1.size()==0 ){
+	hasMuon1 = false;
+	hasRecoMuon1 = false;
+    }
+	
+    if (not(simulation_) and allMuon2.size()>0){
 	if (hasMuon2 and muon2==allMuon2.at(0)) hasRecoMuon2=true;
 	else{
+		//cout <<"Not hasRecoMuon2 "<<(hasMuon2?" But hasMuon2 ":" Not hasMuon2 ")<<(muon2==allMuon2.at(0)?"muon2==allMuon2.at(0)":"muon2!=allMuon2.at(0)")<< endl;
 		hasMuon2=true;
 		hasRecoMuon2=false;
 		muon2=allMuon2.at(0);
+        	if(hasMuon2_beforeIso and Muon2_beforeIso_IsoVar<0.15 and dR_mu2_beforeIso<0.1 and debug_){ 
+		cout <<" has reco Muon2 before Iso , dR " << dR_mu2_beforeIso <<" IsolationVar "<< muon2_beforeIso->IsolationVar << " pt "<< muon2_beforeIso->PT << " eta "<<muon2_beforeIso->Eta <<" charge "<< muon2_beforeIso->Charge << endl;
+		cout <<"muon2 Pt "<< muon2->PT <<" eta "<< muon2->Eta <<" IsoVar "<< muon2->IsolationVar<<" charge "<<muon2->Charge << endl;
+		}
 	}
 
-	Muon1_p4 = muon1->P4();
 	Muon2_p4 = muon2->P4();
-    }else if (not(simulation_) and (allMuon1.size()==0 or allMuon2.size()==0)){
-	hasMuon1 = false;
-	hasRecoMuon1 = false;
+    }else if (not(simulation_) and allMuon2.size()==0 ){
 	hasMuon2 = false;
 	hasRecoMuon2 = false;
-	}
-	
+    }
      
-    /*if (hasMuon1 and hasMuon2 and not(hasRecoMuon1 and hasRecoMuon2)){
-	std::cout <<"matched Muon1 pt "<< Muon1_p4.Pt() <<" eta "<< Muon1_p4.Eta() <<" phi "<< Muon1_p4.Phi() << std::endl;	
-	for (unsigned int k=0; k<allMuon1.size(); k++){
-		std::cout <<"ALL Reco Muon1 k "<<k<<" pt "<< allMuon1[k]->PT <<" eta "<< allMuon1[k]->Eta << std::endl;
-	}
-	std::cout <<"matched Muon2 pt "<< Muon2_p4.Pt() <<" eta "<< Muon2_p4.Eta() <<" phi "<< Muon2_p4.Phi() << std::endl;	
-	for (unsigned int k=0; k<allMuon2.size(); k++){
-		std::cout <<"ALL Reco Muon2 k "<<k<<" pt "<< allMuon2[k]->PT <<" eta "<< allMuon2[k]->Eta << std::endl;
-	}
-    }*/
     float muon1_weight =1.0;
     float muon2_weight =1.0;
     if (hasMuon1) muon1_weight =GetMuonRecoWeight(MuonRecoEff_hist, muon1->PT, fabs(muon1->Eta)); 
@@ -2872,11 +2877,11 @@ float DiHiggstoWWbb::GetMuonRecoWeight(TH2F *hist, float pt, float eta){
   if (bin2 == 0 || bin2 == hist->GetNbinsY()+1) return weight=0;
   
   float delphesEff = hist->GetBinContent(bin1, bin2);
-  float CMSEff = .960;
+  float CMSEff = (pt>100?0.99:0.99*(1-exp(-pt/10.0)/4));
   if(delphesEff == float(0)) weight =1.0;
   else 
   	weight = CMSEff/delphesEff; 
-  cout <<"Muon pt "<< pt <<" eta "<< eta <<" delphesEff "<< delphesEff <<" CMSEff "<< CMSEff <<" final weight "<<weight <<endl;
+  //cout <<"Muon pt "<< pt <<" eta "<< eta <<" delphesEff "<< delphesEff <<" CMSEff "<< CMSEff <<" final weight "<<weight <<endl;
   return weight;
 }
 
