@@ -2,8 +2,8 @@
 debug		false
 nEvents		-1
 nStarts		0
-sample		0 #0 = tt, B3 = 1, B6 = 2
-PUSample 	true
+sample		0 #0 = tt, 1 = B1, 2 = B2...
+PUSample	true
 simulation	false
 Jetname		RecoJetPileUpID
 METname		RecoMissingET
@@ -25,7 +25,7 @@ useRecoBJet	true
 useRecoMuon	true
 useRecoMET	true
 iterations 	1000000
-MMCRef		MMCRefPDF.ROOT
+MMCRef		REFPDFPU40.root
 weightfromonshellnupt_func  false
 weightfromonshellnupt_hist  true
 weightfromonoffshellWmass_hist	true 

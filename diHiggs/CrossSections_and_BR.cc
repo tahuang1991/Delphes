@@ -59,15 +59,25 @@ CrossSections_and_BR::~CrossSections_and_BR(){
 float CrossSections_and_BR::GetWeight( float Lumi, float InitEv, int proc, bool Optimistic ){ 
   
   float Xsec = -999.;
-  if(proc==B3)      Xsec = Optimistic ? Xsec_B3 : Xsec_B3p;
-  else if(proc==B6) Xsec = Optimistic ? Xsec_B6 : Xsec_B6p;
-  else if(proc==tt) Xsec = Xsec_tt;
-  else                cout<<"WARNING::CrossSections_and_BR -> No process specified!"<<endl;
+  if(proc==B1)       Xsec = Optimistic ? Xsec_B1 : Xsec_B1p;
+  else if(proc==B2)  Xsec = Optimistic ? Xsec_B2 : Xsec_B2p;
+  else if(proc==B3)  Xsec = Optimistic ? Xsec_B3 : Xsec_B3p;
+  else if(proc==B4)  Xsec = Optimistic ? Xsec_B4 : Xsec_B4p;
+  else if(proc==B5)  Xsec = Optimistic ? Xsec_B5 : Xsec_B5p;
+  else if(proc==B6)  Xsec = Optimistic ? Xsec_B6 : Xsec_B6p;
+  else if(proc==B7)  Xsec = Optimistic ? Xsec_B7 : Xsec_B7p;
+  else if(proc==B8)  Xsec = Optimistic ? Xsec_B8 : Xsec_B8p;
+  else if(proc==B9)  Xsec = Optimistic ? Xsec_B9 : Xsec_B9p;
+  else if(proc==B10) Xsec = Optimistic ? Xsec_B10 : Xsec_B10p;
+  else if(proc==B11) Xsec = Optimistic ? Xsec_B11 : Xsec_B11p;
+  else if(proc==B12) Xsec = Optimistic ? Xsec_B12 : Xsec_B12p;
+  else if(proc==tt)  Xsec = Xsec_tt;
+  else               cout<<"WARNING::CrossSections_and_BR -> No process specified!"<<endl;
   Lumi*=1000; //convert to pb-1
   float BR = 1.;
-  if( proc==B3 || proc==B6 ) BR = pow(BR_h_bb,2) + pow(BR_h_WW,2)*pow(BR_W_lnu,4) + 2*BR_h_bb*BR_h_WW*pow(BR_W_lnu,2);
-  else if ( proc==tt)        BR = BR_t_Wb * BR_t_Wb * BR_W_munu_taunu * BR_W_munu_taunu;
-  else                       cout<<"WARNING::CrossSections_and_BR -> No process specified!"<<endl;
+  if( proc!=tt )      BR = pow(BR_h_bb,2) + pow(BR_h_WW,2)*pow(BR_W_lnu,4) + 2*BR_h_bb*BR_h_WW*pow(BR_W_lnu,2);
+  else if ( proc==tt) BR = BR_t_Wb * BR_t_Wb * BR_W_munu_taunu * BR_W_munu_taunu;
+  else                cout<<"WARNING::CrossSections_and_BR -> No process specified!"<<endl;
   float xsecbr = Xsec * BR;
   if( Optimistic )  cout<<"Optimistic CROSS = "<<Xsec<<" * "<<BR<<" * "<<Lumi<<" / "<<InitEv<<" = "<<xsecbr*Lumi/InitEv<<endl;
   if( !Optimistic ) cout<<"Pessimistic CROSS = "<<Xsec<<" * "<<BR<<" * "<<Lumi<<" / "<<InitEv<<" = "<<xsecbr*Lumi/InitEv<<endl;

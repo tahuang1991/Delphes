@@ -42,7 +42,7 @@ class DiHiggstoWWbb {
     int nStarts_;
     bool simulation_;  //True if you have also GEN info
     int sample_;       //Signal or Background (see next enum)
-    enum {tt = 0, B3 = 1, B6 = 2};
+    enum {tt = 0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12};
 
     //Parameters in config file
     std::string Particlename_;

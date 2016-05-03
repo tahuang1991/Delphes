@@ -4,22 +4,22 @@ from ROOT import gSystem, gROOT, gApplication, TFile, TTree, TCut, TH1F
 from optparse import OptionParser
 print "===> Optimizing cuts for selecting Heavy Higgs vs tt."
 
-signalFile           = ['../Output/delphes_B3_1M_PU40ALL.root','../Output/delphes_B6_1M_PU40ALL.root']
-backgroundFile       = ['../Output/delphes_ttbar_4M_PU40_WtobtaumuALL.root','../Output/delphes_ttbar_4M_PU40_WtobtaumuALL.root']
+signalFile           = ['../Output/delphes_B3_1M_PU40ALL_20Apr.root','../Output/delphes_B6_1M_PU40ALL_20Apr.root']
+backgroundFile       = ['../Output/delphes_ttbar_4M_PU40_WtobtaumuALL_20Apr.root','../Output/delphes_ttbar_4M_PU40_WtobtaumuALL_20Apr.root']
 signalFriendFile     = ""
 backgroundFriendFile = ""
 
 presel    = 'hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons &&(hasb1jet || hasb2jet) && dR_l1l2<3.3 && dR_l1l2>0.07 && dR_b1b2<5. && mass_l1l2<100 && mass_l1l2>5. && mass_b1b2>22 && dR_bl<5 && dR_l1l2b1b2<6 && MINdR_bl<3.2 && MINdR_bl>0.4 && mass_b1b2<700 && mass_trans<250 && MT2<400 && pt_b1b2<300'
 #cuts      = ['&& TMath::Abs(w1_child_id)==13 && TMath::Abs(w2_child_id)==13',' && TMath::Abs(w1_child_id)==13 && TMath::Abs(w2_child_id)==13']
 cuts      = ['','']
-outputs   = ['TMVA_B3_RECO_1btag_40PU','TMVA_B6_RECO_1btag_40PU']
-weightDir = ['weights_B3_RECO_1btag_40PU','weights_B6_RECO_1btag_40PU']
+outputs   = ['TMVA_B3_RECO_1btag_40PU_20Apr','TMVA_B6_RECO_1btag_40PU_20Apr']
+weightDir = ['weights_B3_RECO_1btag_40PU_20Apr','weights_B6_RECO_1btag_40PU_20Apr']
 #MVAS      = ['Likelihood','LikelihoodMIX','KNN','MLP','MLPBFGS','BDT','BDTD']
 MVAS      = ['ALL']
 
 # Loop on the category to be optimized
-#for i in range(len(signalFile)):
-for i in range(1,2):
+for i in range(len(signalFile)):
+#for i in range(1,2):
     print "DOING ITERATION NUMBER: " + str(i)
     if len(signalFile) != len(outputs) or len(signalFile) != len(cuts) or len(signalFile) != len(weightDir) :
         raise RuntimeError('ERROR::Problem in the lenght of your array!')

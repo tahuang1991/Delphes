@@ -92,8 +92,10 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   reader_ttB6 = new TMVA::Reader( "V:Color:Silent" );
   if(runMVA_){
     TString nameWeight = "";
+    if(sample_==B2) nameWeight = "MVAs/weights_B2_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
     if(sample_==B3) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
     if(sample_==B6) nameWeight = "MVAs/weights_B6_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
+    if(sample_==B12) nameWeight = "MVAs/weights_B12_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
     if(sample_==tt) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
     reader->AddVariable( "dR_l1l2",     &MVA_dR_l1l2);
     reader->AddVariable( "dR_b1b2",     &MVA_dR_b1b2);
@@ -2136,10 +2138,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	}*/
 	
     //following information may not available in pure reco cases
-    //if (simulation_ and (sample_ == B3 || sample_ == B6)) fetchHhhchain(branchParticle); 
     //else if (simulation_) fetchttbarchain(branchParticle);
     fetchHhhWWWWchain(branchParticle);
-    if (sample_ == B3 || sample_ == B6) fetchHhhchain(branchParticle); 
+    if (sample_ != tt ) fetchHhhchain(branchParticle); 
     else if (sample_ == tt) fetchttbarchain(branchParticle);
     h2tohh = (htobb and Wtomu1nu1 and Wtomu2nu2);
     ttbar  = (ttoWb and tbartoWbbar and Wtomu1nu1 and Wtomu2nu2);
@@ -2674,8 +2675,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
     preselections = (hasRECOjet1 and hasRECOjet1 and hasMET and hastwomuons and hasdRljet);
     //for simulation case
     preselections_gen = (hasgenb1jet and hasgenb2jet and hastwogenmuons);
-    //bool MMCready =  (((h2tohh and (sample_==B3 or sample_==B6)) || (ttbar and sample_ ==tt)) and hasgenb1jet and hasgenb2jet);
-    bool MMCready =  ((h2tohh and (sample_==B3 or sample_==B6)) || (ttbar and sample_ ==tt));
+    bool MMCready =  ((h2tohh and sample_!=tt) || (ttbar and sample_ ==tt));
     bool objectsready = (((useRecoMuon_ and hastwomuons) or (not(useRecoMuon_) and hastwogenmuons)) and 
 			((useRecoBJet_ and hasRECOjet1 and hasRECOjet2) or (not(useRecoBJet_) and hasgenb1jet and hasgenb2jet)));
     if (runMMC_ and objectsready and (not(simulation_) || MMCready)){
@@ -2730,7 +2730,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	TLorentzVector h2tohh_genp_lorentz = TLorentzVector();
 
 	//always take the gen inputs for MMC
-	if ((sample_==B3 || sample_==B6) and h2tohh) h2tohh_genp_lorentz = genh2->P4();
+	if (sample_!=tt and h2tohh) h2tohh_genp_lorentz = genh2->P4();
 	else if (sample_==tt and ttbar) h2tohh_genp_lorentz = gent1->P4()+gent2->P4();
 
 	int onshellMarker_;
