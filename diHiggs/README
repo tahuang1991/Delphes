@@ -14,6 +14,10 @@ to run real data after delphes, not including gen information
 run to ttbar real data after delphes, not including gen information
 
 
+B2,PU40 delphes sample
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_4.root
+
+
 
 B3,PU0 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_bbWW_20160326_PU0_leptonW_1M.root
@@ -26,6 +30,10 @@ B6,PU0 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_bbWW_20160217_leptonW_1M.root
 B6,PU40 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_5.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_6.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_7.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_8.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_9.root
+
+B12, PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_4.root
+
 
 ttbar, PU0 delphes sample:
 W decays into mu or tau, total number of events=4M
