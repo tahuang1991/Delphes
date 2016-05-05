@@ -14,6 +14,10 @@ to run real data after delphes, not including gen information
 run to ttbar real data after delphes, not including gen information
 
 
+B1,PU40 delphes sample
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_part1_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_part1_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_part1_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_part1_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_part1_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B1_200k_PU40_20160426_Btag_leptonW_antik4_4.root
+
+
 B2,PU40 delphes sample
 inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B2_200k_PU40_20160426_Btag_leptonW_antik4_4.root
 
@@ -25,11 +29,35 @@ inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_bbWW_20160326_PU0_le
 B3,PU40 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part1_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part2_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part3_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part4_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part5_PU40_20160316_UpdateBtag_leptonW_antik4.root
 
+B4,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_5.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_6.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B4_200k_PU40_20160426_Btag_leptonW_antik4_part1234_7.root
+
+B5,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_part234_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_part234_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_part234_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_part234_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_part234_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B5_200k_PU40_20160426_Btag_leptonW_antik4_part234_5.root
 
 B6,PU0 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_bbWW_20160217_leptonW_1M.root
 B6,PU40 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_5.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_6.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_7.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_8.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_9.root
+
+
+B7,PU40 delphes sample:
+
+
+B8,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_part234_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_part234_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_part234_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_part234_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_part234_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B8_200k_PU40_20160426_Btag_leptonW_antik4_part234_5.root
+
+B9,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_5.root
+
+
+B10, PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_part234_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_part234_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_part234_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_part234_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_part234_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B10_200k_PU40_20160426_Btag_leptonW_antik4_part234_5.root
+
+
+B11,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_5.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_6.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_7.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_8.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B11_200k_PU40_20160426_Btag_leptonW_antik4_9.root
+
 
 B12, PU40 delphes sample:
 inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B12_200k_PU40_20160426_Btag_leptonW_antik4_4.root
