@@ -89,29 +89,61 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   delete my_br;
   TMVA::Tools::Instance();
   reader      = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB1 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB2 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB3 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB4 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB5 = new TMVA::Reader( "V:Color:Silent" );
   reader_ttB6 = new TMVA::Reader( "V:Color:Silent" );
+  //reader_ttB7 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB8 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB9 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB10 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB11 = new TMVA::Reader( "V:Color:Silent" );
+  reader_ttB12 = new TMVA::Reader( "V:Color:Silent" );
   if(runMVA_){
     TString nameWeight = "";
-    if(sample_==B2) nameWeight = "MVAs/weights_B2_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
-    if(sample_==B3) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
-    if(sample_==B6) nameWeight = "MVAs/weights_B6_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
-    if(sample_==B12) nameWeight = "MVAs/weights_B12_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
-    if(sample_==tt) nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_ttall_rename_ALL/TMVAClassification_MLP.weights.xml";
-    reader->AddVariable( "dR_l1l2",     &MVA_dR_l1l2);
-    reader->AddVariable( "dR_b1b2",     &MVA_dR_b1b2);
-    reader->AddVariable( "dR_bl",       &MVA_dR_bl);
-    reader->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2);
-    reader->AddVariable( "MINdR_bl", &MVA_MINdR_bl);
-    reader->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2);
-    reader->AddVariable( "mass_l1l2",   &MVA_mass_l1l2);
-    reader->AddVariable( "mass_b1b2",   &MVA_mass_b1b2);
-    reader->AddVariable( "mass_trans",  &MVA_mass_trans);
-    reader->AddVariable( "MT2",         &MVA_MT2);
-    reader->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
-    reader->BookMVA( "MLP method", nameWeight.Data() );
+    if(sample_==B1)  { nameWeight = "MVAs/weights_B1_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml"; Method = "MLPBFGS method"; }
+    if(sample_==B2)  { nameWeight = "MVAs/weights_B2_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml"; Method = "MLPBFGS method"; }
+    if(sample_==B3)  { nameWeight = "MVAs/weights_B3_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml"; Method = "MLPBFGS method"; }
+    if(sample_==B4)  { nameWeight = "MVAs/weights_B4_RECO_1btag_40PU_3May_ALL/TMVAClassification_BDT.weights.xml";     Method = "BDT method"; }
+    if(sample_==B5)  { nameWeight = "MVAs/weights_B5_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml"; Method = "MLPBFGS method"; }
+    if(sample_==B6)  { nameWeight = "MVAs/weights_B6_RECO_1btag_40PU_3May_ALL/TMVAClassification_BDT.weights.xml";     Method = "BDT method"; }
+    if(sample_==B7)  { nameWeight = "MVAs/weights_B7_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml";     Method = "MLP method"; }
+    if(sample_==B8)  { nameWeight = "MVAs/weights_B8_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml"; Method = "MLPBFGS method"; }
+    if(sample_==B9)  { nameWeight = "MVAs/weights_B9_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml"; Method = "MLPBFGS method"; }
+    if(sample_==B10) { nameWeight = "MVAs/weights_B10_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml";    Method = "MLP method"; }
+    if(sample_==B11) { nameWeight = "MVAs/weights_B11_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml";    Method = "MLP method"; }
+    if(sample_==B12) { nameWeight = "MVAs/weights_B12_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml";    Method = "MLP method"; }
+    if(sample_==tt)  { nameWeight = "MVAs/weights_B1_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml";     Method = "MLP method"; }
+    reader->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader->AddVariable( "dR_bl",       &MVA_dR_bl); reader->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader->AddVariable( "mass_trans",  &MVA_mass_trans); reader->AddVariable( "MT2",         &MVA_MT2); reader->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader->BookMVA( Method.Data(), nameWeight.Data() );
+    reader_ttB1->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB1->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB1->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB1->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB1->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB1->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB1->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB1->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB1->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB1->AddVariable( "MT2",         &MVA_MT2); reader_ttB1->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB2->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB2->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB2->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB2->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB2->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB2->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB2->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB2->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB2->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB2->AddVariable( "MT2",         &MVA_MT2); reader_ttB2->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB3->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB3->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB3->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB3->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB3->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB3->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB3->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB3->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB3->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB3->AddVariable( "MT2",         &MVA_MT2); reader_ttB3->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB4->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB4->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB4->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB4->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB4->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB4->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB4->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB4->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB4->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB4->AddVariable( "MT2",         &MVA_MT2); reader_ttB4->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB5->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB5->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB5->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB5->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB5->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB5->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB5->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB5->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB5->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB5->AddVariable( "MT2",         &MVA_MT2); reader_ttB5->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB6->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB6->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB6->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB6->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB6->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB6->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB6->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB6->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB6->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB6->AddVariable( "MT2",         &MVA_MT2); reader_ttB6->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    //reader_ttB7->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB7->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB7->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB7->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB7->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB7->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB7->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB7->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB7->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB7->AddVariable( "MT2",         &MVA_MT2); reader_ttB7->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB8->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB8->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB8->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB8->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB8->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB8->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB8->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB8->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB8->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB8->AddVariable( "MT2",         &MVA_MT2); reader_ttB8->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB9->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB9->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB9->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB9->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB9->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB9->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB9->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB9->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB9->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB9->AddVariable( "MT2",         &MVA_MT2); reader_ttB9->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB10->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB10->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB10->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB10->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB10->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB10->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB10->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB10->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB10->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB10->AddVariable( "MT2",         &MVA_MT2); reader_ttB10->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB11->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB11->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB11->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB11->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB11->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB11->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB11->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB11->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB11->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB11->AddVariable( "MT2",         &MVA_MT2); reader_ttB11->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+    reader_ttB12->AddVariable( "dR_l1l2",     &MVA_dR_l1l2); reader_ttB12->AddVariable( "dR_b1b2",     &MVA_dR_b1b2); reader_ttB12->AddVariable( "dR_bl",       &MVA_dR_bl); reader_ttB12->AddVariable( "dR_l1l2b1b2", &MVA_dR_l1l2b1b2); reader_ttB12->AddVariable( "MINdR_bl", &MVA_MINdR_bl); reader_ttB12->AddVariable( "dphi_l1l2b1b2", &MVA_dphi_l1l2b1b2); reader_ttB12->AddVariable( "mass_l1l2",   &MVA_mass_l1l2); reader_ttB12->AddVariable( "mass_b1b2",   &MVA_mass_b1b2); reader_ttB12->AddVariable( "mass_trans",  &MVA_mass_trans); reader_ttB12->AddVariable( "MT2",         &MVA_MT2); reader_ttB12->AddVariable( "pt_b1b2",     &MVA_pt_b1b2);
+
     if(sample_==tt){
-	//nameWeight = "MVAs/weights_B6_DRl1l2/TMVAClassification_BDT.weights.xml";
-	//reader_ttB6->BookMVA( "BDT method", nameWeight.Data() );
+	Method_ttB1  = "MLPBFGS method"; reader_ttB1->BookMVA( Method_ttB1.Data(), "MVAs/weights_B1_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml" );
+	Method_ttB2  = "MLPBFGS method"; reader_ttB2->BookMVA( Method_ttB2.Data(), "MVAs/weights_B2_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml" );
+	Method_ttB3  = "MLPBFGS method"; reader_ttB3->BookMVA( Method_ttB3.Data(), "MVAs/weights_B3_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml" );
+	Method_ttB4  = "BDT method"; reader_ttB4->BookMVA( Method_ttB4.Data(), "MVAs/weights_B4_RECO_1btag_40PU_3May_ALL/TMVAClassification_BDT.weights.xml" );
+	Method_ttB5  = "MLPBFGS method"; reader_ttB5->BookMVA( Method_ttB5.Data(), "MVAs/weights_B5_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml" );
+	Method_ttB6  = "BDT method"; reader_ttB6->BookMVA( Method_ttB6.Data(), "MVAs/weights_B6_RECO_1btag_40PU_3May_ALL/TMVAClassification_BDT.weights.xml" );
+	Method_ttB7  = "MLP method"; //reader_ttB7->BookMVA( Method_ttB7.Data(), "MVAs/weights_B7_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml" );
+	Method_ttB8  = "MLPBFGS method"; reader_ttB8->BookMVA( Method_ttB8.Data(), "MVAs/weights_B8_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml" );
+	Method_ttB9  = "MLPBFGS method"; reader_ttB9->BookMVA( Method_ttB9.Data(), "MVAs/weights_B9_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLPBFGS.weights.xml" );
+	Method_ttB10 = "BDT method"; reader_ttB10->BookMVA( Method_ttB10.Data(), "MVAs/weights_B10_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml" );
+	Method_ttB11 = "BDT method"; reader_ttB11->BookMVA( Method_ttB11.Data(), "MVAs/weights_B11_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml" );
+	Method_ttB12 = "BDT method"; reader_ttB12->BookMVA( Method_ttB12.Data(), "MVAs/weights_B12_RECO_1btag_40PU_3May_ALL/TMVAClassification_MLP.weights.xml" );
     }
   }
   
@@ -262,7 +294,18 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("weight_pess",&weight_pess, "weight_pess/F");
   evtree->Branch("reweighting",&reweighting, "reweighting/F");
   evtree->Branch("MVA_value",&MVA_value, "MVA_value/F");
+  evtree->Branch("MVA_value_B1fortt",&MVA_value_B1fortt, "MVA_value_B1fortt/F");
+  evtree->Branch("MVA_value_B2fortt",&MVA_value_B2fortt, "MVA_value_B2fortt/F");
+  evtree->Branch("MVA_value_B3fortt",&MVA_value_B3fortt, "MVA_value_B3fortt/F");
+  evtree->Branch("MVA_value_B4fortt",&MVA_value_B4fortt, "MVA_value_B4fortt/F");
+  evtree->Branch("MVA_value_B5fortt",&MVA_value_B5fortt, "MVA_value_B5fortt/F");
   evtree->Branch("MVA_value_B6fortt",&MVA_value_B6fortt, "MVA_value_B6fortt/F");
+  evtree->Branch("MVA_value_B7fortt",&MVA_value_B7fortt, "MVA_value_B7fortt/F");
+  evtree->Branch("MVA_value_B8fortt",&MVA_value_B8fortt, "MVA_value_B8fortt/F");
+  evtree->Branch("MVA_value_B9fortt",&MVA_value_B9fortt, "MVA_value_B9fortt/F");
+  evtree->Branch("MVA_value_B10fortt",&MVA_value_B10fortt, "MVA_value_B10fortt/F");
+  evtree->Branch("MVA_value_B11fortt",&MVA_value_B11fortt, "MVA_value_B11fortt/F");
+  evtree->Branch("MVA_value_B12fortt",&MVA_value_B12fortt, "MVA_value_B12fortt/F");
   evtree->Branch("MT2",&MT2, "MT2/F");
   evtree->Branch("MT2_reco",&MT2_reco, "MT2_reco/F");
   evtree->Branch("MT2_noMU",&MT2_noMU, "MT2_noMU/F");
@@ -645,7 +688,18 @@ DiHiggstoWWbb::~DiHiggstoWWbb(){
   delete chain;
   delete evtree;
   delete reader;
+  delete reader_ttB1;
+  delete reader_ttB2;
+  delete reader_ttB3;
+  delete reader_ttB4;
+  delete reader_ttB5;
   delete reader_ttB6;
+  delete reader_ttB7;
+  delete reader_ttB8;
+  delete reader_ttB9;
+  delete reader_ttB10;
+  delete reader_ttB11;
+  delete reader_ttB12;
 }
 
 
@@ -1733,7 +1787,18 @@ void DiHiggstoWWbb::initBranches(){
   weight_pess = 0.;
   vertices = 0;
   MVA_value = -999.;
+  MVA_value_B1fortt = -999.;
+  MVA_value_B2fortt = -999.;
+  MVA_value_B3fortt = -999.;
+  MVA_value_B4fortt = -999.;
+  MVA_value_B5fortt = -999.;
   MVA_value_B6fortt = -999.;
+  MVA_value_B7fortt = -999.;
+  MVA_value_B8fortt = -999.;
+  MVA_value_B9fortt = -999.;
+  MVA_value_B10fortt = -999.;
+  MVA_value_B11fortt = -999.;
+  MVA_value_B12fortt = -999.;
   MT2 = -999.;
   MT2_reco = -999.;
   MT2_noMU = -999.;
@@ -2637,10 +2702,21 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	//MVA
 	if(runMVA_){
 	  MVA_dR_l1l2 = dR_l1l2; MVA_dR_b1b2=dR_b1b2; MVA_dR_bl=dR_bl; MVA_dR_l1l2b1b2 = dR_l1l2b1b2; MVA_MINdR_bl = MINdR_bl; MVA_dphi_l1l2b1b2 = dphi_l1l2b1b2; MVA_mass_l1l2=mass_l1l2; MVA_mass_b1b2=mass_b1b2; MVA_mass_trans = mass_trans;  MVA_MT2 = MT2; MVA_pt_b1b2 = pt_b1b2;
-	  MVA_value = reader->EvaluateMVA("MLP method");
+	  MVA_value = reader->EvaluateMVA( Method.Data() );
 	  //Using also B6 MVA
 	  if(sample_==tt){
-	  //  MVA_value_B6fortt = reader_ttB6->EvaluateMVA("BDT method");
+	    MVA_value_B1fortt  = reader_ttB1->EvaluateMVA( Method_ttB1.Data() );
+	    MVA_value_B2fortt  = reader_ttB2->EvaluateMVA( Method_ttB2.Data() );
+	    MVA_value_B3fortt  = reader_ttB3->EvaluateMVA( Method_ttB3.Data() );
+	    MVA_value_B4fortt  = reader_ttB4->EvaluateMVA( Method_ttB4.Data() );
+	    MVA_value_B5fortt  = reader_ttB5->EvaluateMVA( Method_ttB5.Data() );
+	    MVA_value_B6fortt  = reader_ttB6->EvaluateMVA( Method_ttB6.Data() );
+	    //MVA_value_B7fortt  = reader_ttB7->EvaluateMVA( Method_ttB7.Data() );
+	    MVA_value_B8fortt  = reader_ttB8->EvaluateMVA( Method_ttB8.Data() );
+	    MVA_value_B9fortt  = reader_ttB9->EvaluateMVA( Method_ttB9.Data() );
+	    MVA_value_B10fortt = reader_ttB10->EvaluateMVA( Method_ttB10.Data() );
+	    MVA_value_B11fortt = reader_ttB11->EvaluateMVA( Method_ttB11.Data() );
+	    MVA_value_B12fortt = reader_ttB12->EvaluateMVA( Method_ttB12.Data() );
 	  }
 	}
     }
