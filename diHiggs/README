@@ -42,6 +42,7 @@ inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_2016
 
 
 B7,PU40 delphes sample:
+inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_5.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_6.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B7_200k_PU40_20160426_Btag_leptonW_antik4_part1234_7.root
 
 
 B8,PU40 delphes sample:
