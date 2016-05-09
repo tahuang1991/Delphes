@@ -2953,7 +2953,30 @@ float DiHiggstoWWbb::GetMuonRecoWeight(TH2F *hist, float pt, float eta){
   if (bin2 == 0 || bin2 == hist->GetNbinsY()+1) return weight=0;
   
   float delphesEff = hist->GetBinContent(bin1, bin2);
-  float CMSEff = (pt>100?0.99:0.99*(1-exp(-pt/10.0)/4));
+  //float CMSEff = (pt>100?0.99:0.99*(1-exp(-pt/10.0)/4));
+  float CMSEff = 0;
+  if (fabs(eta)<0.9) {
+	if (pt>=10 && pt<25) CMSEff=0.92;
+	else if (pt>=25 && pt<30) CMSEff=0.95;
+	else if (pt>=30 && pt<35) CMSEff=0.97;
+	else if (pt>=35 && pt<40) CMSEff=0.98;
+	else if (pt>=40) CMSEff=0.99;
+  }
+  else if (fabs(eta)<2.1 && fabs(eta)>=0.9){
+	if (pt>=10 && pt<25) CMSEff=0.93;
+	else if (pt>=25 && pt<30) CMSEff=0.95;
+	else if (pt>=30 && pt<35) CMSEff=0.97;
+	else if (pt>=35) CMSEff=0.99;
+  }
+  else if (fabs(eta)>=2.1 && fabs(eta)<=2.4){
+	if (pt>=10 && pt<25) CMSEff=0.95;
+	else if (pt>=25 && pt<30) CMSEff=0.97;
+	else if (pt>=30 && pt<35) CMSEff=0.98;
+	else if (pt>=35) CMSEff=0.99;
+
+  }//CMeff are found from CMS muon reco performance 
+  else {cout <<"Error!! muon is not within fiducial "<< endl;}
+
   if(delphesEff == float(0)) weight =1.0;
   else 
   	weight = CMSEff/delphesEff; 
