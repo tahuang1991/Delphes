@@ -38,18 +38,18 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
   cout<<"Hello, I'm creating computing the EventFlow."<<endl;  
   std::vector<TString> samples; samples.clear();
   if(Sig_name=="ALL"){
-    samples.push_back("../Output/delphes_B1_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B2_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B3_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B4_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B5_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B6_1M_PU40ALL_3May.root");
-    //samples.push_back("../Output/delphes_B7_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B8_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B9_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B10_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B11_1M_PU40ALL_3May.root");
-    samples.push_back("../Output/delphes_B12_1M_PU40ALL_3May.root");
+    samples.push_back("../Output/delphes_B1_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B2_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B3_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B4_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B5_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B6_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B7_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B8_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B9_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B10_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B11_1M_PU40ALL_13May.root");
+    samples.push_back("../Output/delphes_B12_1M_PU40ALL_13May.root");
   }
   else samples.push_back(Sig_name);
 
@@ -130,4 +130,25 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
   h_n_s->GetXaxis()->SetTitle("Signal Sample"); h_n_s->GetYaxis()->SetTitle("Events expected in 300 fb-1");
   h_n_s->Draw();
   myc1->SaveAs( Out + "/Nsig.pdf" );
+
+  //Sensitivity
+  TH1F *h_sens = new TH1F( "h_sens", "", 12, 0., 12. );
+  h_sens->SetMarkerStyle(39);
+  h_sens->SetMarkerColor(kBlue);
+  h_sens->SetLineColor(kBlue);
+  h_sens->SetBinContent(1, 4.26);
+  h_sens->SetBinContent(2, 2.14);
+  h_sens->SetBinContent(3, 1.80);
+  h_sens->SetBinContent(4, 1.56);
+  h_sens->SetBinContent(5, 2.89);
+  h_sens->SetBinContent(6, 1.95);
+  h_sens->SetBinContent(7, 1.5);
+  h_sens->SetBinContent(8, 1.20);
+  h_sens->SetBinContent(9, 0.52);
+  h_sens->SetBinContent(10, 0.3);
+  h_sens->SetBinContent(11, 0.2);
+  h_sens->SetBinContent(12, 0.1);
+  h_sens->SetMinimum(0.); h_sens->GetXaxis()->SetTitle("Signal Sample"); h_sens->GetYaxis()->SetTitle("S/sqrt(S+B)");
+  h_sens->Draw("CM");
+  myc1->SaveAs( Out + "/Sens.pdf" );
 }

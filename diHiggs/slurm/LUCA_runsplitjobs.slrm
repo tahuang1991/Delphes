@@ -17,16 +17,16 @@ jobid=$SLURM_JOBID
 echo "job$jobid starts, `date`"
 
 #./LUCA_splitjobs_B1PU.sh
-#./LUCA_splitjobs_B2PU.sh
+./LUCA_splitjobs_B2PU.sh
 #./LUCA_splitjobs_B3PU.sh
 #./LUCA_splitjobs_B4PU.sh
 #./LUCA_splitjobs_B5PU.sh
 #./LUCA_splitjobs_B6PU.sh
-#./LUCA_splitjobs_B7PU.sh
+./LUCA_splitjobs_B7PU.sh
 #./LUCA_splitjobs_B8PU.sh
 #./LUCA_splitjobs_B9PU.sh
 #./LUCA_splitjobs_B10PU.sh
-./LUCA_splitjobs_B11PU.sh
+#./LUCA_splitjobs_B11PU.sh
 #./LUCA_splitjobs_B12PU.sh
 #./LUCA_splitjobs_ttbarPU.sh
 
