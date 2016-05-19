@@ -34,8 +34,11 @@ using namespace std;
 void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_tt_4M_PU40_WtobtaumuALL_3May.root", TString Out="plots" ){
 //void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_ttbar_4M_PU40_WtobtaumuALL_25Apr.root", TString Out="plots" ){
 
+  TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
+  gStyle->SetOptStat(0);
+  if(false){
   //Opening Inputs
-  cout<<"Hello, I'm creating computing the EventFlow."<<endl;  
+  cout<<"Hello, I'm creating computing the EventFlow."<<endl;
   std::vector<TString> samples; samples.clear();
   if(Sig_name=="ALL"){
     samples.push_back("../Output/delphes_B1_1M_PU40ALL_13May.root");
@@ -122,33 +125,34 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
     h_eff_abs->SetBinContent( i+1, AbsEff_s[i] );
     h_n_s->SetBinContent( i+1, N_s[i] );
   }
-  TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
-  gStyle->SetOptStat(0);
   h_eff_abs->SetMinimum(0.9); h_eff_abs->GetXaxis()->SetTitle("Signal Sample"); h_eff_abs->GetYaxis()->SetTitle("Efficiency");
   h_eff_abs->Draw();
   myc1->SaveAs( Out + "/eff.pdf" );
   h_n_s->GetXaxis()->SetTitle("Signal Sample"); h_n_s->GetYaxis()->SetTitle("Events expected in 300 fb-1");
   h_n_s->Draw();
   myc1->SaveAs( Out + "/Nsig.pdf" );
-
+  }
   //Sensitivity
-  TH1F *h_sens = new TH1F( "h_sens", "", 12, 0., 12. );
-  h_sens->SetMarkerStyle(39);
+  //float Masses[12] = {258, 341.4, 352.8, 415.5, 455.4, 511.1, 563.2, 603.97, 661.50, 714.3, 766.9, 840.4 };
+  float Masses[26] = {250, 257,259, 340,342, 351,353, 414,416, 454,456, 510,512, 562,564, 603,604, 660,662, 713,715, 766,778, 839,841, 900};
+  Int_t   Binnum = sizeof(Masses)/sizeof(Float_t) - 1;
+  TH1F *h_sens = new TH1F( "h_sens", "", Binnum, Masses );
+  h_sens->SetMarkerStyle(34);
   h_sens->SetMarkerColor(kBlue);
-  h_sens->SetLineColor(kBlue);
-  h_sens->SetBinContent(1, 4.26);
-  h_sens->SetBinContent(2, 2.14);
-  h_sens->SetBinContent(3, 1.80);
-  h_sens->SetBinContent(4, 1.56);
-  h_sens->SetBinContent(5, 2.89);
-  h_sens->SetBinContent(6, 1.95);
-  h_sens->SetBinContent(7, 1.5);
-  h_sens->SetBinContent(8, 1.20);
-  h_sens->SetBinContent(9, 0.52);
-  h_sens->SetBinContent(10, 0.3);
-  h_sens->SetBinContent(11, 0.2);
-  h_sens->SetBinContent(12, 0.1);
-  h_sens->SetMinimum(0.); h_sens->GetXaxis()->SetTitle("Signal Sample"); h_sens->GetYaxis()->SetTitle("S/sqrt(S+B)");
-  h_sens->Draw("CM");
+  //h_sens->SetMarkerSize(12);
+  h_sens->SetBinContent( 2, 4.25998);
+  h_sens->SetBinContent( 4, 2.13673);
+  h_sens->SetBinContent( 6, 1.84023);
+  h_sens->SetBinContent( 8, 1.55112);
+  h_sens->SetBinContent( 10, 2.87535);
+  h_sens->SetBinContent( 12, 1.95597);
+  h_sens->SetBinContent( 14, 0.960447);
+  h_sens->SetBinContent( 16, 1.20093);
+  h_sens->SetBinContent( 18, 1.22962);
+  h_sens->SetBinContent( 20, 0.204849);
+  h_sens->SetBinContent( 22, 0.136386);
+  h_sens->SetBinContent( 24, 0.0216029);
+  h_sens->SetMinimum(0.); h_sens->GetXaxis()->SetTitle("Signal Mass [GeV]"); h_sens->GetYaxis()->SetTitle("S/sqrt(S+B)");
+  h_sens->Draw("P");
   myc1->SaveAs( Out + "/Sens.pdf" );
 }

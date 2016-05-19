@@ -2,7 +2,6 @@
 debug		false
 nEvents		-1
 nStarts		0
-sample		9 #0 = tt, 1 = B1, 2 = B2...
 PUSample	true
 simulation	false
 Jetname		RecoJetPileUpID
@@ -19,8 +18,8 @@ leptonIso	0.15
 muonPt1		10.0
 muonPt2		10.0
 muonsEta	2.4
-runMVA  	false
-runMMC  	false
+runMVA  	true
+runMMC  	true
 useRecoBJet	true
 useRecoMuon	true
 useRecoMET	true
