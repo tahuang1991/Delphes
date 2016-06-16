@@ -1,5 +1,6 @@
 rm -rf slurm/*err
 rm -rf slurm/*out
+rm -rf parametersconfig_B*PU.txt
 rm -rf parametersconfig_B1PU.txt_*
 rm -rf parametersconfig_B2PU.txt*
 rm -rf parametersconfig_B3.txt_*
@@ -14,4 +15,4 @@ rm -rf parametersconfig_B9PU.txt*
 rm -rf parametersconfig_B10PU.txt*
 rm -rf parametersconfig_B11PU.txt*
 rm -rf parametersconfig_B12PU.txt*
-rm -rf parametersconfig_tt.txt_*
+rm -rf parametersconfig_ttPU.txt_*

@@ -31,8 +31,7 @@
 
 using namespace std;
 
-void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_tt_4M_PU40_WtobtaumuALL_3May.root", TString Out="plots" ){
-//void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_ttbar_4M_PU40_WtobtaumuALL_25Apr.root", TString Out="plots" ){
+void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_tt_4M_PU40_WtobtaumuALL_13May.root", TString Out="plots" ){
 
   TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
   gStyle->SetOptStat(0);
@@ -85,7 +84,7 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
     int nCuts = 6;
     //TString B_tag = "(hasb1jet || hasb2jet)";
     TString B_tag = "(((b1jet_btag&2)>0 && (b2jet_btag&3)>0) || ((b1jet_btag&3)>0 && (b 2jet_btag&2)>0))";
-    TString Cuts[]={"hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons",B_tag,"dR_l1l2<3.3 && dR_l1l2>0.07","dR_b1b2<5.","mass_l1l2<100 && mass_l1l2>5.","mass_b1b2>22"};
+    TString Cuts[]={"hasRECOjet1 && hasRECOjet2 && hasMET && hastwomuons",B_tag,"dR_l1l2<3.3 && dR_l1l2>0.07","dR_b1b2<5.","mass_l1l2<100 && mass_l1l2>5.","mass_b1b2>22"};
     TString Cuts_S[]={"Preselection","B-tag","$\\Delta$R(l1l2)","$\\Delta$R(b1b2)","m(l1l2)","m(b1b2)"};
     float nEv_S[nCuts], nEv_B[nCuts];
     for( int i=0; i<nCuts; i++){
@@ -133,26 +132,42 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
   myc1->SaveAs( Out + "/Nsig.pdf" );
   }
   //Sensitivity
-  //float Masses[12] = {258, 341.4, 352.8, 415.5, 455.4, 511.1, 563.2, 603.97, 661.50, 714.3, 766.9, 840.4 };
   float Masses[26] = {250, 257,259, 340,342, 351,353, 414,416, 454,456, 510,512, 562,564, 603,604, 660,662, 713,715, 766,778, 839,841, 900};
   Int_t   Binnum = sizeof(Masses)/sizeof(Float_t) - 1;
   TH1F *h_sens = new TH1F( "h_sens", "", Binnum, Masses );
   h_sens->SetMarkerStyle(34);
   h_sens->SetMarkerColor(kBlue);
-  //h_sens->SetMarkerSize(12);
-  h_sens->SetBinContent( 2, 4.25998);
-  h_sens->SetBinContent( 4, 2.13673);
-  h_sens->SetBinContent( 6, 1.84023);
-  h_sens->SetBinContent( 8, 1.55112);
-  h_sens->SetBinContent( 10, 2.87535);
-  h_sens->SetBinContent( 12, 1.95597);
-  h_sens->SetBinContent( 14, 0.960447);
-  h_sens->SetBinContent( 16, 1.20093);
-  h_sens->SetBinContent( 18, 1.22962);
-  h_sens->SetBinContent( 20, 0.204849);
-  h_sens->SetBinContent( 22, 0.136386);
-  h_sens->SetBinContent( 24, 0.0216029);
-  h_sens->SetMinimum(0.); h_sens->GetXaxis()->SetTitle("Signal Mass [GeV]"); h_sens->GetYaxis()->SetTitle("S/sqrt(S+B)");
+  h_sens->SetBinContent( 2, 4.76937);
+  h_sens->SetBinContent( 4, 2.36102);
+  h_sens->SetBinContent( 6, 2.07428);
+  h_sens->SetBinContent( 8, 2.848);
+  h_sens->SetBinContent( 10, 5.86399);
+  h_sens->SetBinContent( 12, 17.372);
+  h_sens->SetBinContent( 14, 2.62056);
+  h_sens->SetBinContent( 16, 8.13302);
+  h_sens->SetBinContent( 18, 12.3069);
+  h_sens->SetBinContent( 20, 0.534696);
+  h_sens->SetBinContent( 22, 1.7733);
+  h_sens->SetBinContent( 24, 0.194834);
+  h_sens->SetMinimum(0.); h_sens->GetXaxis()->SetTitle("Signal Mass [GeV]"); h_sens->GetYaxis()->SetTitle("Sensitivity");
   h_sens->Draw("P");
+  TH1F *h_sensCut = new TH1F( "h_sensCut", "", Binnum, Masses );
+  h_sensCut->SetMarkerStyle(34);
+  h_sensCut->SetMarkerColor(kRed);
+  h_sensCut->SetBinContent( 2, 4.42847);
+  h_sensCut->SetBinContent( 4, 2.16941);
+  h_sensCut->SetBinContent( 6, 1.86745);
+  h_sensCut->SetBinContent( 8, 1.80996);
+  h_sensCut->SetBinContent( 10, 2.57802);
+  h_sensCut->SetBinContent( 12, 2.47399);
+  h_sensCut->SetBinContent( 14, 1.04581);
+  h_sensCut->SetBinContent( 16, 1.55697);
+  h_sensCut->SetBinContent( 18, 2.21026);
+  h_sensCut->SetBinContent( 20, 0.225977);
+  h_sensCut->SetBinContent( 22, 0.258508);
+  h_sensCut->SetBinContent( 24, 0.0567165);
+  h_sensCut->SetMinimum(0.); h_sensCut->GetXaxis()->SetTitle("Signal Mass [GeV]"); h_sensCut->GetYaxis()->SetTitle("Sensitivity");
+  h_sensCut->Draw("sameP");
+
   myc1->SaveAs( Out + "/Sens.pdf" );
 }

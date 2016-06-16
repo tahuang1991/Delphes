@@ -81,5 +81,11 @@ float CrossSections_and_BR::GetWeight( float Lumi, float InitEv, int proc, bool 
   float xsecbr = Xsec * BR;
   if( Optimistic )  cout<<"Optimistic CROSS = "<<Xsec<<" * "<<BR<<" * "<<Lumi<<" / "<<InitEv<<" = "<<xsecbr*Lumi/InitEv<<endl;
   if( !Optimistic ) cout<<"Pessimistic CROSS = "<<Xsec<<" * "<<BR<<" * "<<Lumi<<" / "<<InitEv<<" = "<<xsecbr*Lumi/InitEv<<endl;
+  if( proc!=tt ){
+    float BR1 = pow(BR_h_bb,2);
+    float BR2 = pow(BR_h_WW,2)*pow(BR_W_lnu,4);
+    float BR3 = 2*BR_h_bb*BR_h_WW*pow(BR_W_lnu,2);
+    cout<<"Total BR is: "<<BR<<" ( "<<BR1<<" + "<<BR2<<" + "<<BR3<<" = bbbb + WWWW ++ bbWW)"<<endl;
+  }
   return xsecbr*Lumi/InitEv;
 }
