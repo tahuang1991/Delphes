@@ -412,6 +412,7 @@ class DiHiggstoWWbb {
     bool tbartoWbbar;
     bool ttoWb;
     bool ttbar;
+    float tt_gen_mass;
 
     float Muon1_beforeIso_px;
     float Muon1_beforeIso_py;
@@ -585,6 +586,8 @@ class DiHiggstoWWbb {
     float MMC_h2massweight4_prob;
     float MMC_h2mass_Entries;
     float MMC_h2mass_RMS;
+    float MMC_h2massweight1_RMS;
+    float MMC_h2massweight4_RMS;
     float MMC_h2mass_Mean;
     float MMC_h2mass_underflow;
     float MMC_h2mass_overflow;

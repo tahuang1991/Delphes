@@ -526,6 +526,7 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("ttoWb",&ttoWb,"ttoWb/B");
   evtree->Branch("tbartoWbbar",&tbartoWbbar,"tbartoWbbar/B");
   evtree->Branch("ttbar",&ttbar,"ttbar/B");
+  evtree->Branch("tt_gen_mass",&tt_gen_mass,"tt_gen_mass/F");
   
   evtree->Branch("Muon1_beforeIso_px",&Muon1_beforeIso_px, "Muon1_beforeIso_px/F");
   evtree->Branch("Muon1_beforeIso_py",&Muon1_beforeIso_py, "Muon1_beforeIso_py/F");
@@ -669,6 +670,8 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("MMC_h2massweight1_prob",&MMC_h2massweight1_prob,"MMC_h2massweight1_prob/F");
   evtree->Branch("MMC_h2massweight4_prob",&MMC_h2massweight4_prob,"MMC_h2massweight4_prob/F");
   evtree->Branch("MMC_h2mass_RMS",&MMC_h2mass_RMS,"MMC_h2mass_RMS/F");
+  evtree->Branch("MMC_h2massweight1_RMS",&MMC_h2massweight1_RMS,"MMC_h2massweight1_RMS/F");
+  evtree->Branch("MMC_h2massweight4_RMS",&MMC_h2massweight4_RMS,"MMC_h2massweight4_RMS/F");
   evtree->Branch("MMC_h2mass_Mean",&MMC_h2mass_Mean,"MMC_h2mass_Mean/F");
   evtree->Branch("MMC_h2mass_Entries",&MMC_h2mass_Entries,"MMC_h2mass_Entries/F");
   evtree->Branch("MMC_h2mass_overflow",&MMC_h2mass_overflow,"MMC_h2mass_overflow/F");
@@ -1031,7 +1034,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
   }*/
   getQuarkFinalState(gent1, branchParticle);
   getQuarkFinalState(gent2, branchParticle);
-
+  tt_gen_mass = (gent1->P4()+gent2->P4()).M();
   if (((GenParticle*)branchParticle->At(gent1->D1))->PID == 5) {
     //printGenParticle(genhiggs1);
     //printGenParticle((GenParticle*)branchParticle->At(genhiggs1->D1));
@@ -1985,6 +1988,7 @@ void DiHiggstoWWbb::initBranches(){
   t2_mass = 0.0;
   ttoWb =false;
   tbartoWbbar = false;
+  tt_gen_mass = 0;
   ttbar = false;
 
   Muon1_beforeIso_px = 0.0;
@@ -2157,6 +2161,8 @@ void DiHiggstoWWbb::initBranches(){
   MMC_h2massweight4_prob = 0.0;
   MMC_h2mass_Entries = 0.0;
   MMC_h2mass_RMS = 0.0;
+  MMC_h2massweight1_RMS = 0.0;
+  MMC_h2massweight4_RMS = 0.0;
   MMC_h2mass_Mean =0.0;
   MMC_h2mass_underflow =0.0;
   MMC_h2mass_overflow =0.0;
@@ -2833,6 +2839,8 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  MMC_h2massweight1_prob = (MMC_h2mass_weight1->GetXaxis())->GetBinCenter(MMC_h2mass_weight1->GetMaximumBin());
 	  MMC_h2massweight4_prob = (MMC_h2mass_weight4->GetXaxis())->GetBinCenter(MMC_h2mass_weight4->GetMaximumBin());
 	  MMC_h2mass_RMS = MMC_h2mass->GetRMS();
+	  MMC_h2massweight1_RMS = MMC_h2mass_weight1->GetRMS();
+	  MMC_h2massweight4_RMS = MMC_h2mass_weight4->GetRMS();
 	  MMC_h2mass_Entries = MMC_h2mass->GetEntries();
 	  MMC_h2mass_Mean = MMC_h2mass->GetMean();
 	  int nbin=(MMC_h2mass->GetXaxis())->GetNbins();

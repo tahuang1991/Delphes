@@ -76,7 +76,8 @@ float CrossSections_and_BR::GetWeight( float Lumi, float InitEv, int proc, bool 
   Lumi*=1000; //convert to pb-1
   float BR = 1.;
   if( proc!=tt )      BR = pow(BR_h_bb,2) + pow(BR_h_WW,2)*pow(BR_W_lnu,4) + 2*BR_h_bb*BR_h_WW*pow(BR_W_lnu,2);
-  else if ( proc==tt) BR = BR_t_Wb * BR_t_Wb * BR_W_munu_taunu * BR_W_munu_taunu;
+  //else if ( proc==tt) BR = BR_t_Wb * BR_t_Wb * BR_W_munu_taunu * BR_W_munu_taunu;
+  else if ( proc==tt) BR = BR_t_Wb * BR_t_Wb * BR_W_munu * BR_W_munu;
   else                cout<<"WARNING::CrossSections_and_BR -> No process specified!"<<endl;
   float xsecbr = Xsec * BR;
   if( Optimistic )  cout<<"Optimistic CROSS = "<<Xsec<<" * "<<BR<<" * "<<Lumi<<" / "<<InitEv<<" = "<<xsecbr*Lumi/InitEv<<endl;
