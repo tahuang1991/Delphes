@@ -31,7 +31,7 @@
 
 using namespace std;
 
-void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_tt_4M_PU40_WtobtaumuALL_13May.root", TString Out="plots" ){
+void EventFlow( TString Sig_name = "ALL", TString Bac_name = "/fdata/hepx/store/user/lpernie/Hhh/delphes_tt_4M_PU40_WtobtaumuALL_13May.root", TString Out="plots" ){
 
   TCanvas* myc1 = new TCanvas("myc1", "CMS", 600, 600);
   gStyle->SetOptStat(0);
@@ -40,18 +40,18 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
   cout<<"Hello, I'm creating computing the EventFlow."<<endl;
   std::vector<TString> samples; samples.clear();
   if(Sig_name=="ALL"){
-    samples.push_back("../Output/delphes_B1_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B2_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B3_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B4_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B5_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B6_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B7_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B8_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B9_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B10_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B11_1M_PU40ALL_13May.root");
-    samples.push_back("../Output/delphes_B12_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B1_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B2_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B3_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B4_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B5_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B6_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B7_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B8_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B9_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B10_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B11_1M_PU40ALL_13May.root");
+    samples.push_back("/fdata/hepx/store/user/lpernie/Hhh/delphes_B12_1M_PU40ALL_13May.root");
   }
   else samples.push_back(Sig_name);
 
@@ -76,7 +76,7 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
     float NEntries_S = T_Sig->Draw("weight>>hW","weight>0","goff");
     float weight_S = hW->GetMean();
     float NEntries_B = T_Bac->Draw("weight>>hW","weight>0","goff");
-    float weight_B = hW->GetMean();
+    float weight_B = 3.40301;//hW->GetMean();
     cout<<"Signal: "<<samples[j]<<" has: "<<NEntries_S<<" * "<<weight_S<<" events = "<<NEntries_S*weight_S<<endl;
     cout<<"Background: "<<Bac_name<<" has: "<<NEntries_B<<" * "<<weight_B<<" events = "<<NEntries_B*weight_B<<endl;
     //Event Flow. (preselections = "hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons && hasdRljet)
@@ -137,18 +137,18 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
   TH1F *h_sens = new TH1F( "h_sens", "", Binnum, Masses );
   h_sens->SetMarkerStyle(34);
   h_sens->SetMarkerColor(kBlue);
-  h_sens->SetBinContent( 2, 4.76937);
-  h_sens->SetBinContent( 4, 2.36102);
-  h_sens->SetBinContent( 6, 2.07428);
-  h_sens->SetBinContent( 8, 2.848);
-  h_sens->SetBinContent( 10, 5.86399);
-  h_sens->SetBinContent( 12, 17.372);
-  h_sens->SetBinContent( 14, 2.62056);
-  h_sens->SetBinContent( 16, 8.13302);
-  h_sens->SetBinContent( 18, 12.3069);
-  h_sens->SetBinContent( 20, 0.534696);
-  h_sens->SetBinContent( 22, 1.7733);
-  h_sens->SetBinContent( 24, 0.194834);
+  h_sens->SetBinContent( 2, 2.31635);
+  h_sens->SetBinContent( 4, 1.10901);
+  h_sens->SetBinContent( 6, 0.934016);
+  h_sens->SetBinContent( 8, 0.839262);
+  h_sens->SetBinContent( 10, 1.17605);
+  h_sens->SetBinContent( 12, 0.961658);
+  h_sens->SetBinContent( 14, 0.733404);
+  h_sens->SetBinContent( 16, 0.782335);
+  h_sens->SetBinContent( 18, 0.918227);
+  h_sens->SetBinContent( 20, 0.315506);
+  h_sens->SetBinContent( 22, 0.0711883);
+  h_sens->SetBinContent( 24, 0.018855);
   h_sens->SetMinimum(0.); h_sens->GetXaxis()->SetTitle("Signal Mass [GeV]"); h_sens->GetYaxis()->SetTitle("Sensitivity");
   h_sens->Draw("P");
   TH1F *h_sensCut = new TH1F( "h_sensCut", "", Binnum, Masses );
@@ -167,7 +167,7 @@ void EventFlow( TString Sig_name = "ALL", TString Bac_name = "../Output/delphes_
   h_sensCut->SetBinContent( 22, 0.258508);
   h_sensCut->SetBinContent( 24, 0.0567165);
   h_sensCut->SetMinimum(0.); h_sensCut->GetXaxis()->SetTitle("Signal Mass [GeV]"); h_sensCut->GetYaxis()->SetTitle("Sensitivity");
-  h_sensCut->Draw("sameP");
+  //h_sensCut->Draw("sameP");
 
   myc1->SaveAs( Out + "/Sens.pdf" );
 }

@@ -35,19 +35,20 @@ struct BRs {
   float h_bb; float h_WW; float W_lnu; float W_munu; float t_WB;
 } MyBR;
 
-void CreateDatacards( TString folder = "Outputs/" ){
+//.x CreateDatacards.C+(false, "Outputs_sys_per4", "4")
+void CreateDatacards( bool noSyst=false, TString folder = "Outputs/", TString Pimp = "" ){
 
   //Signals 
   TString name_base1 = "/fdata/hepx/store/user/lpernie/Hhh/delphes_";
-  TString name_base2 = "_1M_PU40ALL_13May_MVAMMC.root";
+  TString name_base2 = "_1M_PU40ALL_13May_MVAMMC_TTMU.root";
   TString Sig_name[N_Signals] = {name_base1+"B1"+name_base2, name_base1+"B2"+name_base2, name_base1+"B3"+name_base2, name_base1+"B4"+name_base2, name_base1+"B5"+name_base2, name_base1+"B6"+name_base2, name_base1+"B7"+name_base2, name_base1+"B8"+name_base2, name_base1+"B9"+name_base2, name_base1+"B10"+name_base2, name_base1+"B11"+name_base2, name_base1+"B12"+name_base2};
-  TString Bac_name = "/fdata/hepx/store/user/lpernie/Hhh/delphes_tt_4M_PU40_WtobtaumuALL_13May_MVAMMC.root";
+  TString Bac_name = "/fdata/hepx/store/user/lpernie/Hhh/delphes_tt_4M_PU40_WtomuALL_13May_MVAMMC_TTMU.root";
   float BR = 0.35977;
 
   //Selections
-  TString selection = "(((b1jet_btag&2)>0 && (b2jet_btag&3)>0) || ((b1jet_btag&3)>0 && (b 2jet_btag&2)>0)) && hasRECOjet1 && hasRECOjet2 && hasMET && hastwomuons && dR_l1l2<3.3 && dR_l1l2>0.07 && dR_b1b2<5. && mass_l1l2<100 && mass_l1l2>5. && mass_b1b2>22 && MMC_h2massweight1_prob>0";
-  TString selection_MVA[N_Signals]   = {" && MVA_value>0.0704", " && MVA_value>0.4664", " && MVA_value>0.5803", " && MVA_value>0.1453", " && MVA_value>1.0042", " && MVA_value>0.2080", " && MVA_value>0.9642", " && MVA_value>0.2234", " && MVA_value>0.1464", " && MVA_value>0.9468", " && MVA_value>0.9501", " && MVA_value>0.9501" };
-  TString selection_MVAtt[N_Signals] = {" && MVA_value_B1fortt>0.0704", " && MVA_value_B2fortt>0.4664", " && MVA_value_B3fortt>0.5803", " && MVA_value_B4fortt>0.1453", " && MVA_value_B5fortt>1.0042", " && MVA_value_B6fortt>0.2080", " && MVA_value_B7fortt>0.9642", " && MVA_value_B8fortt>0.2234", " && MVA_value_B9fortt>0.1464", " && MVA_value_B10fortt>0.9468", " && MVA_value_B11fortt>0.9501", " && MVA_value_B12fortt>0.9501" };
+  TString selection = "(((b1jet_btag&2)>0 && (b2jet_btag&3)>0) || ((b1jet_btag&3)>0 && (b 2jet_btag&2)>0)) && hasRECOjet1 && hasRECOjet2 && hasMET && hastwomuons && dR_l1l2<3.3 && dR_l1l2>0.07 && dR_b1b2<5. && mass_l1l2<100 && mass_l1l2>5. && mass_b1b2>22 && MMC_h2massweight1_prob>200";
+  TString selection_MVA[N_Signals]   = {" && MVA_value>-0.0799", " && MVA_value>-0.1258", " && MVA_value>-0.1415", " && MVA_value>0.0123", " && MVA_value>0.0437", " && MVA_value>0.9325", " && MVA_value>0.8889", " && MVA_value>0.1075", " && MVA_value>0.2102", " && MVA_value>0.1602", " && MVA_value>0.9001", " && MVA_value>0.9501" };
+  TString selection_MVAtt[N_Signals] = {" && MVA_value_B1fortt>-0.0799", " && MVA_value_B2fortt>-0.1258", " && MVA_value_B3fortt>-0.1415", " && MVA_value_B4fortt>0.0123", " && MVA_value_B5fortt>0.0437", " && MVA_value_B6fortt>0.9325", " && MVA_value_B7fortt>0.8889", " && MVA_value_B8fortt>0.1075", " && MVA_value_B9fortt>0.2102", " && MVA_value_B10fortt>0.1602", " && MVA_value_B11fortt>0.9001", " && MVA_value_B12fortt>0.9501" };
   //TString selection_MVA[N_Signals] = {"","","","","","","","","","","",""};
   //TString selection_MVAtt[N_Signals] = {"","","","","","","","","","","",""};
   Float_t BinRange[]={200.,225,250.,275,300.,325,350,375,400.,425,450.,500.,550.,600.,650,700.,800.,1000.};
@@ -180,7 +181,9 @@ void CreateDatacards( TString folder = "Outputs/" ){
 	TString Thisname_txt;
 	if( iV==0 ){ Thisname_txt = name_txt + "_CutCount_" + std::to_string(nS+1) + ".txt";      Mydata = Mybackground; }
 	if( iV==1 ){ Thisname_txt = name_txt + "_CutCount_pess_" + std::to_string(nS+1) + ".txt"; Mydata = Mybackground; }
-	float syst_B = 0.000001;//sqrt(Mybackground)/Mybackground;
+	float syst_B = 1 + (sqrt(NEntries_MVA_B)/NEntries_MVA_B);
+	if(Pimp=="2") syst_B = 1 + (sqrt(2*NEntries_MVA_B)/(2*NEntries_MVA_B));
+	if(Pimp=="4") syst_B = 1 + (sqrt(4*NEntries_MVA_B)/(4*NEntries_MVA_B));
 	FILE *file_txt=fopen( (folder + "/" + Thisname_txt).Data(),"w");
 	cout<<"Now I created the "<<(folder + "/" + Thisname_txt)<<" file."<<endl;
 	fprintf(file_txt,"# Simple counting experiment, with one signal and a few background processes \n");
@@ -199,11 +202,21 @@ void CreateDatacards( TString folder = "Outputs/" ){
 	fprintf(file_txt,"bin              1     1 \n");
 	fprintf(file_txt,"process         Hhh   tt \n");
 	fprintf(file_txt,"process          0     1 \n");
-	fprintf(file_txt,"rate            %.3f %.3f \n", Nsig, Mybackground);
+	if(Pimp=="")  fprintf(file_txt,"rate            %.3f %.3f \n", Nsig, Mybackground);
+	if(Pimp=="2") fprintf(file_txt,"rate            %.3f %.3f \n", Nsig*2, Mybackground*2);
+	if(Pimp=="4") fprintf(file_txt,"rate            %.3f %.3f \n", Nsig*2, Mybackground*4);
 	fprintf(file_txt,"------------ \n");
-	fprintf(file_txt,"S lnN    1.000000001  -   lumi affects both signal and bkg. lnN = lognormal \n");
-	fprintf(file_txt,"B lnN     -  %.2f syst. on the background \n", syst_B);
-	fprintf(file_txt,"# (S * %.3f)/(300*1000*%.5f*%.5f) \n", Nsig, Eff_gobal, BR);
+	if(noSyst){
+	  fprintf(file_txt,"S lnN    1.00001  -   lumi affects both signal and bkg. lnN = lognormal \n");
+	  fprintf(file_txt,"B lnN     -  1.00001 syst. on the background \n");
+	}
+	else{
+	  fprintf(file_txt,"S lnN    1.1  -   lumi affects both signal and bkg. lnN = lognormal \n");
+	  fprintf(file_txt,"B lnN     -  %.2f syst. on the background \n", syst_B);
+	}
+	if(Pimp=="")  fprintf(file_txt,"# (S * %.3f)/(300*1000*%.5f*%.5f) \n", Nsig, Eff_gobal, BR);
+	if(Pimp=="2") fprintf(file_txt,"# (S * %.3f)/(300*1000*%.5f*%.5f) \n", Nsig*2, Eff_gobal, BR);
+	if(Pimp=="4") fprintf(file_txt,"# (S * %.3f)/(300*1000*%.5f*%.5f) \n", Nsig*4, Eff_gobal, BR);
 	fclose (file_txt);
 	cout<<"Now Shape analysis!"<<endl;
 	//Create root file for shape analysis
@@ -214,15 +227,59 @@ void CreateDatacards( TString folder = "Outputs/" ){
 	TH1F *Hhh      = new TH1F( "Hhh", "", Binnum, BinRange);
 	TH1F *tt       = new TH1F( "tt", "", Binnum, BinRange);
 	TH1F *data_obs = new TH1F( "data_obs", "", Binnum, BinRange);
-	T_Sig->Draw("MMC_h2massweight1_prob>>Hhh","weight * reweighting * (" + selection + selection_MVA[nS] + ")","goff"); 
-	T_Bac->Draw("MMC_h2massweight1_prob>>tt","weight * reweighting * (" + selection + selection_MVAtt[nS] + ")","goff");
+	if(Pimp=="")  T_Sig->Draw("MMC_h2massweight1_prob>>Hhh","weight * reweighting * (" + selection + selection_MVA[nS] + ")","goff"); 
+	if(Pimp=="2") T_Sig->Draw("MMC_h2massweight1_prob>>Hhh","2 * weight * reweighting * (" + selection + selection_MVA[nS] + ")","goff"); 
+	if(Pimp=="4") T_Sig->Draw("MMC_h2massweight1_prob>>Hhh","4 * weight * reweighting * (" + selection + selection_MVA[nS] + ")","goff"); 
+	if(Pimp=="")  T_Bac->Draw("MMC_h2massweight1_prob>>tt","weight * reweighting * (" + selection + selection_MVAtt[nS] + ")","goff");
+	if(Pimp=="2") T_Bac->Draw("MMC_h2massweight1_prob>>tt","2 * weight * reweighting * (" + selection + selection_MVAtt[nS] + ")","goff");
+	if(Pimp=="4") T_Bac->Draw("MMC_h2massweight1_prob>>tt","4 * weight * reweighting * (" + selection + selection_MVAtt[nS] + ")","goff");
 	for(int j=0; j<=data_obs->GetNbinsX(); j++) data_obs->SetBinContent(j, tt->GetBinContent(j));
 	//Shape analysis datacard
 	TString Thisname_txt2;
 	if( iV==0 ){ Thisname_txt2 = name_txt + "_Shape_" + std::to_string(nS+1) + ".txt"; }
 	if( iV==1 ){ Thisname_txt2 = name_txt + "_Shape_pess_" + std::to_string(nS+1) + ".txt"; }
-
-	float syst_BB = 0.000001;//sqrt(tt->Integral())/tt->Integral();
+	// Shape unc.
+	TH1F *tt_statUp   = new TH1F( "tt_statUp", "", Binnum, BinRange);
+	TH1F *tt_statDown = new TH1F( "tt_statDown", "", Binnum, BinRange);
+	for(int j=1; j<=tt->GetNbinsX()+1; j++){
+	  if( tt->GetBinContent(j)!=0 ){
+	    float Err = sqrt(tt->GetBinContent(j)/Weight_tt) / (tt->GetBinContent(j)/Weight_tt);
+	    if(Pimp=="2") Err = sqrt( (tt->GetBinContent(j)/Weight_tt)*2 ) / ( 2*(tt->GetBinContent(j)/Weight_tt) );
+	    if(Pimp=="4") Err = sqrt( (tt->GetBinContent(j)/Weight_tt)*4 ) / ( 4*(tt->GetBinContent(j)/Weight_tt) );
+	    tt_statUp->SetBinContent(j, tt->GetBinContent(j) * (1.+Err) );
+	    tt_statDown->SetBinContent(j,   tt->GetBinContent(j) * (1.-Err) );
+	  }//Interpolation if you have entries before and after an empty bin
+	  else if ( tt->GetBinContent(j)==0 && tt->GetBinContent(j+1)!=0 && tt->GetBinContent(j-1)!=0 ){
+	    float Low1 = tt->GetBinContent(j-1) * (1.-(sqrt(tt->GetBinContent(j-1)/Weight_tt) / (tt->GetBinContent(j-1)/Weight_tt)));
+	    if(Pimp=="2") Low1 = tt->GetBinContent(j-1) * (1.-(sqrt(2*(tt->GetBinContent(j-1)/Weight_tt)) / (2*(tt->GetBinContent(j-1)/Weight_tt))));
+	    if(Pimp=="4") Low1 = tt->GetBinContent(j-1) * (1.-(sqrt(4*(tt->GetBinContent(j-1)/Weight_tt)) / (4*(tt->GetBinContent(j-1)/Weight_tt))));
+	    float Low2 = tt->GetBinContent(j+1) * (1.-(sqrt(tt->GetBinContent(j+1)/Weight_tt) / (tt->GetBinContent(j+1)/Weight_tt)));
+	    if(Pimp=="2") Low2 = tt->GetBinContent(j+1) * (1.-(sqrt(2*(tt->GetBinContent(j+1)/Weight_tt)) / (2*(tt->GetBinContent(j+1)/Weight_tt))));
+	    if(Pimp=="4") Low2 = tt->GetBinContent(j+1) * (1.-(sqrt(4*(tt->GetBinContent(j+1)/Weight_tt)) / (4*(tt->GetBinContent(j+1)/Weight_tt))));
+	    tt_statUp->SetBinContent(j, (Low1+Low2)/2 );
+	    tt_statDown->SetBinContent(j, 0. );
+	  }
+	  //Interpolation if you have entries after
+	  else if ( tt->GetBinContent(j)==0 && tt->GetBinContent(j+1)!=0 ){
+	    float Low2 = tt->GetBinContent(j+1) * (1.-(sqrt(tt->GetBinContent(j+1)/Weight_tt) / (tt->GetBinContent(j+1)/Weight_tt)));
+	    if(Pimp=="2") Low2 = tt->GetBinContent(j+1) * (1.-(sqrt(2*(tt->GetBinContent(j+1)/Weight_tt)) / (2*(tt->GetBinContent(j+1)/Weight_tt))));
+	    if(Pimp=="4") Low2 = tt->GetBinContent(j+1) * (1.-(sqrt(4*(tt->GetBinContent(j+1)/Weight_tt)) / (4*(tt->GetBinContent(j+1)/Weight_tt))));
+	    tt_statUp->SetBinContent(j, (Low2)/2 );
+	    tt_statDown->SetBinContent(j, 0. );
+	  }
+	  //Interpolation if you have entries before
+	  else if ( tt->GetBinContent(j)==0 && tt->GetBinContent(j-1)!=0 ){
+	    float Low1 = tt->GetBinContent(j-1) * (1.-(sqrt(tt->GetBinContent(j-1)/Weight_tt) / (tt->GetBinContent(j-1)/Weight_tt)));
+	    if(Pimp=="2") Low1 = tt->GetBinContent(j-1) * (1.-(sqrt(2*(tt->GetBinContent(j-1)/Weight_tt)) / (2*(tt->GetBinContent(j-1)/Weight_tt))));
+	    if(Pimp=="4") Low1 = tt->GetBinContent(j-1) * (1.-(sqrt(4*(tt->GetBinContent(j-1)/Weight_tt)) / (4*(tt->GetBinContent(j-1)/Weight_tt))));
+	    tt_statUp->SetBinContent(j, (Low1)/2 );
+	    tt_statDown->SetBinContent(j, 0. );
+	  }
+	  else{
+	    tt_statUp->SetBinContent(j, 0. );
+	    tt_statDown->SetBinContent(j, 0. );
+	  }
+	}
 	FILE *file_shape_txt=fopen( (folder + "/" + Thisname_txt2).Data(),"w");
 	cout<<"Now I created the "<<(folder + "/" + Thisname_txt2)<<" file."<<endl;
 	fprintf(file_shape_txt,"imax 1 #You are defining N channels, where N=1,...,imax\n");
@@ -239,17 +296,20 @@ void CreateDatacards( TString folder = "Outputs/" ){
 	fprintf(file_shape_txt,"process         0          1 \n");
 	fprintf(file_shape_txt,"rate            %.3f      %.3f \n", Hhh->Integral(), tt->Integral());
 	fprintf(file_shape_txt,"-------------------------------- \n");
-	fprintf(file_shape_txt,"S lnN    1.0000001  -   lumi affects both signal and bkg. lnN = lognormal \n");
-	fprintf(file_shape_txt,"B lnN     -  %.2f syst. on the background \n", syst_BB);
-	//fprintf(file_shape_txt,"bgnorm   lnN    1.00       1.3 \n");
-	//fprintf(file_shape_txt,"alpha  shapeN2    -           1   uncertainty on background shape and normalization \n");
-	//fprintf(file_shape_txt,"sigma  shapeN2    0.5         -   uncertainty on signal resolution. Assume the histogram is a 2 sigma shift, \n");
-	//fprintf(file_shape_txt,"#                                so divide the unit gaussian by 2 before doing the interpolation \n");
+	if(noSyst){
+	  fprintf(file_shape_txt,"S lnN    1.00001  -   lumi affects both signal and bkg. lnN = lognormal \n");
+	}
+	else{
+	  fprintf(file_shape_txt,"S lnN    1.1  -   lumi affects both signal and bkg. lnN = lognormal \n");
+	  fprintf(file_shape_txt,"stat  shapeN2    -           1   uncertainty on background shape and normalization \n");
+	}
 	fprintf(file_shape_txt,"# (S * %.3f)/(300*1000*%.5f*%.5f) \n", Nsig, Eff_gobal, BR);
 	fclose (file_shape_txt);
 	Hhh->Write();
 	tt->Write();
 	data_obs->Write();
+	tt_statUp->Write();
+	tt_statDown->Write();
 	file->Close();
 	delete file;
     }

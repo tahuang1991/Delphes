@@ -2,7 +2,7 @@
 
 Curdir=`pwd`
 parentdir="$(dirname "$Curdir")"
-outputdir=/home/lpernie/Hhh/delphes/diHiggs/Output/
+outputdir=/fdata/hepx/store/user/lpernie/Hhh/
 outputsuffix=.root
 outputprefix=delphes_B9_1M_PU40_
 inputfile=/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_0.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_1.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_2.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_3.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_4.root,/fdata/hepx/store/user/taohuang/Pheno/delphes_B9_200k_PU40_20160426_Btag_leptonW_antik4_part234_5.root

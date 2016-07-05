@@ -2,7 +2,7 @@
 
 Curdir=`pwd`
 parentdir="$(dirname "$Curdir")"
-outputdir=/home/lpernie/Hhh/delphes/diHiggs/Output/
+outputdir=/fdata/hepx/store/user/lpernie/Hhh/
 outputsuffix=.root
 outputprefix=delphes_B3_1M_PU40_
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part1_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part2_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part3_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part4_PU40_20160316_UpdateBtag_leptonW_antik4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB3_200k_part5_PU40_20160316_UpdateBtag_leptonW_antik4.root

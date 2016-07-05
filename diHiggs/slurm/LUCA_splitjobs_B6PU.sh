@@ -2,7 +2,7 @@
 
 Curdir=`pwd`
 parentdir="$(dirname "$Curdir")"
-outputdir=/home/lpernie/Hhh/delphes/diHiggs/Output/
+outputdir=/fdata/hepx/store/user/lpernie/Hhh/
 outputsuffix=.root
 outputprefix=delphes_B6_1M_PU40_
 inputfile=/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_0.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_1.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_2.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_3.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_4.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_5.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_6.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_7.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_8.root,/fdata/hepx/store/user/taohuang/Hhh/delphes_NewB6_200k_part2_PU40_20160412_Btag_leptonW_antik4_9.root

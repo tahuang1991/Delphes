@@ -18,43 +18,46 @@ jobid=$SLURM_JOBID
 echo "job$jobid starts, `date`"
 
 cp ../parametersconfigBXPU.txt ../parametersconfig_B1PU.txt 
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B2PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B3PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B4PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B5PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B6PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B7PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B8PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B9PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B10PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B11PU.txt
-#cp ../parametersconfigBXPU.txt ../parametersconfig_B12PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B2PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B3PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B4PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B5PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B6PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B7PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B8PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B9PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B10PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B11PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_B12PU.txt
+cp ../parametersconfigBXPU.txt ../parametersconfig_ttPU.txt
+
 echo 'sample		1 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B1PU.txt
-#echo 'sample		2 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B2PU.txt
-#echo 'sample		3 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B3PU.txt
-#echo 'sample		4 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B4PU.txt
-#echo 'sample		5 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B5PU.txt
-#echo 'sample		6 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B6PU.txt
-#echo 'sample		7 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B7PU.txt
-#echo 'sample		8 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B8PU.txt
-#echo 'sample		9 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B9PU.txt
-#echo 'sample		10 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B10PU.txt
-#echo 'sample		11 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B11PU.txt
-#echo 'sample		12 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B12PU.txt
-#
+echo 'sample		2 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B2PU.txt
+echo 'sample		3 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B3PU.txt
+echo 'sample		4 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B4PU.txt
+echo 'sample		5 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B5PU.txt
+echo 'sample		6 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B6PU.txt
+echo 'sample		7 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B7PU.txt
+echo 'sample		8 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B8PU.txt
+echo 'sample		9 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B9PU.txt
+echo 'sample		10 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B10PU.txt
+echo 'sample		11 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B11PU.txt
+echo 'sample		12 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_B12PU.txt
+echo 'sample		0 #0 = tt, 1 = B1, 2 = B2...' >> ../parametersconfig_ttPU.txt
+
 ./LUCA_splitjobs_B1PU.sh
-#./LUCA_splitjobs_B2PU.sh
-#./LUCA_splitjobs_B3PU.sh
-#./LUCA_splitjobs_B4PU.sh
-#./LUCA_splitjobs_B5PU.sh
-#./LUCA_splitjobs_B6PU.sh
-#./LUCA_splitjobs_B7PU.sh
-#./LUCA_splitjobs_B8PU.sh
-#./LUCA_splitjobs_B9PU.sh
-#./LUCA_splitjobs_B10PU.sh
-#./LUCA_splitjobs_B11PU.sh
-#./LUCA_splitjobs_B12PU.sh
-#./LUCA_splitjobs_ttbarPU.sh
+./LUCA_splitjobs_B2PU.sh
+./LUCA_splitjobs_B3PU.sh
+./LUCA_splitjobs_B4PU.sh
+./LUCA_splitjobs_B5PU.sh
+./LUCA_splitjobs_B6PU.sh
+./LUCA_splitjobs_B7PU.sh
+./LUCA_splitjobs_B8PU.sh
+./LUCA_splitjobs_B9PU.sh
+./LUCA_splitjobs_B10PU.sh
+./LUCA_splitjobs_B11PU.sh
+./LUCA_splitjobs_B12PU.sh
+./LUCA_splitjobs_ttbarPU.sh
 
 echo "job$jobid is done, `date`"
 
