@@ -16,3 +16,4 @@ rm -rf parametersconfig_B10PU.txt*
 rm -rf parametersconfig_B11PU.txt*
 rm -rf parametersconfig_B12PU.txt*
 rm -rf parametersconfig_ttPU.txt_*
+rm -rf parametersconfig_ttPU.txt
