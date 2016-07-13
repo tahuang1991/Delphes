@@ -35,6 +35,7 @@
 import sys    # exit
 import time   # time accounting
 import getopt # command line parser
+import os
 
 # --------------------------------------------
 
@@ -47,13 +48,14 @@ DEFAULT_FRIENDNAMEBKG  = ""
 DEFAULT_TREESIG        = "evtree"
 DEFAULT_TREEBKG        = "evtree"
 #DEFAULT_METHODS        = "Cuts,CutsD,CutsPCA,CutsGA,CutsSA,Likelihood,LikelihoodD,LikelihoodPCA,LikelihoodKDE,LikelihoodMIX,PDERS,PDERSD,PDERSPCA,PDEFoam,PDEFoamBoost,KNN,LD,Fisher,FisherG,BoostedFisher,HMatrix,FDA_GA,FDA_SA,FDA_MC,FDA_MT,FDA_GAMT,FDA_MCMT,MLP,MLPBFGS,MLPBNN,CFMlpANN,TMlpANN,SVM,BDT,BDTD,BDTG,BDTB,RuleFit"
-DEFAULT_METHODS        = "Likelihood,LikelihoodMIX,KNN,MLP,MLPBFGS,BDT,BDTD"
+DEFAULT_METHODS        = "Likelihood,KNN,MLP,BDT,BDTD"
 
 # Print usage help
 def usage():
     print " "
     print "Usage: python %s [options]" % sys.argv[0]
-    print "  -m | --methods    : gives methods to be run (default: all methods)"
+    print "  -w | --weight_fold   : folder name where to store weights (default: weights)"
+    print "  -m | --methods       : gives methods to be run (default: all methods)"
     print "  -i | --inputfilesig  : name of input signal ROOT file (default: '%s')" % DEFAULT_INFNAMESIG
     print "  -j | --inputfilebkg  : name of input background ROOT file (default: '%s')" % DEFAULT_INFNAMEBKG
     print "  -f | --friendinputfilesig  : name of friend input signal ROOT file (default: '%s')" % DEFAULT_FRIENDNAMESIG
@@ -73,8 +75,8 @@ def main():
 
     try:
         # retrive command line options
-        shortopts  = "m:i:j:f:g:t:o:a:vgh?"
-        longopts   = ["methods=", "inputfilesig=", "inputfilebkg=", "friendinputfilesig=", "friendinputfilebkg=", "inputtrees=", "outputfile=", "verbose", "gui", "help", "usage"]
+        shortopts  = "w:m:i:j:f:g:t:o:a:vgh?"
+        longopts   = ["weight_fold=", "methods=", "inputfilesig=", "inputfilebkg=", "friendinputfilesig=", "friendinputfilebkg=", "inputtrees=", "outputfile=", "verbose", "gui", "help", "usage"]
         opts, args = getopt.getopt( sys.argv[1:], shortopts, longopts )
 
     except getopt.GetoptError:
@@ -91,6 +93,7 @@ def main():
     treeNameBkg    = DEFAULT_TREEBKG
     outfname       = DEFAULT_OUTFNAME
     methods        = DEFAULT_METHODS
+    weight_fold    = "weights"
     verbose        = False
     gui            = False
     addedcuts      = ""
@@ -98,6 +101,8 @@ def main():
         if o in ("-?", "-h", "--help", "--usage"):
             usage()
             sys.exit(0)
+        elif o in ("-w", "--weight_fold"):
+            weight_fold = a
         elif o in ("-m", "--methods"):
             methods = a
         elif o in ("-i", "--inputfilesig"):
@@ -174,7 +179,7 @@ def main():
     # If you wish to modify default settings 
     # (please check "src/Config.h" to see all available global options)
     #    gConfig().GetVariablePlotting()).fTimesRMS = 8.0
-    #    gConfig().GetIONames()).fWeightFileDir = "myWeightDirectory"
+    (TMVA.gConfig().GetIONames()).fWeightFileDir = weight_fold;
 
     # Define the input variables that shall be used for the classifier training
     # note that you may also use variable expressions, such as: "3*var1/var2*abs(var3)"
@@ -190,7 +195,7 @@ def main():
     factory.AddVariable( "mass_trans", "mass_trans", "", 'F' )
     factory.AddVariable( "MT2", "MT2", "", 'F' )
     factory.AddVariable( "pt_b1b2", "pt_b1b2", "", 'F' )
-    #factory.AddVariable( "MMC_h2massweight1_prob", "MMC_h2massweight1_prob", "", 'F' )
+    factory.AddVariable( "MMC_h2massweight1_prob", "MMC_h2massweight1_prob", "", 'F' ) ##ADDED
 
     # You can add so-called "Spectator variables", which are not used in the MVA training, 
     # but will appear in the final "TestTree" produced by TMVA. This TestTree will contain the 
