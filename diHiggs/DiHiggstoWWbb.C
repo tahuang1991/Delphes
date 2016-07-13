@@ -1121,7 +1121,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
 	w2_child_id = ((GenParticle*)branchParticle->At(genW2->D2))->PID;
 	w2_child = (GenParticle*)branchParticle->At(genW2->D2);
     }
-    cout <<"ttbar, w1_child id "<< w1_child_id <<" w2_child id "<< w2_child_id << endl;
+    if (debug_) cout <<"ttbar, w1_child id "<< w1_child_id <<" w2_child id "<< w2_child_id << endl;
     if (genW1->D1>0 && ((GenParticle*)branchParticle->At(genW1->D1))->PID == 13){
 	genmu1 = (GenParticle*)branchParticle->At(genW1->D1);
 	gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
