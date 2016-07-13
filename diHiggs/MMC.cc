@@ -37,7 +37,7 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    simulation = simulation_;
    PUsample = PUsample_;
 	
-   std::cout <<(simulation_? "in MMC simulation is true ":" in MMC simulation is false ")<< std::endl;	
+   if (MMCdebug)  std::cout <<(simulation_? "in MMC simulation is true ":" in MMC simulation is false ")<< std::endl;	
    onshellMarker = onshellMarker_;
    if (simulation){
 	nu1_lorentz_true = nu1_lorentz;
@@ -95,9 +95,9 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    const std::string histname(histss.str());
    const std::string histweight1name(histweight1ss.str());
    const std::string histweight4name(histweight4ss.str());
-   MMC_h2Mass = TH1F(histname.c_str(),histname.c_str(), 900, 100, 1000);
-   MMC_h2Massweight1 = TH1F(histweight1name.c_str(),histweight1name.c_str(), 900, 100, 1000);
-   MMC_h2Massweight4 = TH1F(histweight4name.c_str(),histweight4name.c_str(), 900, 100, 1000);
+   MMC_h2Mass = TH1F(histname.c_str(),histname.c_str(), 3800, 200, 4000);
+   MMC_h2Massweight1 = TH1F(histweight1name.c_str(),histweight1name.c_str(), 3800, 200, 4000);
+   MMC_h2Massweight4 = TH1F(histweight4name.c_str(),histweight4name.c_str(), 3800, 200, 4000);
    initTree(mmctree);
    
    b1rescalefactor = 1;
@@ -181,7 +181,7 @@ MMC::runMMC(){//should not include any gen level information here in final versi
   //std::cout <<(PUsample?" PUsample ":"Not PUsample ")<< " met_sigma "<< met_sigma << std::endl;
   //mmctree->SetDebug(100,0,9999999);
   //int count = 100000;
-
+  bool validrun = false;
   eta_mean=0;
   eta_rms=1.403;
   //std::cout <<" time null " << time(NULL) << std::endl;
@@ -384,28 +384,26 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	*offshellW_lorentz = *mu_offshellW_lorentz+*nu_offshellW_lorentz;
 	*htoWW_lorentz = *onshellW_lorentz+*offshellW_lorentz;
 	*h2tohh_lorentz = *htoWW_lorentz+*htoBB_lorentz;
-	if (h2tohh_lorentz->M()<245 or h2tohh_lorentz->M()>1000) {
-		if (h2tohh_lorentz->M()<245) {
-			std::cerr <<" MMC h2 mass is too small,  M_h " <<h2tohh_lorentz->M() << std::endl;
+	if (h2tohh_lorentz->M()<245 or h2tohh_lorentz->M()>3800) {
+			std::cerr <<" MMC h2 mass is too small, or too large,  M_h " <<h2tohh_lorentz->M() << std::endl;
 			std::cerr <<" gen nu eta "<< eta_gen <<" nu phi "<< phi_gen << std::endl;
-			std::cerr <<" from MMC mu_onshell "; mu_onshellW_lorentz->Print();
-			std::cerr <<" from MMC mu_offshell "; mu_offshellW_lorentz->Print();
-			std::cerr <<" from MMC nu_onshell "; nu_onshellW_lorentz->Print();
-			std::cerr <<" from MMC nu_offshell "; nu_offshellW_lorentz->Print();
-			std::cerr <<" from MMC htoBB, mass "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
-		        if (simulation){
-    std::cout <<"following is pure gen level infromation " << std::endl;
-    std::cout <<" nu1 px "<<nu1_lorentz_true->Px() << " py " <<nu1_lorentz_true->Py() << " pt "<< nu1_lorentz_true->Pt() 
-	<< " eta "<<nu1_lorentz_true->Eta() << " phi "<< nu1_lorentz_true->Phi() << std::endl;
-    std::cout <<" nu2 px "<<nu2_lorentz_true->Px() << " py " <<nu2_lorentz_true->Py() << " pt "<< nu2_lorentz_true->Pt() 
-	<< " eta "<<nu2_lorentz_true->Eta() << " phi "<< nu2_lorentz_true->Phi() << std::endl;
-    std::cout <<" onshellW mass "<< onshellW_lorentz_true->M(); onshellW_lorentz_true->Print();  
-    std::cout <<"offshellW mass " <<offshellW_lorentz_true->M(); offshellW_lorentz_true->Print();  
-    std::cout <<" htoWW mass "<< htoWW_lorentz_true->M(); htoWW_lorentz_true->Print();
-    std::cout <<" htoBB mass "<< htoBB_lorentz_true->M(); htoBB_lorentz_true->Print();
-    std::cout <<" h2tohh, pz " <<h2tohh_lorentz_true->Pz() << " Mass " << h2tohh_lorentz_true->M() << std::endl;
-   			}	
-		}
+			std::cerr <<" from MMC mu_onshell (px,py,pz, E)= ("<< mu_onshellW_lorentz->Px()<<", "<<  mu_onshellW_lorentz->Py()<<", "<< mu_onshellW_lorentz->Pz()<<", "<< mu_onshellW_lorentz->E() <<")"<< std::endl;
+			std::cerr <<" from MMC mu_offshell (px,py,pz, E)= ("<< mu_offshellW_lorentz->Px()<<", "<<  mu_offshellW_lorentz->Py()<<", "<< mu_offshellW_lorentz->Pz()<<", "<< mu_offshellW_lorentz->E() <<")"<< std::endl;
+			std::cerr <<" from MMC nu_onshell (px,py,pz, E)= ("<< nu_onshellW_lorentz->Px()<<", "<<  nu_onshellW_lorentz->Py()<<", "<< nu_onshellW_lorentz->Pz()<<", "<< nu_onshellW_lorentz->E() <<")"<< std::endl;
+			std::cerr <<" from MMC nu_offshell (px,py,pz, E)= ("<< nu_offshellW_lorentz->Px()<<", "<<  nu_offshellW_lorentz->Py()<<", "<< nu_offshellW_lorentz->Pz()<<", "<< nu_offshellW_lorentz->E() <<")"<< std::endl;
+			std::cerr <<" from MMC htoBB, mass "<< htoBB_lorentz->M()<<"(px,py,pz, E)= ("<<htoBB_lorentz->Px()<<", "<< htoBB_lorentz->Py() <<", "<< htoBB_lorentz->Pz() <<", "<< htoBB_lorentz->E()<<")" <<std::endl;
+		if (simulation){
+    			std::cerr <<"following is pure gen level infromation " << std::endl;
+    			std::cerr <<" nu1 px "<<nu1_lorentz_true->Px() << " py " <<nu1_lorentz_true->Py() << " pt "<< nu1_lorentz_true->Pt() 
+			<< " eta "<<nu1_lorentz_true->Eta() << " phi "<< nu1_lorentz_true->Phi() << std::endl;
+    			std::cerr <<" nu2 px "<<nu2_lorentz_true->Px() << " py " <<nu2_lorentz_true->Py() << " pt "<< nu2_lorentz_true->Pt() 
+			<< " eta "<<nu2_lorentz_true->Eta() << " phi "<< nu2_lorentz_true->Phi() << std::endl;
+    			std::cerr <<" onshellW mass "<< onshellW_lorentz_true->M(); onshellW_lorentz_true->Print();  
+    			std::cerr <<"offshellW mass " <<offshellW_lorentz_true->M(); offshellW_lorentz_true->Print();  
+    			std::cerr <<" htoWW mass "<< htoWW_lorentz_true->M(); htoWW_lorentz_true->Print();
+    			std::cerr <<" htoBB mass "<< htoBB_lorentz_true->M(); htoBB_lorentz_true->Print();
+    			std::cerr <<" h2tohh, pz " <<h2tohh_lorentz_true->Pz() << " Mass " << h2tohh_lorentz_true->M() << std::endl;
+   		}	
 		
 		continue;
 	}
@@ -475,21 +473,25 @@ MMC::runMMC(){//should not include any gen level information here in final versi
 	  h2tohh_Phi = 0;
 	}
 
-	//printMMCresult();
+	//	printMMCresult();
 	//       	mmctree->Fill();
+	if (weight1<=0.0) continue;
 	MMC_h2Mass.Fill(h2tohh_Mass, weight);
 	MMC_h2Massweight1.Fill(h2tohh_Mass, weight1);
 	MMC_h2Massweight4.Fill(h2tohh_Mass, weight4);
+	if (MMCdebug)  std::cout <<" h2tohh mass "<< h2tohh_Mass <<" weight " << weight <<" weight1 "<< weight1 <<" nu_onshellW_pt "<< nu_onshellW_pt << std::endl;
+        validrun =true;
     }//end controls loop,(0,1,2,3)
     //mmctree->Fill();
   }//end of iteration
   std::cout <<"initial MMC input met  px "<<mmcmet_vec2->Px() << " py "<<mmcmet_vec2->Py() <<" pt "<< mmcmet_vec2->Mod() <<std::endl;
   std::cout <<"last iteration MMC input met  px "<<met_vec2->Px() << " py "<<met_vec2->Py() <<" pt "<< met_vec2->Mod() <<std::endl;
+  if (validrun) std::cout <<" true validrun "<< std::endl;
+  else std::cout <<" false validrun "<< std::endl;
   //std::cout <<"last iteration bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
   //std::cout <<"num of solutions " << MMC_h2Mass.GetEntries() << std::endl;
   delete generator;
-  if (MMC_h2Mass.GetEntries()>0) return true;
-  else return false;
+  return validrun;
 }
 
 //------------ method called to initialize a tree for MMC for this event ------------

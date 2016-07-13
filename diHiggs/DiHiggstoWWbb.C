@@ -1118,7 +1118,7 @@ void DiHiggstoWWbb::fetchttbarchain(TClonesArray *branchParticle){
 		w2_child_id = ((GenParticle*)branchParticle->At(genW2->D2))->PID;
 		w2_child = (GenParticle*)branchParticle->At(genW2->D2);
     }
-    cout <<"ttbar, w1_child id "<< w1_child_id <<" w2_child id "<< w2_child_id << endl;
+    if (debug_) cout <<"ttbar, w1_child id "<< w1_child_id <<" w2_child id "<< w2_child_id << endl;
     if (genW1->D1>0 && ((GenParticle*)branchParticle->At(genW1->D1))->PID == 13){
 	genmu1 = (GenParticle*)branchParticle->At(genW1->D1);
 	gennu1 = (GenParticle*)branchParticle->At(genW1->D2);
@@ -2783,7 +2783,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	}
 
 	if (bjet_pt1_lorentz.M2()<0.00000001 or bjet_pt2_lorentz.M2()<0.00000001){
-		cerr <<" error!! b1jet or b2jet M2() is less 0.0001, b1jet "<<bjet_pt1_lorentz.M2() <<" b2jet "<< bjet_pt2_lorentz.M2()<< endl;
+		cerr <<" warning !! b1jet or b2jet M2() is less 0.0001, b1jet "<<bjet_pt1_lorentz.M2() <<" b2jet "<< bjet_pt2_lorentz.M2()<< endl;
 		//continue;
 	}
         //always take gen as inputs 
@@ -2850,10 +2850,16 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  MMC_h2mass_underflow = MMC_h2mass->GetBinContent(-1);
 	  std::cout <<" most prob " << MMC_h2mass_prob <<" RMS "<< MMC_h2mass_RMS << " entries " << MMC_h2mass_Entries 
 	    << " most prob weight1 "<< MMC_h2massweight1_prob <<" weight4 "<< MMC_h2massweight4_prob <<std::endl;
-	  if (MMC_h2mass_prob < 250 ) std::cerr <<" error !!! MMC_h2mass_prob < 250, MMC_h2mass_prob: " <<MMC_h2mass_prob 
-	    <<" eventid "<<entry <<std::endl;
-	  if (MMC_h2massweight1_prob < 250 ) std::cerr <<" error !!! MMC_h2mass_prob < 250, MMC_h2massweight1_prob: " <<MMC_h2massweight1_prob 
-	    <<" eventid "<<entry <<std::endl;
+	  if (MMC_h2mass_prob < 245 ) {
+		std::cerr <<" error !!! MMC_h2mass_prob < 250, MMC_h2mass_prob: " <<MMC_h2mass_prob 
+	    		<<" eventid "<<entry <<std::endl;
+		MMC_h2mass->Print("ALL");
+	  }
+	  if (MMC_h2massweight1_prob < 245 ) {
+		std::cerr <<" error !!! MMC_h2mass_prob < 250, MMC_h2massweight1_prob: " <<MMC_h2massweight1_prob 
+	    		<<" eventid "<<entry <<std::endl;
+		MMC_h2mass_weight1->Print("ALL");
+	  }
 	}
 	//MMCfile->WriteObject(mmctree,mmctree->GetTitle());
 	delete thismmc;
