@@ -204,6 +204,7 @@ class DiHiggstoWWbb {
     float MVA_mass_trans;
     float MVA_MT2;
     float MVA_pt_b1b2;
+    float MVA_MMC_h2massweight1_prob;
     float MVA_value;
     float MVA_value_B1fortt;
     float MVA_value_B2fortt;
