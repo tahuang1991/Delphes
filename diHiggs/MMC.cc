@@ -150,8 +150,6 @@ MMC::~MMC(){
   delete h2tohh_lorentz;
   delete met_vec2;
   //delete file_ref;
-  //std::cout <<" gFile get options " << gFile->GetOption() << std::endl;
-  file->Close();
   if (not writemmctree_) delete mmctree;
 
 }
@@ -491,6 +489,9 @@ MMC::runMMC(){//should not include any gen level information here in final versi
   //std::cout <<"last iteration bjets input M_h= "<< htoBB_lorentz->M(); htoBB_lorentz->Print();
   //std::cout <<"num of solutions " << MMC_h2Mass.GetEntries() << std::endl;
   delete generator;
+
+  std::cout <<"gFile get name "<< gFile->GetName() <<" gFile get options " << gFile->GetOption() << std::endl;
+  file->Close();
   return validrun;
 }
 

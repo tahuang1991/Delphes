@@ -120,6 +120,7 @@ class DiHiggstoWWbb {
 
 
   private:
+    TFile *file;
     TH2F *MuonRecoEff_hist;
     void readoutMuonRecoEff();
     float GetMuonRecoWeight(TH2F *hist, float pt, float eta);

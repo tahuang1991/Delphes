@@ -156,6 +156,9 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   	std::cout <<" start to print Muon Reco eff "<< std::endl;
   	MuonRecoEff_hist->Print("ALL");
    }
+  //TFile* file = new TFile(outputFile,"recreate");
+
+   file = new TFile(outputFile,"recreate");
 }
 
 void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
@@ -681,8 +684,8 @@ void DiHiggstoWWbb::init(){
 }
 
 void DiHiggstoWWbb::writeTree(){
-  TFile* file = new TFile(outputFile,"recreate");
-  evtree->Write();
+  //evtree->Write();
+  file->WriteObject(evtree, evtree->GetName());
   file->Close();
   calculateNormfactor(3);
 }
@@ -911,9 +914,9 @@ void DiHiggstoWWbb::fetchHhhchain(TClonesArray *branchParticle){
     getFinalState(genW2, branchParticle);	
     //cout <<" htoWW genW2 "; printGenParticle(genW2);
     w1_mass = genW1->Mass; w1_px = genW1->Px; w1_py = genW1->Py; w1_pz = genW1->Pz; w1_energy = genW1->E;
-    w1_eta = genW1->Eta; w1_phi = genW1->Phi;
+    w1_eta = genW1->Eta; w1_phi = genW1->Phi; w1_pt = genW1->PT;
     w2_mass = genW2->Mass; w2_px = genW2->Px; w2_py = genW2->Py; w2_pz = genW2->Pz; w2_energy = genW2->E;
-    w2_eta = genW2->Eta; w2_phi = genW2->Phi;
+    w2_eta = genW2->Eta; w2_phi = genW2->Phi; w2_pt = genW2->PT;
     htoWW_px = genhtoWW->Px; htoWW_py = genhtoWW->Py; htoWW_pz = genhtoWW->Pz; htoWW_energy = genhtoWW->E;
     htoWW_mass = genhtoWW->Mass;
 
@@ -2178,6 +2181,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
   long entry;
   TLorentzVector momentum;
 
+  //TFile *MMCfile = new TFile("MMCfile.root","recreate");
   /****** Loop over all events *****/
   int totalevents=0;
   if (nEvents_ < 0) totalevents = allEntries;
@@ -2833,9 +2837,18 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	runMMCok = thismmc->runMMC();
 	if (runMMCok) {
 	  //MMCtree =  (thismmc->getMMCTree())->CloneTree();
-	  TH1F* MMC_h2mass =(TH1F*)(thismmc->getMMCh2()).Clone("MMC_h2mass");
-	  TH1F* MMC_h2mass_weight1 =(TH1F*)(thismmc->getMMCh2weight1()).Clone("MMC_h2massweight1");
-	  TH1F* MMC_h2mass_weight4 =(TH1F*)(thismmc->getMMCh2weight4()).Clone("MMC_h2massweight4");
+	  stringstream ss;
+	  ss <<"MMC_h2mass_event"<< entry;
+   	  const std::string histname(ss.str());
+	  stringstream ss1;
+	  ss1 <<"MMC_h2massweight1_event"<< entry;
+   	  const std::string histname1(ss1.str());
+	  stringstream ss4;
+	  ss4 <<"MMC_h2massweight4_event"<< entry;
+   	  const std::string histname4(ss4.str());
+	  TH1F* MMC_h2mass =(TH1F*)(thismmc->getMMCh2()).Clone(histname.c_str());
+	  TH1F* MMC_h2mass_weight1 =(TH1F*)(thismmc->getMMCh2weight1()).Clone(histname1.c_str());
+	  TH1F* MMC_h2mass_weight4 =(TH1F*)(thismmc->getMMCh2weight4()).Clone(histname4.c_str());
 	  //std::cout <<" Mass_h2mass in Analyzer " << std::endl;
 	  MMC_h2mass_prob = (MMC_h2mass->GetXaxis())->GetBinCenter(MMC_h2mass->GetMaximumBin());
 	  MMC_h2massweight1_prob = (MMC_h2mass_weight1->GetXaxis())->GetBinCenter(MMC_h2mass_weight1->GetMaximumBin());
@@ -2860,8 +2873,12 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	    		<<" eventid "<<entry <<std::endl;
 		MMC_h2mass_weight1->Print("ALL");
 	  }
+	 //MMC_h2mass->Write();
+	 //MMC_h2mass_weight1->Write();
+	 //MMC_h2mass_weight4->Write();
+	  file->WriteObject(MMC_h2mass, histname.c_str());
 	}
-	//MMCfile->WriteObject(mmctree,mmctree->GetTitle());
+  	//std::cout <<"gFile get name "<< gFile->GetName() <<" gFile get options " << gFile->GetOption() << std::endl;
 	delete thismmc;
     }
     //fill branches
