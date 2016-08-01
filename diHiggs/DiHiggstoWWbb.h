@@ -593,6 +593,9 @@ class DiHiggstoWWbb {
     float MMC_h2mass_Mean;
     float MMC_h2mass_underflow;
     float MMC_h2mass_overflow;
+    float MMC_h2mass_MaxBin;
+    float MMC_h2mass_weight1_MaxBin;
+    float MMC_h2mass_weight4_MaxBin;
 };
 
 #endif

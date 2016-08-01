@@ -683,6 +683,9 @@ void DiHiggstoWWbb::init(){
   evtree->Branch("MMC_h2mass_Entries",&MMC_h2mass_Entries,"MMC_h2mass_Entries/F");
   evtree->Branch("MMC_h2mass_overflow",&MMC_h2mass_overflow,"MMC_h2mass_overflow/F");
   evtree->Branch("MMC_h2mass_underflow",&MMC_h2mass_underflow,"MMC_h2mass_overflow/F");
+  evtree->Branch("MMC_h2mass_MaxBin",&MMC_h2mass_MaxBin,"MMC_h2mass_MaxBin/F");
+  evtree->Branch("MMC_h2mass_weight1_MaxBin",&MMC_h2mass_weight1_MaxBin,"MMC_h2mass_weight1_MaxBin/F");
+  evtree->Branch("MMC_h2mass_weight4_MaxBin",&MMC_h2mass_weight4_MaxBin,"MMC_h2mass_weight4_MaxBin/F");
   GetPDFc1();
 }
 
@@ -2173,6 +2176,9 @@ void DiHiggstoWWbb::initBranches(){
   MMC_h2mass_Mean =0.0;
   MMC_h2mass_underflow =0.0;
   MMC_h2mass_overflow =0.0;
+  MMC_h2mass_MaxBin =0.0;
+  MMC_h2mass_weight1_MaxBin =0.0;
+  MMC_h2mass_weight4_MaxBin =0.0;
 }
 
 /*************************
@@ -2844,6 +2850,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  int nbin=(MMC_h2mass->GetXaxis())->GetNbins();
 	  MMC_h2mass_overflow = MMC_h2mass->GetBinContent(nbin+1);
 	  MMC_h2mass_underflow = MMC_h2mass->GetBinContent(-1);
+	  MMC_h2mass_MaxBin = MMC_h2mass->GetBinContent( MMC_h2mass->GetMaximumBin() );
+	  MMC_h2mass_weight1_MaxBin = MMC_h2mass_weight1->GetBinContent( MMC_h2mass_weight1->GetMaximumBin() );
+	  MMC_h2mass_weight4_MaxBin = MMC_h2mass_weight4->GetBinContent( MMC_h2mass_weight4->GetMaximumBin() );
 	  std::cout <<" most prob " << MMC_h2mass_prob <<" RMS "<< MMC_h2mass_RMS << " entries " << MMC_h2mass_Entries 
 	    << " most prob weight1 "<< MMC_h2massweight1_prob <<" weight4 "<< MMC_h2massweight4_prob <<std::endl;
 	  if (MMC_h2mass_prob < 245 ) {
@@ -2859,7 +2868,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	 //MMC_h2mass->Write();
 	 //MMC_h2mass_weight1->Write();
 	 //MMC_h2mass_weight4->Write();
-	  file->WriteObject(MMC_h2mass, histname.c_str());
+	  //##!! NOT ALL HISTOS file->WriteObject(MMC_h2mass, histname.c_str());
 	}
   	//std::cout <<"gFile get name "<< gFile->GetName() <<" gFile get options " << gFile->GetOption() << std::endl;
 	delete thismmc;
