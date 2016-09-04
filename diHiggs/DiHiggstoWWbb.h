@@ -73,6 +73,7 @@ class DiHiggstoWWbb {
     float b2rescalefactor;
     TH1F *bjetrescalec1pdf;
     //Parameters for MMC
+    bool keepMMChist_;
     bool runMVA_;
     bool runMMC_;
     bool useRecoMET_;

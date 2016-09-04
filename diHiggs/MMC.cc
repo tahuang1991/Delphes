@@ -72,7 +72,8 @@ MMC::MMC(TLorentzVector* mu1_lorentz, TLorentzVector* mu2_lorentz, TLorentzVecto
    iterations_ = iterations;
    RefPDFfile_ = RefPDFfile;
    useMET_ = useMET;
-   metcorrection_ = metcorrection;//0.no correction; 1. simpel rescale, 2.elaborate rescale, -1.ideal case
+  ///0.no correction; 1. simple rescale, 2.elaborate rescale, -1.ideal cas, 4. simple rescale from bjet simple rescale. 5: elaborate rescale from bjet elaborate rescale 
+   metcorrection_ = metcorrection;//0.no correction; 1. simple rescale, 2.elaborate rescale, -1.ideal case
    bjetrescale_ = bjetrescaleAlgo;//0.no rescale; 1.simple rescale; 2.elaborate rescale, -1.ideal case
    writemmctree_ = false;
 

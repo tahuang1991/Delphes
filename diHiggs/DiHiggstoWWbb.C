@@ -157,7 +157,7 @@ DiHiggstoWWbb::DiHiggstoWWbb(std::vector<TString> input_File, TString output_Fil
   readoutMuonRecoEff(); 
   if(debug_){
   	std::cout <<" start to print Muon Reco eff "<< std::endl;
-  	MuonRecoEff_hist->Print("ALL");
+  	//MuonRecoEff_hist->Print("ALL");
    }
   //TFile* file = new TFile(outputFile,"recreate");
 
@@ -202,6 +202,7 @@ void DiHiggstoWWbb::readConfig(std::ifstream& ifile){
   getdoublepara(strs,"muonEta", muonsEta_, 2.40);
   getdoublepara(strs,"muonIso", muonsIso_, .30);
   getdoublepara(strs,"metPt", metPt_, 20);
+  getboolpara(strs, "keepMMChist", keepMMChist_, false);
   getboolpara(strs, "runMVA", runMVA_, false);
   getboolpara(strs, "runMMC", runMMC_, false);
   getboolpara(strs, "useRecoMET", useRecoMET_, false);//whether to use reco met or not as MMC input
@@ -2605,6 +2606,7 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	  mass_trans = sqrt(2*ll_p4.Pt()*met*(1-cos(dphi_llmet)));
 	  if (dR_b1l1 > jetleptonDeltaR_ and dR_b1l2 > jetleptonDeltaR_ and dR_b2l1 > jetleptonDeltaR_ and dR_b2l2 > jetleptonDeltaR_) hasdRljet =true;
 	  MINdR_bl = dR_b1l1*(dR_b1l1<dR_b1l2 && dR_b1l1<dR_b2l1 && dR_b1l1<dR_b2l2) + dR_b2l1*(dR_b2l1<dR_b2l2 && dR_b2l1<dR_b1l1 && dR_b2l1<dR_b1l2) + dR_b1l2*(dR_b1l2<dR_b1l1 && dR_b1l2<dR_b2l1 && dR_b1l2<dR_b2l2) + dR_b2l2*(dR_b2l2<dR_b1l1 && dR_b2l2<dR_b1l2 && dR_b2l2<dR_b2l1);
+     
 	  //MT2: In order to construct MT2 for either the t tbar -> bW bW system or our signal H -> h h -> bb WW,
 	  //we group each pair b_jet-lepton into an object: we then get "Particle A" and "Particle B" (each one given by a b_jet-lepton object),
 	  //whose Kinematics is to be fed into the MT2 variable.
@@ -2739,19 +2741,17 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	if(true){ //Selection to be applied before the computation
 	}
 
-	/*if (hastwogenmuons and not(hastwomuons)){
-	  cout <<" two gen muons " << endl;
-	  cout <<" mu1 "; mu1_p4.Print();
-	  cout <<" mu2 "; mu2_p4.Print();
-	  for(i = 0; i < branchMuon->GetEntriesFast(); ++i){
-	  Muon *muon = (Muon*) branchMuon->At(i);
-	  cout <<" Reco Muon eta "<< muon->Eta <<" phi "<< muon->Phi <<" pt "<< muon->PT <<" charge sign "<< muon->Charge << endl;
-	  }
-	  }*/
+        bool clearupcut(hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons && (((b1jet_btag&2)>0 && (b2jet_btag&3)>0) || ((b1jet_btag&3)>0 && (b 2jet_btag&2)>0)) && dR_l1l2<3.3 && dR_l1l2>0.07 && dR_b1b2<5. && mass_l1l2<100 && mass_l1l2>5. && mass_b1b2>22 && dR_bl<5 && dR_l1l2b1b2<6 && MINdR_bl<3.2 && MINdR_bl>0.4 && mass_b1b2<700 && mass_trans<250 && MT2<400 && pt_b1b2<300 && hasdRljet);
+	if (not(clearupcut)){
+		cout <<"failed to pass clearup cut "<< endl;
+		continue;
+		}
+		
 	//-------- MMC --------
 	preselections = (hasRECOjet1 and hasRECOjet1 and hasMET and hastwomuons and hasdRljet);
 	//for simulation case
 	preselections_gen = (hasgenb1jet and hasgenb2jet and hastwogenmuons);
+        
 	bool MMCready =  ((h2tohh and sample_!=tt) || (ttbar and sample_ ==tt));
 	bool objectsready = (((useRecoMuon_ and hastwomuons) or (not(useRecoMuon_) and hastwogenmuons)) and 
 	    ((useRecoBJet_ and hasRECOjet1 and hasRECOjet2) or (not(useRecoBJet_) and hasgenb1jet and hasgenb2jet)));
@@ -2865,10 +2865,9 @@ void DiHiggstoWWbb::DiHiggstoWWbbrun()
 	    		<<" eventid "<<entry <<std::endl;
 		MMC_h2mass_weight1->Print("ALL");
 	  }
-	 //MMC_h2mass->Write();
-	 //MMC_h2mass_weight1->Write();
-	 //MMC_h2mass_weight4->Write();
-	  //##!! NOT ALL HISTOS file->WriteObject(MMC_h2mass, histname.c_str());
+	  //##!! NOT ALL HISTOS 
+	  if (keepMMChist_)
+	  	file->WriteObject(MMC_h2mass, histname.c_str());
 	}
   	//std::cout <<"gFile get name "<< gFile->GetName() <<" gFile get options " << gFile->GetOption() << std::endl;
 	delete thismmc;
