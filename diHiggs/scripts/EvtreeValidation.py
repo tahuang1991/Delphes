@@ -2,6 +2,7 @@ import random
 import ROOT
 import os
 from Helper import *
+import numpy as np
 ROOT.gROOT.SetBatch(1)
 #gStyle from TStyle
 ROOT.gStyle.SetStatW(0.17)
@@ -26,6 +27,10 @@ ROOT.gStyle.SetPadTopMargin(0.06)
 ROOT.gStyle.SetPadBottomMargin(0.13)
 
 
+ybinLow = [0.1,.5,1.0,2.0,4.0,6.0,8.0,10.0,20,40,60.0,80,100,200,400,600,1000.0,2000,4000,6000, 10000, 20000, 40000, 60000,100000.0]
+contentbins = np.asarray(ybinLow)
+ybinLow2 = [1.0,2.0,4.0,6.0,10.0,20,40,60.0,100,200,400,600,1000.0,2000,4000,6000, 10000, 20000, 40000, 60000,100000.0,200000,400000,800000]
+integralbins = np.asarray(ybinLow2)
 
 def hist1D(tree, todraw, xbins, cut, B):
 
@@ -76,7 +81,7 @@ def draw1D_v2(filelist,x_bins,x_title,cut,benchmarks, Events, Lumi, NormalizedTo
      
 
     color = [ROOT.kRed, ROOT.kBlue, ROOT.kMagenta+2, ROOT.kGreen+2, ROOT.kCyan]
-    maker = [20,21,22,23,34]
+    marker = [20,21,22,23,34]
     legend = ROOT.TLegend(0.75,0.5,0.86,0.85)
     legend.SetFillColor(ROOT.kWhite)
 #    legend.SetFillStyle(0)
@@ -130,19 +135,19 @@ def draw1D_v2(filelist,x_bins,x_title,cut,benchmarks, Events, Lumi, NormalizedTo
 
 	hists_1[nfile].SetLineColor(color[nfile])
 	hists_1[nfile].SetMarkerColor(color[nfile])
-	hists_1[nfile].SetMarkerStyle(maker[nfile])
+	hists_1[nfile].SetMarkerStyle(marker[nfile])
 	
 	hists_2[nfile].SetLineColor(color[nfile])
 	hists_2[nfile].SetMarkerColor(color[nfile])
-	hists_2[nfile].SetMarkerStyle(maker[nfile])
+	hists_2[nfile].SetMarkerStyle(marker[nfile])
 
 	hists_3[nfile].SetLineColor(color[nfile])
 	hists_3[nfile].SetMarkerColor(color[nfile])
-	hists_3[nfile].SetMarkerStyle(maker[nfile])
+	hists_3[nfile].SetMarkerStyle(marker[nfile])
 
 	hists_4[nfile].SetLineColor(color[nfile])
 	hists_4[nfile].SetMarkerColor(color[nfile])
-	hists_4[nfile].SetMarkerStyle(maker[nfile])
+	hists_4[nfile].SetMarkerStyle(marker[nfile])
 	
 	if (NormalizedToUnity):
 		hists_1[nfile].Scale(1.0/hists_1[nfile].Integral())
@@ -256,6 +261,8 @@ def draw1D_v2(filelist,x_bins,x_title,cut,benchmarks, Events, Lumi, NormalizedTo
 
     #c1.SaveAs("Hhh_PDFvalidation_%s_combined.png"%pic_name)
 	
+
+
 		
 #___________________________________________
 def draw1D(filelist,dir,todraw,x_bins,x_title, y_title, cut,benchmarks, pic_name):
@@ -337,7 +344,204 @@ def draw1D(filelist,dir,todraw,x_bins,x_title, y_title, cut,benchmarks, pic_name
     c1.SaveAs("%s_Hhh_Evtreevalidation.C"%pic_name)
 
 
+def fill2DHist(rootfile, nfile, histss):
 
+
+    	f = ROOT.TFile(rootfile)
+	lists = f.GetListOfKeys()
+	for x in range(len(lists)):
+		subkey = lists.At(x)
+		obj = subkey.ReadObj()
+		if obj.GetName()=="evtree":
+			continue
+		
+		maxbin = obj.GetMaximumBin()
+		maxbincenter = obj.GetBinCenter(maxbin)
+		maxbincontent = obj.GetBinContent(maxbin)
+		#if maxbincontent <1.0:
+		#	print "rootfile",rootfile, " title ",obj.GetTitle()," Name ",obj.GetName()," mass ",maxbincenter," maxbincontent ",maxbincontent
+ 		histss[0].Fill(maxbincenter, maxbincontent)
+ 		histss[1].Fill(maxbincenter, obj.Integral())
+		
+#___________________________________________
+def draw2D(filelist,x_bins, y_bins, x_title, y_title, cut,benchmarks, Events, Lumi, NormalizedToUnity, pic_name):
+    
+    xBins = int(x_bins[1:-1].split(',')[0])
+    xminBin = float(x_bins[1:-1].split(',')[1])
+    xmaxBin = float(x_bins[1:-1].split(',')[2])
+    yBins = int(y_bins[1:-1].split(',')[0])
+    yminBin = float(y_bins[1:-1].split(',')[1])
+    ymaxBin = float(y_bins[1:-1].split(',')[2])
+    b1 = ROOT.TH1F("b1","b1",xBins,xminBin,xmaxBin)
+    b1.SetTitle("h2#rightarrow hh#rightarrow WWWW"+" "*24 + "14TeV")
+    b1.GetYaxis().SetTitle("Events")
+    b1.GetXaxis().SetTitle("%s"%x_title)
+    #b1.GetYaxis().SetRangeUser(0.0,10000)
+    b1.SetStats(0)
+     
+
+    color = [ROOT.kRed, ROOT.kBlue, ROOT.kMagenta+2, ROOT.kGreen+2, ROOT.kCyan]
+    marker = [20,21,22,23,34]
+     
+    hists1 = []
+    hists2 = [] 
+    hProfiles1 = []
+    hProfiles2 = []
+    for nfile in range(len(filelist)):
+	B = benchmarks[nfile]
+	hist1 = ROOT.TH2F("hist1_%d"%nfile,"%s"%B, xBins, xminBin, xmaxBin, len(contentbins)-1, contentbins)
+	hist2 = ROOT.TH2F("hist2_%d"%nfile,"%s"%B, xBins, xminBin, xmaxBin, len(contentbins)-1, contentbins)
+        hist1.GetXaxis().SetTitle("%s"%x_title)
+        hist1.GetYaxis().SetTitle("%s"%y_title)
+        hist2.GetXaxis().SetTitle("%s"%x_title)
+        hist2.GetYaxis().SetTitle("Integral")
+	ROOT.SetOwnership(hist1,False)
+	ROOT.SetOwnership(hist2,False)
+	filedir = filelist[nfile]
+	weight = 0.0
+        hists1.append(hist1)
+        hists2.append(hist2)
+    	if B == "TTbar":
+		b = 'tt'
+		print "CS for TTbar ", getCrossSection(b)," weight ",GetWeight(b, 300,Events[nfile])	
+		weight = GetWeight(b, 300,Events[nfile])
+    	else:
+		print "CS for  ",B, getCrossSection(B)," weight ",GetWeight(B, 300,Events[nfile])	
+		weight = GetWeight(B, 300,Events[nfile])
+	print "filedir: ",filedir
+    	if os.path.isdir(filedir):
+          ls = os.listdir(filedir)
+          for rootfile in ls:
+                rootfile = filedir[:]+rootfile
+		#print "rootfile ",rootfile
+                if os.path.isdir(rootfile):
+                        continue
+		fill2DHist(rootfile, nfile, [hist1, hist2])
+    	elif os.path.isfile(filedir):
+		#print "it is a file"
+		fill2DHist(filedir, nfile, [hist1, hist2])
+    	else:
+          print " it is not a file or dir ", filedir
+	hProfiles1.append(hist1.ProfileX())
+	hProfiles2.append(hist2.ProfileX())
+    c1 = ROOT.TCanvas("c1","c1",1200,900)    
+    c1.Divide(2,2)
+    #pad11 = c1.GetListOfPrimitives().At(0)
+    #pad12 = c1.GetListOfPrimitives().At(1)
+    #pad13 = c1.GetListOfPrimitives().At(2)
+    #pad11 = ROOT.TPad(c1.cd(1))
+    c1.cd(1)
+    hists1[0].Draw("colz")
+    hProfiles1[0].Draw("same")
+    ROOT.gPad.SetLogy()
+    c1.cd(2)
+    hists1[1].Draw("colz")
+    hProfiles1[1].Draw("same")
+    ROOT.gPad.SetLogy()
+    c1.cd(3)
+    hists1[2].Draw("colz")
+    hProfiles1[2].Draw("same")
+    ROOT.gPad.SetLogy()
+    c1.cd(4)
+    hists1[3].Draw("colz")
+    hProfiles1[3].Draw("same")
+    ROOT.gPad.SetLogy()
+    c1.cd()
+    c1.SaveAs("%s_mostprobablevsbincontent_logy_combined.png"%pic_name)
+    c1.SaveAs("%s_mostprobablevsbincontent_logy_combined.pdf"%pic_name)
+    c1.SaveAs("%s_mostprobablevsbincontent_logy_combined.C"%pic_name)
+    """
+    c2 = ROOT.TCanvas("c2","c2",1200,900)    
+    c2.Divide(2,2)
+    c2.cd(1)
+    hists1[0].Scale(1.0/hists1[0].Integral())
+    hists1[0].Draw("colz")
+    ROOT.gPad.SetLogy()
+    c2.cd(2)
+    hists1[1].Scale(1.0/hists1[1].Integral())
+    hists1[1].Draw("colz")
+    ROOT.gPad.SetLogy()
+    c2.cd(3)
+    hists1[2].Scale(1.0/hists1[2].Integral())
+    hists1[2].Draw("colz")
+    ROOT.gPad.SetLogy()
+    c2.cd(4)
+    hists1[3].Scale(1.0/hists1[3].Integral())
+    hists1[3].Draw("colz")
+    ROOT.gPad.SetLogy()
+    c2.cd()
+    c2.SaveAs("%s_mostprobablevsbincontent_Unity_logy_combined.png"%pic_name)
+    c2.SaveAs("%s_mostprobablevsbincontent_Unity_logy_combined.pdf"%pic_name)
+    c2.SaveAs("%s_mostprobablevsbincontent_Unity_logy_combined.C"%pic_name)
+    """    
+    
+    c3 = ROOT.TCanvas("c3","c3",1200,900)    
+    c3.Divide(2,2)
+    #pad11 = c1.GetListOfPrimitives().At(0)
+    #pad12 = c1.GetListOfPrimitives().At(1)
+    #pad13 = c1.GetListOfPrimitives().At(2)
+    #pad11 = ROOT.TPad(c1.cd(1))
+    c3.cd(1)
+    hists2[0].Draw("colz")
+    hProfiles2[0].Draw("same")
+    ROOT.gPad.SetLogy()
+    c3.cd(2)
+    hists2[1].Draw("colz")
+    hProfiles2[1].Draw("same")
+    ROOT.gPad.SetLogy()
+    c3.cd(3)
+    hists2[2].Draw("colz")
+    hProfiles2[2].Draw("same")
+    ROOT.gPad.SetLogy()
+    c3.cd(4)
+    hists2[3].Draw("colz")
+    hProfiles2[3].Draw("same")
+    ROOT.gPad.SetLogy()
+    c3.cd()
+    c3.SaveAs("%s_mostprobablevsintegral_logy_combined.png"%pic_name)
+    c3.SaveAs("%s_mostprobablevsintegral_logy_combined.pdf"%pic_name)
+    c3.SaveAs("%s_mostprobablevsintegral_logy_combined.C"%pic_name)
+
+    legend = ROOT.TLegend(0.75,0.5,0.86,0.85)
+    legend.SetFillColor(ROOT.kWhite)
+#    legend.SetFillStyle(0)
+    legend.SetTextSize(0.05)
+    legend.SetTextFont(62)
+    for n in range(len(filelist)):
+	hProfiles1[n].SetMarkerColor(color[n])
+	hProfiles1[n].SetMarkerStyle(marker[n])
+
+	hProfiles2[n].SetMarkerColor(color[n])
+	hProfiles2[n].SetMarkerStyle(marker[n])
+        legend.AddEntry(hProfiles1[n],"%s"%benchmarks[n],"p")
+
+
+    c4 = ROOT.TCanvas("c4","c4",800,600)    
+    c4.Draw()
+    hProfiles1[0].SetStats(0)
+    hProfiles1[0].Draw() 
+    hProfiles1[1].Draw("same") 
+    hProfiles1[2].Draw("same") 
+    hProfiles1[3].Draw("same") 
+    legend.Draw("same")
+    c4.SetLogy()
+    c4.SaveAs("%s_mostprobablevsbincontent_Profile_combined.png"%pic_name)
+    c4.SaveAs("%s_mostprobablevsbincontent_Profile_combined.pdf"%pic_name)
+    c4.SaveAs("%s_mostprobablevsbincontent_Profile_combined.C"%pic_name)
+    
+    c5 = ROOT.TCanvas("c5","c5",800,600)    
+    c5.Draw()
+    hProfiles2[0].SetStats(0)
+    hProfiles2[0].Draw() 
+    hProfiles2[1].Draw("same") 
+    hProfiles2[2].Draw("same") 
+    hProfiles2[3].Draw("same") 
+    legend.Draw("same")
+    c5.SetLogy()
+    c5.SaveAs("%s_mostprobablevsintegral_Profile_combined.png"%pic_name)
+    c5.SaveAs("%s_mostprobablevsintegral_Profile_combined.pdf"%pic_name)
+    c5.SaveAs("%s_mostprobablevsintegral_Profile_combined.C"%pic_name)
+    
 
 filedir = "/fdata/hepx/store/user/lpernie/Hhh/"
 filelist = [filedir+"delphes_B3_1M_PU40ALL_13May.root",filedir+"delphes_B6_1M_PU40ALL_13May.root",filedir+"delphes_B9_1M_PU40ALL_13May.root",filedir+"delphes_B12_1M_PU40ALL_13May.root"]
@@ -351,12 +555,18 @@ benchmarks = ["B3","B6","B9","TTbar"]
 Events = [1000000, 1000000, 1000000, 4000000]
 cut = "MMC_h2massweight1_prob>200 && hasRECOjet1 && hasRECOjet1 && hasMET && hastwomuons && (((b1jet_btag&2)>0 && (b2jet_btag&3)>0) || ((b1jet_btag&3)>0 && (b 2jet_btag&2)>0)) && dR_l1l2<3.3 && dR_l1l2>0.07 && dR_b1b2<5. && mass_l1l2<100 && mass_l1l2>5. && mass_b1b2>22 && dR_bl<5 && dR_l1l2b1b2<6 && MINdR_bl<3.2 && MINdR_bl>0.4 && mass_b1b2<700 && mass_trans<250 && MT2<400 && pt_b1b2<300"
 
-pic_name = "MMC_h2mass_normalizedto300lumi"	
-x_title = "M_{H} [GeV]"
-x_bins = "(80,200,1000)"
-draw1D_v2(filelist,x_bins,x_title,cut,benchmarks,Events, 300, False, pic_name)	
-pic_name = "MMC_h2mass_normalizedto3000lumi"	
+pic_name = "testplots/MMC_h2mass_normalizedto300lumi"	
+x_title = "MMC Mass [GeV]"
+x_bins = "(40,200,1000)"
+#draw1D_v2(filelist,x_bins,x_title,cut,benchmarks,Events, 300, False, pic_name)	
+y_bins = "(100,0,10000.0)"
+y_title = "Maxbincontent" 
+draw2D(filelist,x_bins, y_bins, x_title, y_title, cut,benchmarks, Events, 300, False, pic_name)
+pic_name = "testplots/MMC_h2mass_normalizedto3000lumi"	
 #draw1D_v2(filelist,x_bins,x_title,cut,benchmarks,Events, 3000, False, pic_name)	
+
+
+
 
 pic_name = "paper/MMC_h2massweight1_prob"	
 todraw = "MMC_h2massweight1_prob"
